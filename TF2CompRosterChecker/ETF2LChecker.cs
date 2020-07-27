@@ -1,6 +1,102 @@
-﻿using System;
+﻿/**
+ * 
+ *  Costura.Fody
+ *  Copyright (c) Simon Cropp, Cameron MacFarland
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ * -----------------------------------------------------------------------------
+ * 
+ *  Fody
+ *  Copyright (c) Simon Cropp
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ * -----------------------------------------------------------------------------
+ * 
+ * 
+ *  Html Agility Pack (HAP)
+ *  Copyright (c)ZZZ Projects, Simon Mourrier, Jeff Klawiter, Stephan Grell
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ * -----------------------------------------------------------------------------
+ * 
+ *  Newtonsoft.Json
+ *  Copyright (c) James Newton-King
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ */
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,9 +111,9 @@ namespace TF2CompRosterChecker
     {
         private string[] steamIDs;
         private List<Player> noprofile = new List<Player>();
-        public static string baseApiUrl = "http://api.etf2l.org/player/";
-        public static string baseUrl = "http://etf2l.org/forum/user/";
-        public static string baseTeamUrl = "http://etf2l.org/teams/";
+        public static string baseApiUrl = "https://api.etf2l.org/player/";
+        public static string baseUrl = "https://etf2l.org/forum/user/";
+        public static string baseTeamUrl = "https://etf2l.org/teams/";
         public static int HL = 0;
         public static int Sixes = 1;
 
@@ -66,6 +162,7 @@ namespace TF2CompRosterChecker
             Parallel.ForEach(unique_ids, 
                     id =>
                     {
+                        //Initialize variables for each Player instance.
                         int currentComp = -1;
                         int counter = -1;
                         string currentDiv = "";
@@ -81,7 +178,7 @@ namespace TF2CompRosterChecker
                             wc.Encoding = Encoding.UTF8;
                             try
                             {
-                                dl = wc.DownloadString(baseApiUrl + id + ".xml");
+                                dl = wc.DownloadString(baseApiUrl + id + ".json");
                             }
                             catch (System.Net.WebException e)
                             {
@@ -106,13 +203,16 @@ namespace TF2CompRosterChecker
                                 button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                             }
 
+                            //Create a dynamic object for ease of use.
+                            dynamic doc2 = JObject.Parse(dl);
                             XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(dl);
-                            XmlNodeList nodes = doc.GetElementsByTagName("player");
-                            name = nodes.Item(0).Attributes["name"].Value;
-                            profileid = nodes.Item(0).Attributes["id"].Value;
-                            XmlNodeList teams = doc.GetElementsByTagName("teams");
+                            //doc.LoadXml(dl);
+                            //XmlNodeList nodes = doc.GetElementsByTagName("player");
+                            name = (string)doc2["player"]["name"];
+                            profileid = (string)doc2["player"]["id"];
+                            JArray teams = (JArray)doc2["player"]["teams"];
                             string teamtype = "";
+
                             if (leagueformat == ETF2LChecker.HL)
                             {
                                 teamtype = "Highlander";
@@ -123,45 +223,44 @@ namespace TF2CompRosterChecker
                                 teamtype = "6on6";
                                 team = "![No ETF2L 6v6 Team]";
                             }
-                            foreach (XmlNode t in teams)
-                            {
-                                if (t.Attributes["type"].Value.Equals(teamtype))
-                                {
-                                    team = t.Attributes["name"].Value;
-                                    teamid = t.Attributes["id"].Value;
-                                    break;
-                                }
-                            }
-                            XmlNodeList competitions = doc.GetElementsByTagName("competitions");
-                            counter = -1;
-                            foreach (XmlNode c in competitions)
-                            {
-                                string league = "";
-                                if (leagueformat == ETF2LChecker.HL)
-                                {
-                                    league = "Highlander Season";
-                                }
-                                else if (leagueformat == ETF2LChecker.Sixes)
-                                {
-                                    league = "6v6 Season";
-                                }
 
-                                if (c.Attributes["category"].Value.Equals(league))
+                            try
+                            {
+                                JToken hit = teams.SelectToken(@"$.[?(@.type == '" + teamtype + "')]");
+                                team = (string)hit["name"];
+                                teamid = (string)hit["id"];
+
+                                JObject comps = (JObject)hit["competitions"];
+                                counter = -1;
+                                foreach (var comp in comps)
                                 {
-                                    counter = Int32.Parse(c.Attributes["name"].Value);
-                                    currentDiv = c.ChildNodes.Item(0).Attributes["name"].Value;
-                                    if (counter > currentComp && !currentDiv.Equals("") && currentDiv != null)
+                                    currentComp = Int32.Parse(comp.Key);
+                                    currentDiv = (string)comp.Value["division"]["name"];
+                                    if (counter < currentComp && currentDiv != null)
                                     {
+                                        counter = currentComp;
                                         div = currentDiv;
-                                        currentComp = counter;
                                     }
                                 }
                             }
-
-                            if (doc.GetElementsByTagName("bans").Item(0) != null)
+                            catch (NullReferenceException ne)
                             {
-                                hasBans = true;
+                                //Do nothing in this case...
                             }
+
+                            try
+                            {
+                                string bans = (string)doc2["player"]["bans"];
+                                if (bans != null)
+                                {
+                                    hasBans = true;
+                                }
+                            }
+                            catch (NullReferenceException ne)
+                            {
+                                //Do nothing in this case...
+                            }
+
 
                             playerlist.Add(new Player(name, team, teamid, div, id, profileid, hasBans));
                         }
@@ -171,6 +270,9 @@ namespace TF2CompRosterChecker
             return playerlist;
         }
 
+        /*
+         * Debug stuff.
+         */
         public void printIDs()
         {
             for (int i = 0; i < this.steamIDs.Length; i++)

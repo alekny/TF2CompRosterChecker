@@ -1,4 +1,99 @@
-﻿using System;
+﻿/**
+ * 
+ *  Costura.Fody
+ *  Copyright (c) Simon Cropp, Cameron MacFarland
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ * -----------------------------------------------------------------------------
+ * 
+ *  Fody
+ *  Copyright (c) Simon Cropp
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ * -----------------------------------------------------------------------------
+ * 
+ * 
+ *  Html Agility Pack (HAP)
+ *  Copyright (c)ZZZ Projects, Simon Mourrier, Jeff Klawiter, Stephan Grell
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ * -----------------------------------------------------------------------------
+ * 
+ *  Newtonsoft.Json
+ *  Copyright (c) James Newton-King
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ * 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -305,6 +400,7 @@ namespace TF2CompRosterChecker
             outputGrid.Children.Clear();
             submitButton.Content = "Check Roster";
             progressBar.Value = 0;
+            statusOutput.Document.Blocks.Clear();
             submitButton.Click -= ResetTextBox;
             submitButton.Click += submitButton_Click;
         }
@@ -355,6 +451,110 @@ namespace TF2CompRosterChecker
                     foundIDs.Text = wordRanges.Count() + " SteamID3s/Profile Urls found";
                 }
             }
+        }
+
+        private void Show_Licenses(object sender, RoutedEventArgs e)
+        {
+            outputFrame.Visibility = Visibility.Hidden;
+            statusOutput.Visibility = Visibility.Visible;
+            header.Text = "Paste Status Output here:";
+            outputGrid.Children.Clear();
+            submitButton.Content = "Check Roster";
+            progressBar.Value = 0;
+            string License = "Fody\n"
+            + "Copyright (c) Simon Cropp\n"
+            + "\n"
+            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
+            + "of this software and associated documentation files (the \"Software\"), to deal \n"
+            + "in the Software without restriction, including without limitation the rights \n"
+            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
+            + "copies of the Software, and to permit persons to whom the Software is \n"
+            + "furnished to do so, subject to the following conditions:\n"
+            + "\n"
+            + "The above copyright notice and this permission notice shall be included in \n"
+            + "all copies or substantial portions of the Software.\n"
+            + "\n"
+            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
+            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
+            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
+            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
+            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
+            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
+            + "IN THE SOFTWARE.\n"
+            + "\n"
+            + "-----------------------------------------------------------------------------\n"
+            + "\n"
+            + "Costura.Fody\n"
+            + "Copyright (c) Simon Cropp, Cameron MacFarland\n"
+            + "\n"
+            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
+            + "of this software and associated documentation files (the \"Software\"), to deal \n"
+            + "in the Software without restriction, including without limitation the rights \n"
+            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
+            + "copies of the Software, and to permit persons to whom the Software is \n"
+            + "furnished to do so, subject to the following conditions:\n"
+            + "\n"
+            + "The above copyright notice and this permission notice shall be included in \n"
+            + "all copies or substantial portions of the Software.\n"
+            + "\n"
+            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
+            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
+            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
+            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
+            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
+            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
+            + "IN THE SOFTWARE.\n"
+            + "\n"
+            + "-----------------------------------------------------------------------------\n"
+            + "\n"
+            + "Html Agility Pack (HAP)\n"
+            + "Copyright (c) ZZZ Projects, Simon Mourrier, Jeff Klawiter, Stephan Grell\n"
+            + "\n"
+            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
+            + "of this software and associated documentation files (the \"Software\"), to deal \n"
+            + "in the Software without restriction, including without limitation the rights \n"
+            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
+            + "copies of the Software, and to permit persons to whom the Software is \n"
+            + "furnished to do so, subject to the following conditions:\n"
+            + "\n"
+            + "The above copyright notice and this permission notice shall be included in \n"
+            + "all copies or substantial portions of the Software.\n"
+            + "\n"
+            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
+            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
+            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
+            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
+            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
+            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
+            + "IN THE SOFTWARE.\n"
+            +"\n"
+            + "-----------------------------------------------------------------------------\n"
+            + "\n"
+            + "Newtonsoft.Json\n"
+            + "Copyright (c) James Newton-King\n"
+            + "\n"
+            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
+            + "of this software and associated documentation files (the \"Software\"), to deal \n"
+            + "in the Software without restriction, including without limitation the rights \n"
+            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
+            + "copies of the Software, and to permit persons to whom the Software is \n"
+            + "furnished to do so, subject to the following conditions:\n"
+            + "\n"
+            + "The above copyright notice and this permission notice shall be included in \n"
+            + "all copies or substantial portions of the Software.\n"
+            + "\n"
+            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
+            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
+            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
+            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
+            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
+            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
+            + "IN THE SOFTWARE.\n";
+            statusOutput.Document.Blocks.Clear();
+            statusOutput.Document.Blocks.Add(new Paragraph(new Run(License)));
+            submitButton.Content = "Reset";
+            submitButton.Click -= submitButton_Click;
+            submitButton.Click += ResetTextBox;
         }
 
     }
