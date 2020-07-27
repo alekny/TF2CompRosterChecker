@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.3" Height="365.266" Width="748.496"
+        Title="TF2CompRosterChecker v1.4" Height="365.266" Width="748.496"
         ResizeMode="CanMinimize">
     <Grid Background="#2a2c30">
 
@@ -32,16 +32,17 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="21,10,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="650,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.3 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="650,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.4 by <Hyperlink 
         NavigateUri="https://steamcommunity.com/id/prpht"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         prpht
     </Hyperlink></TextBlock>
-        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,330,0,-0.37" VerticalAlignment="Top" Width="742" BorderBrush="Black"/>
-        <TextBlock HorizontalAlignment="Left" Margin="606,306,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="589,306,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff"/>
-        <TextBlock HorizontalAlignment="Left" Margin="611,293,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="597,293,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red"/>
+        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,325,0,0" VerticalAlignment="Top" Width="742" BorderBrush="Black"/>
+        <TextBlock HorizontalAlignment="Left" Margin="507,306,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="490,306,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff"/>
+        <TextBlock HorizontalAlignment="Left" Margin="507,293,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="634,309,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="9"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="494,293,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red"/>
         <RichTextBox Name="statusOutput" HorizontalAlignment="Left" Height="257" Margin="21,31,0,0" VerticalAlignment="Top" Width="700" FontFamily="Consolas" TextChanged="TextBox_TextChanged" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
@@ -54,6 +55,6 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="21,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1"/>
+        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="180,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1"/>
     </Grid>
 </Window>
