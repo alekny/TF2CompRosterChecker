@@ -9,5 +9,5 @@ Checks ETF2L/UGC-Roster via status output
 
 
 
-[My Minisign Pubkey](https://pastebin.com/raw/ybSfH5yW) | [My PGP Pubkey](https://pubkey.alekny.de)
+[My Minisign Pubkey](https://pastebin.com/raw/ybSfH5yW) (FP: 9CBE19476D63187B) | [My PGP Pubkey](https://pubkey.alekny.de) (FP: 5038C466599B382566562C4F97BC8A45BF1F9667)  
 Special thanks to [KRedous](http://steamcommunity.com/profiles/76561198360088412/) for providing the program icon.
