@@ -250,7 +250,7 @@ namespace TF2CompRosterChecker
 
                             try
                             {
-                                string bans = (string)doc2["player"]["bans"];
+                                var bans = doc2["player"]["bans"];
                                 if (bans != null)
                                 {
                                     hasBans = true;
