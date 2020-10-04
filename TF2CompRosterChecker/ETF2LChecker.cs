@@ -224,6 +224,7 @@ namespace TF2CompRosterChecker
                                 team = "![No ETF2L 6v6 Team]";
                             }
 
+                            //Not that nice, there has to be a more elegant way?
                             try
                             {
                                 JToken hit = teams.SelectToken(@"$.[?(@.type == '" + teamtype + "')]");
@@ -243,9 +244,12 @@ namespace TF2CompRosterChecker
                                     }
                                 }
                             }
-                            catch (NullReferenceException ne)
+                            catch (Exception ex)
                             {
-                                //Do nothing in this case...
+                                if (ex is NullReferenceException || ex is InvalidCastException)
+                                {
+                                    div = "[inactive]";
+                                }
                             }
 
                             try

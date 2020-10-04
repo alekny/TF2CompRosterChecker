@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.4.2" Height="368" Width="748"
+        Title="TF2CompRosterChecker v1.4.3" Height="368" Width="748"
         ResizeMode="CanMinimize">
     <Grid Background="#2a2c30">
 
@@ -32,7 +32,7 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,10,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="638,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.4.2 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="638,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.4.3 by <Hyperlink 
         NavigateUri="https://steamcommunity.com/id/prpht"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         prpht
