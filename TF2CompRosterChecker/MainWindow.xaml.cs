@@ -173,7 +173,7 @@ namespace TF2CompRosterChecker
             else if (leagueSelector.SelectedIndex == 5)
             {
                 RGLChecker rc = new RGLChecker(statusOutputText);
-                await Task.Run(() => result = rc.ParseJSON(RGLChecker.TradSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                await Task.Run(() => result = rc.ParseJSON(RGLChecker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                 baseUrl = RGLChecker.baseUrl;
                 baseTeamUrl = RGLChecker.baseTeamUrl;
                 league = "RGL";
