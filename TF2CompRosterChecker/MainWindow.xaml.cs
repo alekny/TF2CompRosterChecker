@@ -133,12 +133,52 @@ namespace TF2CompRosterChecker
             if (leagueSelector.SelectedIndex == 0)
             {
                 ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                await Task.Run(() => result = ec.parseXML(ETF2LChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                await Task.Run(() => result = ec.parseJSON(ETF2LChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                 baseUrl = ETF2LChecker.baseUrl;
                 baseTeamUrl = ETF2LChecker.baseTeamUrl;
                 league = "ETF2L";
             }
             else if (leagueSelector.SelectedIndex == 1)
+            {
+                ETF2LChecker ec = new ETF2LChecker(statusOutputText);
+                await Task.Run(() => result = ec.parseJSON(ETF2LChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                baseUrl = ETF2LChecker.baseUrl;
+                baseTeamUrl = ETF2LChecker.baseTeamUrl;
+                league = "ETF2L";
+            }
+            else if (leagueSelector.SelectedIndex == 2)
+            {
+                RGLChecker rc = new RGLChecker(statusOutputText);
+                await Task.Run(() => result = rc.ParseJSON(RGLChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                baseUrl = RGLChecker.baseUrl;
+                baseTeamUrl = RGLChecker.baseTeamUrl;
+                league = "RGL";
+            }
+            else if (leagueSelector.SelectedIndex == 3)
+            {
+                RGLChecker rc = new RGLChecker(statusOutputText);
+                await Task.Run(() => result = rc.ParseJSON(RGLChecker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                baseUrl = RGLChecker.baseUrl;
+                baseTeamUrl = RGLChecker.baseTeamUrl;
+                league = "RGL";
+            }
+            else if (leagueSelector.SelectedIndex == 4)
+            {
+                RGLChecker rc = new RGLChecker(statusOutputText);
+                await Task.Run(() => result = rc.ParseJSON(RGLChecker.TradSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                baseUrl = RGLChecker.baseUrl;
+                baseTeamUrl = RGLChecker.baseTeamUrl;
+                league = "RGL";
+            }
+            else if (leagueSelector.SelectedIndex == 5)
+            {
+                RGLChecker rc = new RGLChecker(statusOutputText);
+                await Task.Run(() => result = rc.ParseJSON(RGLChecker.TradSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                baseUrl = RGLChecker.baseUrl;
+                baseTeamUrl = RGLChecker.baseTeamUrl;
+                league = "RGL";
+            }
+            else if (leagueSelector.SelectedIndex == 6)
             {
                 UGCChecker uc = new UGCChecker(statusOutputText);
                 await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
@@ -146,15 +186,7 @@ namespace TF2CompRosterChecker
                 baseTeamUrl = UGCChecker.baseTeamUrl;
                 league = "UGC";
             }
-            else if (leagueSelector.SelectedIndex == 2)
-            {
-                ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                await Task.Run(() => result = ec.parseXML(ETF2LChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = ETF2LChecker.baseUrl;
-                baseTeamUrl = ETF2LChecker.baseTeamUrl;
-                league = "ETF2L";
-            }
-            else if (leagueSelector.SelectedIndex == 3)
+            else if (leagueSelector.SelectedIndex == 7)
             {
                 UGCChecker uc = new UGCChecker(statusOutputText);
                 await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
@@ -162,7 +194,7 @@ namespace TF2CompRosterChecker
                 baseTeamUrl = UGCChecker.baseTeamUrl;
                 league = "UGC";
             }
-            else if (leagueSelector.SelectedIndex == 4)
+            else if (leagueSelector.SelectedIndex == 8)
             {
                 UGCChecker uc = new UGCChecker(statusOutputText);
                 await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());

@@ -217,89 +217,106 @@ namespace TF2CompRosterChecker
                                 return;
                             }
                             //Console.WriteLine(id);
-                            var h2 = doc.DocumentNode.Descendants("h2").FirstOrDefault();
-                            string name = h2.Descendants("b").First().InnerHtml;
-                            foreach (var node in doc.DocumentNode.Descendants("p"))
+
+                            string name = "";
+                            try
                             {
-                                var div = node.Descendants("small").FirstOrDefault();
-                                if (div != null)
+                                var h4 = doc.DocumentNode.Descendants("h4").FirstOrDefault();
+                                name = h4.Descendants("b").First().InnerHtml;
+                                foreach (var node in doc.DocumentNode.Descendants("p"))
                                 {
-                                    if (leagueformat == UGCChecker.HL)
+                                    var div = node.Descendants("small").FirstOrDefault();
+                                    if (div != null)
                                     {
-                                        if (div.InnerHtml.Contains("Highlander"))
+                                        if (leagueformat == UGCChecker.HL)
                                         {
-                                            string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
-                                            setDiv = helper[1].Substring(17, helper[1].Length - 17);
+                                            if (div.InnerHtml.Contains("Highlander"))
+                                            {
+                                                string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
+                                                setDiv = helper[1].Substring(17, helper[1].Length - 17);
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
                                         }
-                                        else
+                                        else if (leagueformat == UGCChecker.Sixes)
                                         {
-                                            continue;
+                                            if (div.InnerHtml.Contains("6vs6"))
+                                            {
+                                                string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
+                                                setDiv = helper[1].Substring(11, helper[1].Length - 11);
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
                                         }
+                                        else if (leagueformat == UGCChecker.FourVeeFour)
+                                        {
+                                            if (div.InnerHtml.Contains("4vs4"))
+                                            {
+                                                string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
+                                                setDiv = helper[1].Substring(11, helper[1].Length - 11);
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+
                                     }
-                                    else if (leagueformat == UGCChecker.Sixes)
+                                    else
                                     {
-                                        if (div.InnerHtml.Contains("6vs6"))
-                                        {
-                                            string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
-                                            setDiv = helper[1].Substring(11, helper[1].Length - 11);
-                                        }
-                                        else
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                    else if (leagueformat == UGCChecker.FourVeeFour)
-                                    {
-                                        if (div.InnerHtml.Contains("4vs4"))
-                                        {
-                                            string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
-                                            setDiv = helper[1].Substring(11, helper[1].Length - 11);
-                                        }
-                                        else
-                                        {
-                                            continue;
-                                        }
+                                        continue;
                                     }
 
+                                    var next = node.Descendants("span").FirstOrDefault();
+                                    if (next != null)
+                                    {
+                                        var team = next.Descendants("b").FirstOrDefault();
+
+                                        if (team != null && div != null)
+                                        {
+                                            setTeam = team.InnerHtml;
+                                            teamid = node.Descendants("a").First().GetAttributeValue("href", "").Split('=')[1];
+                                            hasTeam = true;
+
+                                            break;
+                                        }
+                                    }
                                 }
-                                else
+                            }
+                             catch (System.NullReferenceException ex)
+                            {
+                                //HTML tag wasn't found, probably due to a design change...
+                            }
+                            
+                            try
+                            {
+                                var divs = doc.DocumentNode.Descendants("div");
+                                foreach (HtmlNode node in divs)
                                 {
-                                    continue;
-                                }
-
-                                var next = node.Descendants("span").FirstOrDefault();
-                                if (next != null)
-                                {
-                                    var team = next.Descendants("b").FirstOrDefault();
-
-                                    if (team != null && div != null)
+                                    var classes = node.GetClasses().FirstOrDefault();
+                                    if (classes != null)
                                     {
-                                        setTeam = team.InnerHtml;
-                                        teamid = node.Descendants("a").First().GetAttributeValue("href", "").Split('=')[1];
-                                        hasTeam = true;
+                                        if (classes.Equals("col-md-10"))
+                                        {
+                                            var spans = node.Descendants("span").FirstOrDefault().GetClasses().FirstOrDefault();
+                                            if (spans.Equals("text-danger"))
+                                            {
+                                                hasBans = true;
+                                                break;
+                                            }
 
-                                        break;
+                                        }
                                     }
                                 }
                             }
 
-                            var divs = doc.DocumentNode.Descendants("div");
-                            foreach (HtmlNode node in divs)
+                            catch (System.NullReferenceException ex)
                             {
-                                var classes = node.GetClasses().FirstOrDefault();
-                                if (classes != null)
-                                {
-                                    if (classes.Equals("col-md-10"))
-                                    {
-                                        var spans = node.Descendants("span").FirstOrDefault().GetClasses().FirstOrDefault();
-                                        if (spans.Equals("text-danger"))
-                                        {
-                                            hasBans = true;
-                                            break;
-                                        }
-
-                                    }
-                                }
+                                //HTML tag wasn't found, probably due to a design change...
                             }
 
                             if (!hasTeam)

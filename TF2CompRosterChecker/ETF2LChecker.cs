@@ -150,7 +150,7 @@ namespace TF2CompRosterChecker
          * TODO: Make this a little bit more elegant in the future.
          */
         [STAThread]
-        public List<Player> parseXML(int leagueformat, ProgressBar progressBar, Button button)
+        public List<Player> parseJSON(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
             var unique_ids = new HashSet<string>(this.steamIDs);
@@ -205,7 +205,6 @@ namespace TF2CompRosterChecker
 
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
-                            XmlDocument doc = new XmlDocument();
                             //doc.LoadXml(dl);
                             //XmlNodeList nodes = doc.GetElementsByTagName("player");
                             name = (string)doc2["player"]["name"];
@@ -248,7 +247,7 @@ namespace TF2CompRosterChecker
                             {
                                 if (ex is NullReferenceException || ex is InvalidCastException)
                                 {
-                                    div = "[inactive]";
+                                    div = "";
                                 }
                             }
 
