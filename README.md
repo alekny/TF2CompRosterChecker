@@ -1,6 +1,6 @@
 ![log](https://i.imgur.com/PlAABZ6.png)
 # TF2CompRosterChecker
-Checks ETF2L/UGC-Roster via status output
+Checks ETF2L/RGL/UGC-Roster via status output
 
 [Download Version 1.5](https://github.com/alekny/TF2CompRosterChecker/releases/tag/1.5)
 
