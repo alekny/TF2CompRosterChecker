@@ -2,7 +2,7 @@
 # TF2CompRosterChecker
 Checks ETF2L/RGL/UGC-Roster via status output
 
-[Download Version 1.5](https://github.com/alekny/TF2CompRosterChecker/releases/tag/1.5)
+[Download Version 1.5](https://github.com/alekny/TF2CompRosterChecker/releases/tag/1.5)  [![Github All Releases](https://img.shields.io/github/downloads/kotlin-graphics/kotlin-unsigned/total.svg)]()
 
 ![preview](https://i.imgur.com/axAR1Yz.png)
 
