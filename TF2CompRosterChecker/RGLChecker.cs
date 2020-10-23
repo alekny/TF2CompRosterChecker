@@ -163,7 +163,9 @@ namespace TF2CompRosterChecker
                         string div = "";
                         string dl = "";
                         bool hasBans = false;
-                        using (WebClient wc = new WebClient())
+
+                        //Using a modified webclient, because the payload.tf api is quite slow (mostly)
+                        using (TimeoutWebClient wc = new TimeoutWebClient(7 * 1000))
                         {
                             wc.Encoding = Encoding.UTF8;
                             try

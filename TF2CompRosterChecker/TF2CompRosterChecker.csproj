@@ -111,6 +111,9 @@
     </Compile>
     <Compile Include="RGLChecker.cs" />
     <Compile Include="SteamIDTools.cs" />
+    <Compile Include="TimeoutWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UGCChecker.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ETF2LChecker.cs" />
