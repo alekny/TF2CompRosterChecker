@@ -115,7 +115,7 @@ namespace TF2CompRosterChecker
         protected override WebRequest GetWebRequest(Uri uri)
         {
             WebRequest w = base.GetWebRequest(uri);
-            w.Timeout = timeout; //Set a custom timeout
+            w.Timeout = this.timeout; //Set a custom timeout
             return w;
         }
     }

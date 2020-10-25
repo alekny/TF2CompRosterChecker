@@ -203,7 +203,7 @@ namespace TF2CompRosterChecker
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
 
-                            if (doc2["success"] != null || (bool)doc2["success"] && doc2["message"] != null)
+                            if (doc2["success"] == null)
                             {
                                 name = (string)doc2["name"];
                                 JArray teams = (JArray)doc2["experience"];
@@ -261,12 +261,12 @@ namespace TF2CompRosterChecker
 
                                 try
                                 {
-                                    if ((bool)doc2["banned"])
+                                    if ((bool)doc2["bans"]["banned"])
                                     {
                                         hasBans = true;
                                     }
                                 }
-                                catch (NullReferenceException ne)
+                                catch (Exception ne)
                                 {
                                     //Do nothing in this case...
                                 }
