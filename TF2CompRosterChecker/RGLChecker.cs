@@ -165,7 +165,10 @@ namespace TF2CompRosterChecker
                         bool hasBans = false;
 
                         //Using a modified webclient, because the payload.tf api is quite slow (mostly)
-                        using (TimeoutWebClient wc = new TimeoutWebClient(7 * 1000))
+                        //This will introduce another problem (players that are indeed registered at rgl
+                        //will be shown as unregistered, if the timout is reached), but at least the
+                        //seconds program wont hang for 100...
+                        using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
                         {
                             wc.Encoding = Encoding.UTF8;
                             try
@@ -200,7 +203,7 @@ namespace TF2CompRosterChecker
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
 
-                            if ((bool)doc2["success"])
+                            if (doc2["success"] != null || (bool)doc2["success"] && doc2["message"] != null)
                             {
                                 name = (string)doc2["name"];
                                 JArray teams = (JArray)doc2["experience"];
