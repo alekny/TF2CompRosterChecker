@@ -444,7 +444,7 @@ namespace TF2CompRosterChecker
 
         public static IEnumerable<TextRange> GetAllWordRanges(FlowDocument document)
         {
-            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex /*+ "|" + SteamIDTools.profileCustomUrlregex*/;
+            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|" + SteamIDTools.steamIDregex /*+ "|" + SteamIDTools.profileCustomUrlregex*/;
             TextPointer pointer = document.ContentStart;
             while (pointer != null)
             {
@@ -461,7 +461,6 @@ namespace TF2CompRosterChecker
                         yield return new TextRange(start, end);
                     }
                 }
-
                 pointer = pointer.GetNextContextPosition(LogicalDirection.Forward);
             }
         }
@@ -472,15 +471,22 @@ namespace TF2CompRosterChecker
             {
                 statusOutput.Foreground = Brushes.Black;
                 IEnumerable<TextRange> wordRanges = null;
+                //Highlighting in RichtextBox is slow af, so stop highlighting after 30 matches.
+                int maxHighlight = 24;
+                int counter = 0;
                 await Task.Run(() => wordRanges = GetAllWordRanges(statusOutput.Document));
                 if (wordRanges.Any())
                 {
                     foreach (TextRange wordRange in wordRanges)
                     {
-                        wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+                        if (counter <= maxHighlight)
+                        {
+                            wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
+                        }
+                        counter++;
                         //statusOutput.Select(match.Index, match.Length);
                     }
-                    foundIDs.Text = wordRanges.Count() + " SteamID3s/Profile Urls found";
+                    foundIDs.Text = wordRanges.Count() + " SteamIDs/Profile Urls found";
                 }
             }
         }
