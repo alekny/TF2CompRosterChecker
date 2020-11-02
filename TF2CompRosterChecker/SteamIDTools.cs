@@ -101,12 +101,28 @@ namespace TF2CompRosterChecker
 {
     class SteamIDTools
     {
+        public static string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]+";
         public static string steamID3regex = @"\[U:1:[0-9]+\]";
         public static string baseUrl = "https://steamcommunity.com/profiles/";
         public static string baseLogsUrl = "https://logs.tf/profile/";
         public static string profileUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)";
         public static string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9]+\/";
         public static string idFinderRegex = "\"steamid\":\"([0-9]+)\"";
+
+
+        public static string steamIDToSteamID64(string steamID)
+        {
+            //long just for adding some numbers? hmm...
+            long steamID64 = 76561197960265728;
+            string[] args = steamID.Split(':');
+            steamID64 += Int32.Parse(args[2]) * 2;
+            if ("1".Equals(args[1]))
+            {
+                steamID64 += 1;
+            }
+            return Convert.ToString(steamID64);
+            
+        }
 
         public static string steamID3ToSteamID64(string steamID3)
         {

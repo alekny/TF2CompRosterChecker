@@ -122,10 +122,16 @@ namespace TF2CompRosterChecker
         public RGLChecker(string statusOutput)
         {
             int index = 0;
+            MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
             //MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            string[] foundSteamIDs = new string[matchesSteamID3.Count + matchesProfileUrl.Count /*+ matchesProfileCustomUrl.Count*/];
+            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count /*+ matchesProfileCustomUrl.Count*/];
+            foreach (Match match in matchesSteamID)
+            {
+                foundSteamIDs[index] = SteamIDTools.steamIDToSteamID64(match.ToString());
+                index++;
+            }
             foreach (Match match in matchesSteamID3)
             {
                 foundSteamIDs[index] = SteamIDTools.steamID3ToSteamID64(match.ToString());
