@@ -11,5 +11,6 @@ Checks ETF2L/RGL/UGC-Roster via status output
 
 
 
-[My Minisign Pubkey](https://pastebin.com/raw/ybSfH5yW) (FP: 9CBE19476D63187B) | [My PGP Pubkey](https://keys.openpgp.org/search?q=09D14F3B5113E420416B1BEDED669BE05AB3F186) (FP: 09D14F3B5113E420416B1BEDED669BE05AB3F186)  
+[My Minisign Pubkey](https://pastebin.com/raw/ybSfH5yW) (FP: 9CBE19476D63187B)  
+[My PGP Pubkey](https://keys.openpgp.org/search?q=09D14F3B5113E420416B1BEDED669BE05AB3F186) (FP: 09D14F3B5113E420416B1BEDED669BE05AB3F186)  
 Special thanks to [KRedous](http://steamcommunity.com/profiles/76561198360088412/) for providing the program icon.
