@@ -130,79 +130,91 @@ namespace TF2CompRosterChecker
             List<Player> result = new List<Player>();
 
             DisableUI();
-            if (leagueSelector.SelectedIndex == 0)
+            switch (leagueSelector.SelectedIndex)
             {
-                ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                await Task.Run(() => result = ec.parseJSON(ETF2LChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = ETF2LChecker.baseUrl;
-                baseTeamUrl = ETF2LChecker.baseTeamUrl;
-                league = "ETF2L";
+                case 0:
+                    {
+                        ETF2LChecker ec = new ETF2LChecker(statusOutputText);
+                        await Task.Run(() => result = ec.parseJSON(ETF2LChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = ETF2LChecker.baseUrl;
+                        baseTeamUrl = ETF2LChecker.baseTeamUrl;
+                        league = "ETF2L";
+                        break;
+                    }
+                case 1:
+                    {
+                        ETF2LChecker ec = new ETF2LChecker(statusOutputText);
+                        await Task.Run(() => result = ec.parseJSON(ETF2LChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = ETF2LChecker.baseUrl;
+                        baseTeamUrl = ETF2LChecker.baseTeamUrl;
+                        league = "ETF2L";
+                        break;
+                    }
+                case 2:
+                    {
+                        RGLChecker rc = new RGLChecker(statusOutputText);
+                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = RGLChecker.baseUrl;
+                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        league = "RGL";
+                        break;
+                    }
+                case 3:
+                    {
+                        RGLChecker rc = new RGLChecker(statusOutputText);
+                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = RGLChecker.baseUrl;
+                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        league = "RGL";
+                        break;
+                    }
+                case 4:
+                    {
+                        RGLChecker rc = new RGLChecker(statusOutputText);
+                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.TradSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = RGLChecker.baseUrl;
+                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        league = "RGL";
+                        break;
+                    }
+                case 5:
+                    {
+                        RGLChecker rc = new RGLChecker(statusOutputText);
+                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = RGLChecker.baseUrl;
+                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        league = "RGL";
+                        break;
+                    }
+                case 6:
+                    {
+                        UGCChecker uc = new UGCChecker(statusOutputText);
+                        await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = UGCChecker.baseUrl;
+                        baseTeamUrl = UGCChecker.baseTeamUrl;
+                        league = "UGC";
+                        break;
+                    }
+                case 7:
+                    {
+                        UGCChecker uc = new UGCChecker(statusOutputText);
+                        await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = UGCChecker.baseUrl;
+                        baseTeamUrl = UGCChecker.baseTeamUrl;
+                        league = "UGC";
+                        break;
+                    }
+                case 8:
+                    {
+                        UGCChecker uc = new UGCChecker(statusOutputText);
+                        await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = UGCChecker.baseUrl;
+                        baseTeamUrl = UGCChecker.baseTeamUrl;
+                        league = "UGC";
+                        break;
+                    }
             }
-            else if (leagueSelector.SelectedIndex == 1)
-            {
-                ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                await Task.Run(() => result = ec.parseJSON(ETF2LChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = ETF2LChecker.baseUrl;
-                baseTeamUrl = ETF2LChecker.baseTeamUrl;
-                league = "ETF2L";
-            }
-            else if (leagueSelector.SelectedIndex == 2)
-            {
-                RGLChecker rc = new RGLChecker(statusOutputText);
-                await Task.Run(() => result = rc.ParseJSON(RGLChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = RGLChecker.baseUrl;
-                baseTeamUrl = RGLChecker.baseTeamUrl;
-                league = "RGL";
-            }
-            else if (leagueSelector.SelectedIndex == 3)
-            {
-                RGLChecker rc = new RGLChecker(statusOutputText);
-                await Task.Run(() => result = rc.ParseJSON(RGLChecker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = RGLChecker.baseUrl;
-                baseTeamUrl = RGLChecker.baseTeamUrl;
-                league = "RGL";
-            }
-            else if (leagueSelector.SelectedIndex == 4)
-            {
-                RGLChecker rc = new RGLChecker(statusOutputText);
-                await Task.Run(() => result = rc.ParseJSON(RGLChecker.TradSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = RGLChecker.baseUrl;
-                baseTeamUrl = RGLChecker.baseTeamUrl;
-                league = "RGL";
-            }
-            else if (leagueSelector.SelectedIndex == 5)
-            {
-                RGLChecker rc = new RGLChecker(statusOutputText);
-                await Task.Run(() => result = rc.ParseJSON(RGLChecker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = RGLChecker.baseUrl;
-                baseTeamUrl = RGLChecker.baseTeamUrl;
-                league = "RGL";
-            }
-            else if (leagueSelector.SelectedIndex == 6)
-            {
-                UGCChecker uc = new UGCChecker(statusOutputText);
-                await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = UGCChecker.baseUrl;
-                baseTeamUrl = UGCChecker.baseTeamUrl;
-                league = "UGC";
-            }
-            else if (leagueSelector.SelectedIndex == 7)
-            {
-                UGCChecker uc = new UGCChecker(statusOutputText);
-                await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = UGCChecker.baseUrl;
-                baseTeamUrl = UGCChecker.baseTeamUrl;
-                league = "UGC";
-            }
-            else if (leagueSelector.SelectedIndex == 8)
-            {
-                UGCChecker uc = new UGCChecker(statusOutputText);
-                await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                baseUrl = UGCChecker.baseUrl;
-                baseTeamUrl = UGCChecker.baseTeamUrl;
-                league = "UGC";
-            }
-
+            
             if (result.Any())
             {
                 statusOutput.Visibility = Visibility.Hidden;
@@ -471,24 +483,38 @@ namespace TF2CompRosterChecker
             {
                 statusOutput.Foreground = Brushes.Black;
                 IEnumerable<TextRange> wordRanges = null;
-                //Highlighting in RichtextBox is slow af, so stop highlighting after 30 matches.
-                int maxHighlight = 24;
                 int counter = 0;
                 await Task.Run(() => wordRanges = GetAllWordRanges(statusOutput.Document));
                 if (wordRanges.Any())
                 {
                     foreach (TextRange wordRange in wordRanges)
                     {
-                        if (counter <= maxHighlight)
+                        if (counter < SteamIDTools.RATECTRL)
                         {
                             wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
                         }
                         counter++;
                         //statusOutput.Select(match.Index, match.Length);
                     }
-                    foundIDs.Text = wordRanges.Count() + " SteamIDs/Profile Urls found";
+                    if (counter <= SteamIDTools.RATECTRL)
+                    {
+                        foundIDs.Text = wordRanges.Count() + " SteamIDs/Profile Urls found";
+                        submitButton.IsEnabled = true;
+                    }
+                    else
+                    {
+                        foundIDs.Text = "Too many SteamIDs entered (" + wordRanges.Count() + "), max 50 allowed per request!";
+                        submitButton.IsEnabled = false;
+                    }
+                    
                 }
             }
+        }
+
+        private void TextBox_KeyDown(object sender, EventArgs e)
+        {
+            //Do the same as with changed Text.
+            TextBox_TextChanged(sender, null);
         }
 
         private void Show_Licenses(object sender, RoutedEventArgs e)
