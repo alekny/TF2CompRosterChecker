@@ -125,18 +125,31 @@ namespace TF2CompRosterChecker
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
             //MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
             string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count /*+ matchesProfileCustomUrl.Count*/];
-            foreach (Match match in matchesSteamID)
-            {
-                foundSteamIDs[index] = SteamIDTools.steamIDToSteamID64(match.ToString());
-                index++;
-            }
             foreach (Match match in matchesSteamID3)
             {
+                //Limit Max Results to 50 to not flood the apis.
+                if(index > SteamIDTools.RATECTRL)
+                {
+                    break;
+                }
                 foundSteamIDs[index] = SteamIDTools.steamID3ToSteamID64(match.ToString());
+                index++;
+            }
+            foreach (Match match in matchesSteamID)
+            {
+                if (index > SteamIDTools.RATECTRL)
+                {
+                    break;
+                }
+                foundSteamIDs[index] = SteamIDTools.steamIDToSteamID64(match.ToString());
                 index++;
             }
             foreach (Match match in matchesProfileUrl)
             {
+                if (index > SteamIDTools.RATECTRL)
+                {
+                    break;
+                }
                 foundSteamIDs[index] = match.Groups[1].ToString();
                 index++;
             }
@@ -165,6 +178,7 @@ namespace TF2CompRosterChecker
             {
                 percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
             }
+            //Only allow to check up to 50 SteamIDs per request.
             Parallel.ForEach(unique_ids, 
                     id =>
                     {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.5.2" Height="368" Width="748"
+        Title="TF2CompRosterChecker v1.5.3" Height="368" Width="748"
         ResizeMode="CanMinimize">
     <Grid Background="#2a2c30">
 
@@ -36,7 +36,7 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,10,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="638,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.5.2 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="638,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.5.3 by <Hyperlink 
         NavigateUri="https://steamcommunity.com/id/prpht"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         prpht
@@ -47,7 +47,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="503,292,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1"/>
         <TextBlock HorizontalAlignment="Left" Margin="628,308,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="9"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="490,292,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red"/>
-        <RichTextBox Name="statusOutput" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="700" FontFamily="Consolas" TextChanged="TextBox_TextChanged" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible">
+        <RichTextBox Name="statusOutput" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="700" FontFamily="Consolas" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0"/>
