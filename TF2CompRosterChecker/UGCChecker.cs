@@ -195,7 +195,7 @@ namespace TF2CompRosterChecker
                         }
                         catch (System.Net.WebException e)
                         {
-                            playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false));
+                            playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false, null));
                             if (progressBar != null)
                             {
                                 progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
@@ -218,7 +218,7 @@ namespace TF2CompRosterChecker
 
                         if (webcontent.Contains("No UGC TF2 League History"))
                         {
-                            playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false));
+                            playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false, null));
                             return;
                         }
                         else
@@ -342,20 +342,20 @@ namespace TF2CompRosterChecker
                             {
                                 if (leagueformat == UGCChecker.HL)
                                 {
-                                    playerlist.Add(new Player(id, "![No UGC HL Team]", "", "", id, id, hasBans));
+                                    playerlist.Add(new Player(id, "![No UGC HL Team]", "", "", id, id, hasBans, null));
                                 }
                                 else if (leagueformat == UGCChecker.Sixes)
                                 {
-                                    playerlist.Add(new Player(id, "![No UGC 6v6 Team]", "", "", id, id, hasBans));
+                                    playerlist.Add(new Player(id, "![No UGC 6v6 Team]", "", "", id, id, hasBans, null));
                                 }
                                 else if (leagueformat == UGCChecker.FourVeeFour)
                                 {
-                                    playerlist.Add(new Player(id, "![No UGC 4v4 Team]", "", "", id, id, hasBans));
+                                    playerlist.Add(new Player(id, "![No UGC 4v4 Team]", "", "", id, id, hasBans, null));
                                 }
                             }
                             else
                             {
-                                playerlist.Add(new Player(name, setTeam, teamid, setDiv, id, id, hasBans));
+                                playerlist.Add(new Player(name, setTeam, teamid, setDiv, id, id, hasBans, null));
                             }
                         }
                     }

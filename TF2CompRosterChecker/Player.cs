@@ -94,6 +94,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace TF2CompRosterChecker
 {
@@ -106,8 +107,9 @@ namespace TF2CompRosterChecker
         private string profileid;
         private string leagueid;
         private bool hasBans;
+        private List<Ban> bans = null;
 
-        public Player(string name, string team, string teamid, string div, string profileid, string leagueid, bool hasBans)
+        public Player(string name, string team, string teamid, string div, string profileid, string leagueid, bool hasBans, List<Ban> bans)
         {
             this.name = name;
             this.team = team;
@@ -116,6 +118,7 @@ namespace TF2CompRosterChecker
             this.profileid = profileid;
             this.leagueid = leagueid;
             this.hasBans = hasBans;
+            this.bans = bans;
         }
 
         public string Name { get { return this.name; } }
@@ -125,10 +128,31 @@ namespace TF2CompRosterChecker
         public string Profileid { get { return this.profileid; } }
         public string Leagueid { get { return this.leagueid; } }
         public bool HasBans { get { return this.hasBans; } }
+        public List<Ban> Bans { get { return this.bans; } }
 
         public void print()
         {
             Console.WriteLine(string.Concat(name,string.Concat(",", string.Concat(team, string.Concat(",", div)))));
         }
-    }    
+    }
+
+    internal class Ban
+    {
+        //Start and End contain unix timestamps.
+        private string start;
+        private string end;
+        private string reason;
+
+        public Ban(string start, string end, string reason)
+        {
+            this.start = start;
+            this.end = end;
+            this.reason = reason;
+        }
+
+        public string Start { get { return this.start; } }
+        public string End { get { return this.end; } }
+        public string Reason { get { return this.reason; } }
+
+    }
 }
