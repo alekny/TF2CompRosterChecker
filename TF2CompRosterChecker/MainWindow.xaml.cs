@@ -100,6 +100,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Navigation;
@@ -262,7 +263,24 @@ namespace TF2CompRosterChecker
 
                     if (player.HasBans)
                     {
-                        grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, marginleft, margintop, true));
+                        //Only ETF2L-Checker will set this to a non-null object yet.
+                        if (player.Bans is null)
+                        {
+                            grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, marginleft, margintop, true));
+                        }
+                        else
+                        {
+                            Hyperlink popup = new Hyperlink(new Run("[!]"))
+                            {
+                            };
+                            popup.Tag = "text";
+                            popup.Foreground = Brushes.Red;
+                            popup.ToolTip = "test";
+                            grid1.Children.Add(TBGen(new Run(player.Name), popup, marginleft, margintop, true));
+                            //Route necessary info into the EventHandler.
+                            popup.Click += (senders, es) => OpenPopup(senders, es, player.Bans);
+                        }
+                        
                     }
                     else
                     {
@@ -332,6 +350,38 @@ namespace TF2CompRosterChecker
                 statusOutput.Document.Blocks.Add(new Paragraph(new Run("No SteamIDs found")));
             }
             EnableUI();
+        }
+
+        private void OpenPopup(object sender, EventArgs e, List<Ban> bans)
+        {
+            Popup codePopup = new Popup();
+            codePopup.Placement = PlacementMode.Mouse;
+            StackPanel sp = new StackPanel();
+            sp.Background = Brushes.Salmon;
+            TextBlock popupText = new TextBlock();
+            popupText.Foreground = Brushes.Black;
+            popupText.Text = bans.Count + " Ban(s) on Record:";
+            popupText.FontWeight = FontWeights.Bold;
+            sp.Children.Add(popupText);
+            foreach (Ban ban in bans)
+            {
+                TextBlock banline = new TextBlock();
+                banline.Foreground = Brushes.Black;
+                sp.Children.Add(banline);
+                banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - " + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+            }
+            codePopup.Child = sp;
+            codePopup.StaysOpen = false;
+            codePopup.IsOpen = true;
+        }
+
+        //Thanks: https://stackoverflow.com/a/250400
+        public static DateTime UnixTimeStampToDateTime(string unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(Convert.ToDouble(unixTimeStamp)).ToLocalTime();
+            return dtDateTime;
         }
 
         private void EnableUI()

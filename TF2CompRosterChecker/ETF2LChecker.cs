@@ -193,6 +193,7 @@ namespace TF2CompRosterChecker
                         string profileid = "";
                         string dl = "";
                         bool hasBans = false;
+                        List<Ban> bans = new List<Ban>();
                         using (WebClient wc = new WebClient())
                         {
                             wc.Encoding = Encoding.UTF8;
@@ -202,7 +203,7 @@ namespace TF2CompRosterChecker
                             }
                             catch (System.Net.WebException e)
                             {
-                                playerlist.Add(new Player(id, "!![No ETF2L Profile]", "", "", id, "", false));
+                                playerlist.Add(new Player(id, "!![No ETF2L Profile]", "", "", id, "", false, null));
                                 if (progressBar != null)
                                 {
                                     progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
@@ -225,8 +226,6 @@ namespace TF2CompRosterChecker
 
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
-                            //doc.LoadXml(dl);
-                            //XmlNodeList nodes = doc.GetElementsByTagName("player");
                             name = (string)doc2["player"]["name"];
                             profileid = (string)doc2["player"]["id"];
                             JArray teams = (JArray)doc2["player"]["teams"];
@@ -273,10 +272,19 @@ namespace TF2CompRosterChecker
 
                             try
                             {
-                                var bans = doc2["player"]["bans"];
-                                if (bans != null)
+                                JArray foundbans = doc2["player"]["bans"];
+                                if (foundbans != null)
                                 {
                                     hasBans = true;
+                                    //Fetch specifics about found ban
+                                    foreach (JToken ban in foundbans)
+                                    {
+                                        bans.Add(new Ban(ban["start"].ToString(), ban["end"].ToString(), ban["reason"].ToString()));
+                                    }
+                                }
+                                else
+                                {
+                                    bans = null;
                                 }
                             }
                             catch (NullReferenceException ne)
@@ -285,7 +293,7 @@ namespace TF2CompRosterChecker
                             }
 
 
-                            playerlist.Add(new Player(name, team, teamid, div, id, profileid, hasBans));
+                            playerlist.Add(new Player(name, team, teamid, div, id, profileid, hasBans, bans));
                         }
                     }
 

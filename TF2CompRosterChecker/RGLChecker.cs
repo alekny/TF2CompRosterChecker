@@ -196,7 +196,7 @@ namespace TF2CompRosterChecker
                             }
                             catch (System.Net.WebException e)
                             {
-                                playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false));
+                                playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false, null));
                                 if (progressBar != null)
                                 {
                                     progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
@@ -291,11 +291,11 @@ namespace TF2CompRosterChecker
                                 }
 
 
-                                playerlist.Add(new Player(name, team, teamid, div, id, id, hasBans));
+                                playerlist.Add(new Player(name, team, teamid, div, id, id, hasBans, null));
                             }
                             else
                             {
-                                playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false));
+                                playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false, null));
                             }
                         }
                     }
