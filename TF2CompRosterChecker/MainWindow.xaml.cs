@@ -273,9 +273,9 @@ namespace TF2CompRosterChecker
                             Hyperlink popup = new Hyperlink(new Run("[!]"))
                             {
                             };
-                            popup.Tag = "text";
+                            popup.Tag = "Show Bans";
                             popup.Foreground = Brushes.Red;
-                            popup.ToolTip = "test";
+                            popup.ToolTip = "Show Bans";
                             grid1.Children.Add(TBGen(new Run(player.Name), popup, marginleft, margintop, true));
                             //Route necessary info into the EventHandler.
                             popup.Click += (senders, es) => OpenPopup(senders, es, player.Bans);
