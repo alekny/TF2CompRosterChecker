@@ -109,7 +109,7 @@ namespace TF2CompRosterChecker
     {
         private string[] steamIDs;
         private List<Player> noprofile = new List<Player>();
-        public static string baseApiUrl = "https://payload.tf/api/rgl/";
+        public static string baseApiUrl = "https://rgl.payload.tf/api/v1/profiles/";
         public static string baseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
 
         //For now just display the Player page (the payload api response has no direct link to any player's team id)
@@ -222,10 +222,10 @@ namespace TF2CompRosterChecker
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
 
-                            if (doc2["success"] == null)
+                            if (doc2["statusCode"] == null && doc2["data"]["statusCode"] == null)
                             {
-                                name = (string)doc2["name"];
-                                JArray teams = (JArray)doc2["experience"];
+                                name = (string)doc2["data"]["name"];
+                                JArray teams = (JArray)doc2["data"]["experience"];
                                 string teamtype = "";
 
                                 Console.WriteLine(name);
