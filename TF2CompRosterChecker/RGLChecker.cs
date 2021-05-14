@@ -277,10 +277,9 @@ namespace TF2CompRosterChecker
                                     }
                                 }
 
-
                                 try
                                 {
-                                    if ((bool)doc2["bans"]["banned"])
+                                    if ((bool)doc2["data"]["status"]["banned"] || (bool)doc2["data"]["status"]["probation"])
                                     {
                                         hasBans = true;
                                     }
