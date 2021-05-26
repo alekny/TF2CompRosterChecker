@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.6.2" Height="368" Width="748"
+        Title="TF2CompRosterChecker v1.6.3" Height="368" Width="748"
         ResizeMode="CanMinimize">
     <Grid Background="#2a2c30">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="167*"/>
+            <ColumnDefinition Width="574*"/>
+        </Grid.ColumnDefinitions>
 
-        <ScrollViewer x:Name="outputFrame" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="700" BorderBrush="#000000" Visibility="Hidden">
+        <ScrollViewer x:Name="outputFrame" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="700" BorderBrush="#000000" Visibility="Hidden" Grid.ColumnSpan="2">
             <Grid x:Name="outputGrid" Background="White" VerticalAlignment="Top" HorizontalAlignment="Stretch" ShowGridLines="False">
                 <Grid.ColumnDefinitions >
                     <ColumnDefinition Width="170" />
@@ -23,8 +27,8 @@
                 </Grid.RowDefinitions>
             </Grid>
         </ScrollViewer>
-        <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Left" Margin="256,294,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="submitButton_Click" FontSize="14" BorderBrush="Black"/>
-        <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000">
+        <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Left" Margin="88.836,294,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="submitButton_Click" FontSize="14" BorderBrush="Black" Grid.Column="1"/>
+        <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000" Grid.ColumnSpan="2">
             <ComboBoxItem Content="ETF2L (Highlander)" IsSelected="True"/>
             <ComboBoxItem Content="ETF2L (6v6)"/>
             <ComboBoxItem Content="RGL NA (Highlander)"/>
@@ -36,18 +40,18 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,10,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="638,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1">v1.6.2 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="470.836,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1">v1.6.3 by <Hyperlink 
         NavigateUri="https://steamcommunity.com/id/prpht"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         prpht
     </Hyperlink></TextBlock>
-        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,326,-0.622,0" VerticalAlignment="Top" Width="742" BorderBrush="Black"/>
-        <TextBlock HorizontalAlignment="Left" Margin="503,305,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="486,305,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff"/>
-        <TextBlock HorizontalAlignment="Left" Margin="503,292,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="628,308,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="9"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="490,292,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red"/>
-        <RichTextBox Name="statusOutput" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="700" FontFamily="Consolas" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible">
+        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,326,-0.4,0" VerticalAlignment="Top" Width="742" BorderBrush="Black" Grid.ColumnSpan="2"/>
+        <TextBlock HorizontalAlignment="Left" Margin="335.836,305,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="318.836,305,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="335.836,292,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="460.836,308,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="9" Grid.Column="1"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="322.836,292,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" Grid.Column="1"/>
+        <RichTextBox Name="statusOutput" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="700" FontFamily="Consolas" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0"/>
@@ -59,6 +63,6 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="180,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1"/>
+        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1"/>
     </Grid>
 </Window>

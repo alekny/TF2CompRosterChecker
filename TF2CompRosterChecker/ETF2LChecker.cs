@@ -111,11 +111,11 @@ namespace TF2CompRosterChecker
     {
         private string[] steamIDs;
         private List<Player> noprofile = new List<Player>();
-        public static string baseApiUrl = "https://api.etf2l.org/player/";
-        public static string baseUrl = "https://etf2l.org/forum/user/";
-        public static string baseTeamUrl = "https://etf2l.org/teams/";
-        public static int HL = 0;
-        public static int Sixes = 1;
+        public const string baseApiUrl = "https://api.etf2l.org/player/";
+        public const string baseUrl = "https://etf2l.org/forum/user/";
+        public const string baseTeamUrl = "https://etf2l.org/teams/";
+        public const int HL = 0;
+        public const int Sixes = 1;
 
         public ETF2LChecker(string statusOutput)
         {
@@ -194,7 +194,7 @@ namespace TF2CompRosterChecker
                         string dl = "";
                         bool hasBans = false;
                         List<Ban> bans = new List<Ban>();
-                        using (WebClient wc = new WebClient())
+                        using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                         {
                             wc.Encoding = Encoding.UTF8;
                             try
@@ -203,7 +203,15 @@ namespace TF2CompRosterChecker
                             }
                             catch (System.Net.WebException e)
                             {
-                                playerlist.Add(new Player(id, "!![No ETF2L Profile]", "", "", id, "", false, null));
+                                if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
+                                {
+                                    playerlist.Add(new Player(id, "!![Connect Failure]", "", "", id, "", false, null));
+                                }
+                                else
+                                {
+                                    playerlist.Add(new Player(id, "!![No ETF2L Profile]", "", "", id, "", false, null));
+                                }
+                                
                                 if (progressBar != null)
                                 {
                                     progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);

@@ -112,11 +112,11 @@ namespace TF2CompRosterChecker
         private string[] steamIDs;
         private List<Player> noprofile = new List<Player>();
         
-        public static string baseUrl = "https://www.ugcleague.com/players_page.cfm?player_id=";
-        public static string baseTeamUrl = "https://www.ugcleague.com/team_page.cfm?clan_id=";
-        public static int HL = 0;
-        public static int Sixes = 1;
-        public static int FourVeeFour = 2;
+        public const string baseUrl = "https://www.ugcleague.com/players_page.cfm?player_id=";
+        public const string baseTeamUrl = "https://www.ugcleague.com/team_page.cfm?clan_id=";
+        public const int HL = 0;
+        public const int Sixes = 1;
+        public const int FourVeeFour = 2;
 
         public UGCChecker(string statusOutput)
         {
@@ -185,7 +185,7 @@ namespace TF2CompRosterChecker
                     string setDiv = "";
                     string setTeam = "";
                     string teamid = "";
-                    using (WebClient wc = new WebClient())
+                    using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                     {
                         try
                         {
@@ -195,7 +195,15 @@ namespace TF2CompRosterChecker
                         }
                         catch (System.Net.WebException e)
                         {
-                            playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false, null));
+                            if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
+                            {
+                                playerlist.Add(new Player(id, "!![Connect Failure]", "", "", id, "", false, null));
+                            }
+                            else
+                            {
+                                playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false, null));
+                            }
+                            
                             if (progressBar != null)
                             {
                                 progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
