@@ -368,7 +368,8 @@ namespace TF2CompRosterChecker
                 TextBlock banline = new TextBlock();
                 banline.Foreground = Brushes.Black;
                 sp.Children.Add(banline);
-                banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - " + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - " 
+                    + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
             }
             codePopup.Child = sp;
             codePopup.StaysOpen = false;

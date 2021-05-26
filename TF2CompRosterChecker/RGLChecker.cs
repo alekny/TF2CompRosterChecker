@@ -109,15 +109,15 @@ namespace TF2CompRosterChecker
     {
         private string[] steamIDs;
         private List<Player> noprofile = new List<Player>();
-        public static string baseApiUrl = "https://rgl.payload.tf/api/v1/profiles/";
-        public static string baseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
+        public const string baseApiUrl = "https://rgl.payload.tf/api/v1/profiles/";
+        public const string baseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
 
         //For now just display the Player page (the payload api response has no direct link to any player's team id)
-        public static string baseTeamUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
-        public static int HL = 0;
-        public static int PL = 1;
-        public static int TradSixes = 2;
-        public static int NRSixes = 3;
+        public const string baseTeamUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
+        public const int HL = 0;
+        public const int PL = 1;
+        public const int TradSixes = 2;
+        public const int NRSixes = 3;
 
         public RGLChecker(string statusOutput)
         {
@@ -186,7 +186,7 @@ namespace TF2CompRosterChecker
                         //Using a modified webclient, because the payload.tf api is quite slow (mostly)
                         //This will introduce another problem (players that are indeed registered at rgl
                         //will be shown as unregistered, if the timout is reached), but at least the
-                        //seconds program wont hang for 100...
+                        //program wont hang for 100...
                         using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
                         {
                             wc.Encoding = Encoding.UTF8;
@@ -196,7 +196,15 @@ namespace TF2CompRosterChecker
                             }
                             catch (System.Net.WebException e)
                             {
-                                playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false, null));
+                                if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
+                                {
+                                    playerlist.Add(new Player(id, "!![Connect Failure]", "", "", id, "", false, null));
+                                }
+                                else
+                                {
+                                    playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false, null));
+                                }
+                                
                                 if (progressBar != null)
                                 {
                                     progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
@@ -227,8 +235,6 @@ namespace TF2CompRosterChecker
                                 name = (string)doc2["data"]["name"];
                                 JArray teams = (JArray)doc2["data"]["experience"];
                                 string teamtype = "";
-
-                                Console.WriteLine(name);
 
                                 if (leagueformat == RGLChecker.HL)
                                 {
