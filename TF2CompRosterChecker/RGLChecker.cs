@@ -102,6 +102,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Xml;
 
 namespace TF2CompRosterChecker
 {
@@ -119,14 +120,15 @@ namespace TF2CompRosterChecker
         public const int TradSixes = 2;
         public const int NRSixes = 3;
 
+
         public RGLChecker(string statusOutput)
         {
             int index = 0;
             MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
-            //MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count /*+ matchesProfileCustomUrl.Count*/];
+            MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
+            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count + matchesProfileCustomUrl.Count];
             foreach (Match match in matchesSteamID3)
             {
                 //Limit Max Results to 50 to not flood the apis.
@@ -153,6 +155,36 @@ namespace TF2CompRosterChecker
                     break;
                 }
                 foundSteamIDs[index] = match.Groups[1].ToString();
+                index++;
+            }
+            foreach (Match match in matchesProfileCustomUrl)
+            {
+                if (index > SteamIDTools.RATECTRL)
+                {
+                    break;
+                }
+                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                {
+                    wc.Encoding = Encoding.UTF8;
+                    try
+                    {
+                        string dl = wc.DownloadString(match.ToString() + "/?xml=1");
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(dl);
+                        XmlNodeList results = doc.GetElementsByTagName("steamID64");
+
+                        //Check if the steam profile even exists.
+                        if (results.Count == 1)
+                        {
+                            foundSteamIDs[index] = results.Item(0).InnerText;
+                        }
+                    }
+                    catch (System.Net.WebException e)
+                    {
+                        // do nothing lul
+                    }
+                }
+                
                 index++;
             }
             this.steamIDs = foundSteamIDs;
@@ -182,6 +214,8 @@ namespace TF2CompRosterChecker
                         string div = "";
                         string dl = "";
                         bool hasBans = false;
+                        string steamid = SteamIDTools.steamID64ToSteamID(id);
+                        string steamid3 = SteamIDTools.steamID64ToSteamID3(id);
 
                         //Using a modified webclient, because the payload.tf api is quite slow (mostly)
                         //This will introduce another problem (players that are indeed registered at rgl
@@ -198,11 +232,33 @@ namespace TF2CompRosterChecker
                             {
                                 if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
                                 {
-                                    playerlist.Add(new Player(id, "!![Connect Failure]", "", "", id, "", false, null));
+                                    playerlist.Add(new Player(
+                                                              id, 
+                                                              "!![Connect Failure]", 
+                                                              "", 
+                                                              "", 
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              "", 
+                                                              false, 
+                                                              null
+                                                              ));
                                 }
                                 else
                                 {
-                                    playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false, null));
+                                    playerlist.Add(new Player(
+                                                              id, 
+                                                              "!![No RGL Profile]", 
+                                                              "", 
+                                                              "", 
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              "", 
+                                                              false, 
+                                                              null
+                                                              ));
                                 }
                                 
                                 if (progressBar != null)
@@ -296,11 +352,33 @@ namespace TF2CompRosterChecker
                                 }
 
 
-                                playerlist.Add(new Player(name, team, teamid, div, id, id, hasBans, null));
+                                playerlist.Add(new Player(
+                                                          name, 
+                                                          team, 
+                                                          teamid, 
+                                                          div, 
+                                                          id,
+                                                          steamid,
+                                                          steamid3,
+                                                          id, 
+                                                          hasBans, 
+                                                          null
+                                                          ));
                             }
                             else
                             {
-                                playerlist.Add(new Player(id, "!![No RGL Profile]", "", "", id, "", false, null));
+                                playerlist.Add(new Player(
+                                                          id, 
+                                                          "!![No RGL Profile]", 
+                                                          "", 
+                                                          "", 
+                                                          id,
+                                                          steamid,
+                                                          steamid3,
+                                                          "", 
+                                                          false, 
+                                                          null
+                                                          ));
                             }
                         }
                     }

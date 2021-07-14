@@ -101,13 +101,14 @@ namespace TF2CompRosterChecker
 {
     class SteamIDTools
     {
-        public static string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]+";
-        public static string steamID3regex = @"\[U:1:[0-9]+\]";
-        public static string baseUrl = "https://steamcommunity.com/profiles/";
-        public static string baseLogsUrl = "https://logs.tf/profile/";
-        public static string profileUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)";
-        public static string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9]+\/";
-        public static string idFinderRegex = "\"steamid\":\"([0-9]+)\"";
+        public const string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]+";
+        public const string steamID3regex = @"\[U:1:[0-9]+\]";
+        public const string baseUrl = "https://steamcommunity.com/profiles/";
+        public const string baseLogsUrl = "https://logs.tf/profile/";
+        public const string profileUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)";
+        public const string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9]+";
+        public const string idFinderRegex = "\"steamid\":\"([0-9]+)\"";
+        public const string profileCustomUrlXml = "https://steamcommunity.com/id/";
         public const int RATECTRL = 50;
 
 
@@ -167,7 +168,23 @@ namespace TF2CompRosterChecker
 
         public static string steamID64ToSteamID3(string steamID64)
         {
-            throw new NotImplementedException();
+            return "[U:1:" + (Int64.Parse(steamID64) - 76561197960265728) + "]";
+        }
+
+        public static string steamID64ToSteamID(string steamID64)
+        {
+            Int64 accid = Int64.Parse(steamID64) - 76561197960265728;
+            int parity = 0;
+            if (accid % 2 == 0)
+            {
+                accid /= 2;
+            }
+            else
+            {
+                parity = 1;
+                accid = (accid - 1) / 2;
+            }
+            return "STEAM_0:" + parity + ":" + accid;
         }
     }
 }

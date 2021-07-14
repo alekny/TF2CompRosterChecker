@@ -123,8 +123,8 @@ namespace TF2CompRosterChecker
             MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
-            //MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count /*+ matchesProfileCustomUrl.Count*/];
+            MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
+            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count + matchesProfileCustomUrl.Count];
             foreach (Match match in matchesSteamID3)
             {
                 //Limit Max Results to 50 to not flood the apis.
@@ -153,13 +153,36 @@ namespace TF2CompRosterChecker
                 foundSteamIDs[index] = match.Groups[1].ToString();
                 index++;
             }
-            //TODO: Make this crap work.
-            /*Parallel.ForEach(matchesProfileCustomUrl.OfType<Match>(),
-                match =>
+            foreach (Match match in matchesProfileCustomUrl)
+            {
+                if (index > SteamIDTools.RATECTRL)
                 {
-                    foundSteamIDs[index] = SteamIDTools.getSteamID64FromCustomUrl(match.ToString());
-                    index++;
-                });*/
+                    break;
+                }
+                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                {
+                    wc.Encoding = Encoding.UTF8;
+                    try
+                    {
+                        string dl = wc.DownloadString(match.ToString() + "/?xml=1");
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(dl);
+                        XmlNodeList results = doc.GetElementsByTagName("steamID64");
+
+                        //Check if the steam profile even exists.
+                        if (results.Count == 1)
+                        {
+                            foundSteamIDs[index] = results.Item(0).InnerText;
+                        }
+                    }
+                    catch (System.Net.WebException e)
+                    {
+                        // do nothing lul
+                    }
+                }
+
+                index++;
+            }
 
             this.steamIDs = foundSteamIDs;
         }
@@ -190,7 +213,9 @@ namespace TF2CompRosterChecker
                         string team = "";
                         string teamid = "";
                         string div = "";
-                        string profileid = "";
+                        string leagueid = "";
+                        string steamid = SteamIDTools.steamID64ToSteamID(id);
+                        string steamid3 = SteamIDTools.steamID64ToSteamID3(id);
                         string dl = "";
                         bool hasBans = false;
                         List<Ban> bans = new List<Ban>();
@@ -205,11 +230,33 @@ namespace TF2CompRosterChecker
                             {
                                 if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
                                 {
-                                    playerlist.Add(new Player(id, "!![Connect Failure]", "", "", id, "", false, null));
+                                    playerlist.Add(new Player(
+                                                              id,
+                                                              "!![Connect Failure]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              "",
+                                                              false,
+                                                              null
+                                                              ));
                                 }
                                 else
                                 {
-                                    playerlist.Add(new Player(id, "!![No ETF2L Profile]", "", "", id, "", false, null));
+                                    playerlist.Add(new Player(
+                                                              id, 
+                                                              "!![No ETF2L Profile]", 
+                                                              "", 
+                                                              "", 
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              "", 
+                                                              false, 
+                                                              null
+                                                              ));
                                 }
                                 
                                 if (progressBar != null)
@@ -235,7 +282,7 @@ namespace TF2CompRosterChecker
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
                             name = (string)doc2["player"]["name"];
-                            profileid = (string)doc2["player"]["id"];
+                            leagueid = (string)doc2["player"]["id"];
                             JArray teams = (JArray)doc2["player"]["teams"];
                             string teamtype = "";
 
@@ -300,8 +347,18 @@ namespace TF2CompRosterChecker
                                 //Do nothing in this case...
                             }
 
-
-                            playerlist.Add(new Player(name, team, teamid, div, id, profileid, hasBans, bans));
+                            playerlist.Add(new Player(
+                                                      name, 
+                                                      team, 
+                                                      teamid, 
+                                                      div, 
+                                                      id,
+                                                      steamid,
+                                                      steamid3,
+                                                      leagueid, 
+                                                      hasBans, 
+                                                      bans
+                                                      ));
                         }
                     }
 
