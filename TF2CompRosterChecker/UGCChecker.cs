@@ -98,12 +98,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
-
-
+using System.Xml;
 
 namespace TF2CompRosterChecker
 {
@@ -124,8 +124,8 @@ namespace TF2CompRosterChecker
             MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
-            //MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count /*+ matchesProfileCustomUrl.Count*/];
+            MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
+            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count + matchesProfileCustomUrl.Count];
             foreach (Match match in matchesSteamID3)
             {
                 //Limit Max Results to 50 to not flood the apis.
@@ -154,13 +154,40 @@ namespace TF2CompRosterChecker
                 foundSteamIDs[index] = match.Groups[1].ToString();
                 index++;
             }
-            //TODO: Make this crap work.
-            /*Parallel.ForEach(matchesProfileCustomUrl.OfType<Match>(),
-                match =>
+            foreach (Match match in matchesProfileCustomUrl)
+            {
+                if (index > SteamIDTools.RATECTRL)
                 {
-                    foundSteamIDs[index] = SteamIDTools.getSteamID64FromCustomUrl(match.ToString());
-                    index++;
-                });*/
+                    break;
+                }
+                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                {
+                    wc.Encoding = Encoding.UTF8;
+                    try
+                    {
+                        string dl = wc.DownloadString(match.ToString() + "/?xml=1");
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(dl);
+                        XmlNodeList results = doc.GetElementsByTagName("steamID64");
+
+                        //Check if the steam profile even exists.
+                        if (results.Count == 1)
+                        {
+                            foundSteamIDs[index] = results.Item(0).InnerText;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    catch (System.Net.WebException e)
+                    {
+                        // do nothing lul
+                    }
+                }
+
+                index++;
+            }
 
             this.steamIDs = foundSteamIDs;
         }
@@ -185,6 +212,8 @@ namespace TF2CompRosterChecker
                     string setDiv = "";
                     string setTeam = "";
                     string teamid = "";
+                    string steamid = SteamIDTools.steamID64ToSteamID(id);
+                    string steamid3 = SteamIDTools.steamID64ToSteamID3(id);
                     using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                     {
                         try
@@ -197,11 +226,33 @@ namespace TF2CompRosterChecker
                         {
                             if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
                             {
-                                playerlist.Add(new Player(id, "!![Connect Failure]", "", "", id, "", false, null));
+                                playerlist.Add(new Player(
+                                                          id, 
+                                                          "!![Connect Failure]", 
+                                                          "", 
+                                                          "", 
+                                                          id,
+                                                          steamid,
+                                                          steamid3,
+                                                          "", 
+                                                          false, 
+                                                          null
+                                                          ));
                             }
                             else
                             {
-                                playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false, null));
+                                playerlist.Add(new Player(
+                                                          id, 
+                                                          "!![No UGC Profile]", 
+                                                          "", 
+                                                          "", 
+                                                          id,
+                                                          steamid,
+                                                          steamid3,
+                                                          "", 
+                                                          false, 
+                                                          null
+                                                          ));
                             }
                             
                             if (progressBar != null)
@@ -226,7 +277,18 @@ namespace TF2CompRosterChecker
 
                         if (webcontent.Contains("No UGC TF2 League History"))
                         {
-                            playerlist.Add(new Player(id, "!![No UGC Profile]", "", "", id, "", false, null));
+                            playerlist.Add(new Player(
+                                                      id, 
+                                                      "!![No UGC Profile]", 
+                                                      "", 
+                                                      "", 
+                                                      id,
+                                                      steamid,
+                                                      steamid3,
+                                                      "", 
+                                                      false, 
+                                                      null
+                                                      ));
                             return;
                         }
                         else
@@ -248,8 +310,14 @@ namespace TF2CompRosterChecker
                             string name = "";
                             try
                             {
-                                var h4 = doc.DocumentNode.Descendants("h4").FirstOrDefault();
-                                name = h4.Descendants("b").First().InnerHtml;
+                                var h3 = doc.DocumentNode.Descendants("h3");
+                                foreach (var desc in h3)
+                                {
+                                    if ("b".Equals(desc.FirstChild.Name))
+                                    {
+                                        name = desc.FirstChild.InnerHtml;
+                                    }
+                                }
                                 foreach (var node in doc.DocumentNode.Descendants("p"))
                                 {
                                     var div = node.Descendants("small").FirstOrDefault();
@@ -350,20 +418,64 @@ namespace TF2CompRosterChecker
                             {
                                 if (leagueformat == UGCChecker.HL)
                                 {
-                                    playerlist.Add(new Player(id, "![No UGC HL Team]", "", "", id, id, hasBans, null));
+                                    playerlist.Add(new Player(
+                                                              name, 
+                                                              "![No UGC HL Team]", 
+                                                              "", 
+                                                              "", 
+                                                              id, 
+                                                              steamid, 
+                                                              steamid3, 
+                                                              id, 
+                                                              hasBans, 
+                                                              null
+                                                              ));
                                 }
                                 else if (leagueformat == UGCChecker.Sixes)
                                 {
-                                    playerlist.Add(new Player(id, "![No UGC 6v6 Team]", "", "", id, id, hasBans, null));
+                                    playerlist.Add(new Player(
+                                                              name, 
+                                                              "![No UGC 6v6 Team]", 
+                                                              "", 
+                                                              "", 
+                                                              id, 
+                                                              steamid, 
+                                                              steamid3, 
+                                                              id, 
+                                                              hasBans, 
+                                                              null
+                                                              ));
                                 }
                                 else if (leagueformat == UGCChecker.FourVeeFour)
                                 {
-                                    playerlist.Add(new Player(id, "![No UGC 4v4 Team]", "", "", id, id, hasBans, null));
+                                    playerlist.Add(new Player(
+                                                              name, 
+                                                              "![No UGC 4v4 Team]", 
+                                                              "", 
+                                                              "", 
+                                                              id, 
+                                                              steamid, 
+                                                              steamid3, 
+                                                              id, 
+                                                              hasBans, 
+                                                              null
+                                                              ));
                                 }
                             }
                             else
                             {
-                                playerlist.Add(new Player(name, setTeam, teamid, setDiv, id, id, hasBans, null));
+                                playerlist.Add(new Player(
+                                                          name, 
+                                                          setTeam, 
+                                                          teamid, 
+                                                          setDiv, 
+                                                          id, 
+                                                          steamid, 
+                                                          steamid3, 
+                                                          id, 
+                                                          hasBans, 
+                                                          null
+                                                          ));
                             }
                         }
                     }

@@ -105,17 +105,21 @@ namespace TF2CompRosterChecker
         private string teamid;
         private string div;
         private string profileid;
+        private string steamid;
+        private string steamid3;
         private string leagueid;
         private bool hasBans;
         private List<Ban> bans = null;
 
-        public Player(string name, string team, string teamid, string div, string profileid, string leagueid, bool hasBans, List<Ban> bans)
+        public Player(string name, string team, string teamid, string div, string profileid, string steamid, string steamid3, string leagueid, bool hasBans, List<Ban> bans)
         {
             this.name = name;
             this.team = team;
             this.teamid = teamid;
             this.div = div;
             this.profileid = profileid;
+            this.steamid = steamid;
+            this.steamid3 = steamid3;
             this.leagueid = leagueid;
             this.hasBans = hasBans;
             this.bans = bans;
@@ -126,6 +130,8 @@ namespace TF2CompRosterChecker
         public string Teamid { get { return this.teamid; } }
         public string Div { get { return this.div; } }
         public string Profileid { get { return this.profileid; } }
+        public string Steamid { get { return this.steamid; } }
+        public string Steamid3 { get { return this.steamid3; } }
         public string Leagueid { get { return this.leagueid; } }
         public bool HasBans { get { return this.hasBans; } }
         public List<Ban> Bans { get { return this.bans; } }

@@ -235,6 +235,7 @@ namespace TF2CompRosterChecker
                     rd.Height = GridLength.Auto;
                     outputGrid.RowDefinitions.Add(rd);
 
+
                     Grid grid1 = new Grid();
                     grid1.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid1, 0);
@@ -266,7 +267,11 @@ namespace TF2CompRosterChecker
                         //Only ETF2L-Checker will set this to a non-null object yet.
                         if (player.Bans is null)
                         {
-                            grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, marginleft, margintop, true));
+                            Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
+                            Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
+                            grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, displayid, displayid3, marginleft, margintop, true));
+                            displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
+                            displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                         }
                         else
                         {
@@ -276,17 +281,24 @@ namespace TF2CompRosterChecker
                             popup.Tag = "Show Bans";
                             popup.Foreground = Brushes.Red;
                             popup.ToolTip = "Show Bans";
-                            grid1.Children.Add(TBGen(new Run(player.Name), popup, marginleft, margintop, true));
+                            Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
+                            Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
+                            grid1.Children.Add(TBGen(new Run(player.Name), popup, displayid, displayid3, marginleft, margintop, true));
                             //Route necessary info into the EventHandler.
                             popup.Click += (senders, es) => OpenPopup(senders, es, player.Bans);
+                            displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
+                            displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                         }
-                        
+                         
                     }
                     else
                     {
-                        grid1.Children.Add(TBGen(player.Name, marginleft, margintop, true));
+                        Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
+                        Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
+                        grid1.Children.Add(TBGen(new Run(player.Name), displayid, displayid3, marginleft, margintop, true));
+                        displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
+                        displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                     }
-
                     if (player.Teamid != "")
                     {
                         Hyperlink teamlink = new Hyperlink(new Run("[+]"))
@@ -362,6 +374,7 @@ namespace TF2CompRosterChecker
             popupText.Foreground = Brushes.Black;
             popupText.Text = bans.Count + " Ban(s) on Record:";
             popupText.FontWeight = FontWeights.Bold;
+            popupText.FontSize = 14;
             sp.Children.Add(popupText);
             foreach (Ban ban in bans)
             {
@@ -374,6 +387,13 @@ namespace TF2CompRosterChecker
             codePopup.Child = sp;
             codePopup.StaysOpen = false;
             codePopup.IsOpen = true;
+        }
+
+        private void TextToClipboard(object sender, EventArgs e, string text)
+        {
+            //No evil stuff like phishing links possible, we calculate this id directly from the
+            //steamid64 we calculated before.
+            Clipboard.SetText(text);
         }
 
         //Thanks: https://stackoverflow.com/a/250400
@@ -402,7 +422,7 @@ namespace TF2CompRosterChecker
             TextBlock tb = new TextBlock
             {
                 Text = content,
-                FontSize = 13,
+                FontSize = 14,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 TextWrapping = TextWrapping.NoWrap,
@@ -427,7 +447,33 @@ namespace TF2CompRosterChecker
             additional.Foreground = color;
             tb.Inlines.Add(new Run(" "));
             tb.Inlines.Add(additional);
-            tb.FontSize = 13;
+            tb.FontSize = 14;
+            tb.Height = 20;
+            if (bold)
+            {
+                tb.FontWeight = FontWeights.Bold;
+            }
+            tb.HorizontalAlignment = HorizontalAlignment.Left;
+            tb.VerticalAlignment = VerticalAlignment.Top;
+            tb.TextWrapping = TextWrapping.NoWrap;
+            Thickness margin = tb.Margin;
+            margin.Left = marginleft;
+            margin.Top = margintop;
+            tb.Margin = margin;
+            return tb;
+        }
+
+        public static TextBlock TBGen(Run content, Run additional, Brush color, Hyperlink link1, Hyperlink link2, int marginleft, int margintop, bool bold)
+        {
+            TextBlock tb = new TextBlock();
+            tb.Inlines.Clear();
+            tb.Inlines.Add(content);
+            additional.Foreground = color;
+            tb.Inlines.Add(new Run(" "));
+            tb.Inlines.Add(additional);
+            tb.Inlines.Add(link1);
+            tb.Inlines.Add(link2);
+            tb.FontSize = 14;
             tb.Height = 20;
             if (bold)
             {
@@ -448,7 +494,7 @@ namespace TF2CompRosterChecker
             TextBlock tb = new TextBlock();
             tb.Inlines.Clear();
             tb.Inlines.Add(link);
-            tb.FontSize = 13;
+            tb.FontSize = 14;
             tb.Height = 20;
             if (bold)
             {
@@ -471,7 +517,55 @@ namespace TF2CompRosterChecker
             tb.Inlines.Add(text);
             tb.Inlines.Add(new Run(" "));
             tb.Inlines.Add(link);
-            tb.FontSize = 13;
+            tb.FontSize = 14;
+            tb.Height = 20;
+            if (bold)
+            {
+                tb.FontWeight = FontWeights.Bold;
+            }
+            tb.HorizontalAlignment = HorizontalAlignment.Left;
+            tb.VerticalAlignment = VerticalAlignment.Top;
+            tb.TextWrapping = TextWrapping.NoWrap;
+            Thickness margin = tb.Margin;
+            margin.Left = marginleft;
+            margin.Top = margintop;
+            tb.Margin = margin;
+            return tb;
+        }
+
+        public static TextBlock TBGen(Run text, Hyperlink link1, Hyperlink link2, int marginleft, int margintop, bool bold)
+        {
+            TextBlock tb = new TextBlock();
+            tb.Inlines.Clear();
+            tb.Inlines.Add(text);
+            tb.Inlines.Add(new Run(" "));
+            tb.Inlines.Add(link1);
+            tb.Inlines.Add(link2);
+            tb.FontSize = 14;
+            tb.Height = 20;
+            if (bold)
+            {
+                tb.FontWeight = FontWeights.Bold;
+            }
+            tb.HorizontalAlignment = HorizontalAlignment.Left;
+            tb.VerticalAlignment = VerticalAlignment.Top;
+            tb.TextWrapping = TextWrapping.NoWrap;
+            Thickness margin = tb.Margin;
+            margin.Left = marginleft;
+            margin.Top = margintop;
+            tb.Margin = margin;
+            return tb;
+        }
+        public static TextBlock TBGen(Run text, Hyperlink link1, Hyperlink link2, Hyperlink link3, int marginleft, int margintop, bool bold)
+        {
+            TextBlock tb = new TextBlock();
+            tb.Inlines.Clear();
+            tb.Inlines.Add(text);
+            tb.Inlines.Add(new Run(" "));
+            tb.Inlines.Add(link1);
+            tb.Inlines.Add(link2);
+            tb.Inlines.Add(link3);
+            tb.FontSize = 14;
             tb.Height = 20;
             if (bold)
             {
@@ -507,7 +601,7 @@ namespace TF2CompRosterChecker
 
         public static IEnumerable<TextRange> GetAllWordRanges(FlowDocument document)
         {
-            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|" + SteamIDTools.steamIDregex /*+ "|" + SteamIDTools.profileCustomUrlregex*/;
+            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|" + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex;
             TextPointer pointer = document.ContentStart;
             while (pointer != null)
             {
