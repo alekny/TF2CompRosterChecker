@@ -5,8 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.7.0" Height="368" Width="790"
+        Title="TF2CompRosterChecker v1.7.1" Height="368" Width="790"
         ResizeMode="CanMinimize">
+    <Window.Resources>
+        <Storyboard x:Key="copiedNoticeAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"  From="1" To="1" Duration="0:0:1" />
+            <!--label shows for 3 sec-->
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" BeginTime="0:0:1" From="1" To="0" DecelerationRatio=".5" Duration="0:0:1" />
+            <!--Fade out the label after 3 sec-->
+        </Storyboard>
+    </Window.Resources>
     <Grid Background="#2a2c30">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="167*"/>
@@ -27,7 +35,7 @@
                 </Grid.RowDefinitions>
             </Grid>
         </ScrollViewer>
-        <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Left" Margin="109.2,293,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="submitButton_Click" FontSize="14" BorderBrush="Black" Grid.Column="1"/>
+        <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Left" Margin="109.2,294,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="submitButton_Click" FontSize="14" BorderBrush="Black" Grid.Column="1"/>
         <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000" Grid.ColumnSpan="2">
             <ComboBoxItem Content="ETF2L (Highlander)" IsSelected="True"/>
             <ComboBoxItem Content="ETF2L (6v6)"/>
@@ -40,7 +48,7 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,9,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="495.2,8,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.0 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.1 by <Hyperlink 
         NavigateUri="https://pr0.pw"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         proph
@@ -49,7 +57,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="361.2,304,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
         <TextBlock HorizontalAlignment="Left" Margin="344.2,304,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff" Grid.Column="1" FontSize="13"/>
         <TextBlock HorizontalAlignment="Left" Margin="361.2,291,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="488.2,307,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="10" Grid.Column="1"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="488.2,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="10" Grid.Column="1"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="348.2,291,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" Grid.Column="1" FontSize="13"/>
         <RichTextBox Name="statusOutput" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" FontFamily="Consolas" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="744" FontSize="13">
             <RichTextBox.Resources>
@@ -63,6 +71,7 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1"/>
+        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
+        <TextBlock Name="copiedNotice" HorizontalAlignment="Left" Margin="129.2,9,0,0" TextWrapping="Wrap" Text="SteamID copied to Clipboard" VerticalAlignment="Top" Foreground="Yellow" Grid.Column="1" FontSize="13" Visibility="Hidden" />
     </Grid>
 </Window>
