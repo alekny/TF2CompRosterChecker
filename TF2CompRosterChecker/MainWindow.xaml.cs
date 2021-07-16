@@ -351,8 +351,6 @@ namespace TF2CompRosterChecker
                 }
                 statusOutput.Document.Blocks.Clear();
                 statusOutput.Document.Blocks.Add(new Paragraph(new Run("")));
-                foundIDs.Text = "";
-                foundIDs.Visibility = Visibility.Hidden;
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
@@ -364,6 +362,7 @@ namespace TF2CompRosterChecker
                 statusOutput.Document.Blocks.Clear();
                 statusOutput.Document.Blocks.Add(new Paragraph(new Run("No SteamIDs found")));
             }
+            foundIDs.Text = "";
             EnableUI();
         }
 

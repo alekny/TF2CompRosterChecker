@@ -109,7 +109,7 @@ namespace TF2CompRosterChecker
 {
     class UGCChecker
     {
-        private string[] steamIDs;
+        List<string> steamIDs;
         private List<Player> noprofile = new List<Player>();
         
         public const string baseUrl = "https://www.ugcleague.com/players_page.cfm?player_id=";
@@ -125,7 +125,7 @@ namespace TF2CompRosterChecker
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
             MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count + matchesProfileCustomUrl.Count];
+            List<string> foundSteamIDs = new List<string>();
             foreach (Match match in matchesSteamID3)
             {
                 //Limit Max Results to 50 to not flood the apis.
@@ -133,7 +133,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                foundSteamIDs[index] = SteamIDTools.steamID3ToSteamID64(match.ToString());
+                foundSteamIDs.Add(SteamIDTools.steamID3ToSteamID64(match.ToString()));
                 index++;
             }
             foreach (Match match in matchesSteamID)
@@ -142,7 +142,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                foundSteamIDs[index] = SteamIDTools.steamIDToSteamID64(match.ToString());
+                foundSteamIDs.Add(SteamIDTools.steamIDToSteamID64(match.ToString()));
                 index++;
             }
             foreach (Match match in matchesProfileUrl)
@@ -151,7 +151,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                foundSteamIDs[index] = match.Groups[1].ToString();
+                foundSteamIDs.Add(match.Groups[1].ToString());
                 index++;
             }
             foreach (Match match in matchesProfileCustomUrl)
@@ -173,20 +173,15 @@ namespace TF2CompRosterChecker
                         //Check if the steam profile even exists.
                         if (results.Count == 1)
                         {
-                            foundSteamIDs[index] = results.Item(0).InnerText;
+                            foundSteamIDs.Add(results.Item(0).InnerText);
                         }
-                        else
-                        {
-                            break;
-                        }
+                        index++;
                     }
                     catch (System.Net.WebException e)
                     {
-                        // do nothing lul
+                        // do nothing lul.
                     }
                 }
-
-                index++;
             }
 
             this.steamIDs = foundSteamIDs;
@@ -201,7 +196,7 @@ namespace TF2CompRosterChecker
             List<Player> playerlist = new List<Player>();
             var unique_ids = new HashSet<string>(this.steamIDs);
             int percentagefrac = 0;
-            if (this.steamIDs.Length != 0)
+            if (this.steamIDs.Count != 0)
             {
                 percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
             }
@@ -296,7 +291,6 @@ namespace TF2CompRosterChecker
                             bool hasTeam = false;
                             bool hasBans = false;
                             var doc = new HtmlDocument();
-                            string[] kek = this.steamIDs;
                             try
                             {
                                 doc.LoadHtml(@webcontent);
@@ -484,6 +478,6 @@ namespace TF2CompRosterChecker
             return playerlist;
         }
 
-        public string[] SteamIDS { get { return this.steamIDs; } }
+        public List<string> SteamIDS { get { return this.steamIDs; } }
     }
 }
