@@ -98,11 +98,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 
 namespace TF2CompRosterChecker
@@ -350,6 +352,7 @@ namespace TF2CompRosterChecker
                 statusOutput.Document.Blocks.Clear();
                 statusOutput.Document.Blocks.Add(new Paragraph(new Run("")));
                 foundIDs.Text = "";
+                foundIDs.Visibility = Visibility.Hidden;
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
@@ -394,6 +397,9 @@ namespace TF2CompRosterChecker
             //No evil stuff like phishing links possible, we calculate this id directly from the
             //steamid64 we calculated before.
             Clipboard.SetText(text);
+            copiedNotice.Visibility = Visibility.Visible;
+            Storyboard sb = Resources["copiedNoticeAnimation"] as Storyboard;
+            sb.Begin(copiedNotice);
         }
 
         //Thanks: https://stackoverflow.com/a/250400
@@ -585,6 +591,8 @@ namespace TF2CompRosterChecker
         {
             outputFrame.Visibility = Visibility.Hidden;
             statusOutput.Visibility = Visibility.Visible;
+            foundIDs.Visibility = Visibility.Visible;
+            copiedNotice.Visibility = Visibility.Hidden;
             header.Text = "Paste Status Output here:";
             outputGrid.Children.Clear();
             submitButton.Content = "Check Roster";
