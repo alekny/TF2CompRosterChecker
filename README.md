@@ -6,7 +6,7 @@ Checks ETF2L/RGL/UGC-Roster via status output
 
 [Download Version 1.7.1](https://github.com/alekny/TF2CompRosterChecker/releases/tag/1.7.1)
 
-![preview](https://i.imgur.com/atH7Njb.png)
+![preview](https://i.imgur.com/SBeKwVC.gif)
 
 
 
