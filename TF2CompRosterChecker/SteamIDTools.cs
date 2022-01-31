@@ -106,7 +106,7 @@ namespace TF2CompRosterChecker
         public const string baseUrl = "https://steamcommunity.com/profiles/";
         public const string baseLogsUrl = "https://logs.tf/profile/";
         public const string profileUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)";
-        public const string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9]+";
+        public const string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]+";
         public const string idFinderRegex = "\"steamid\":\"([0-9]+)\"";
         public const string profileCustomUrlXml = "https://steamcommunity.com/id/";
         public const int RATECTRL = 50;
