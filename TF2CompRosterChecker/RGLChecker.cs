@@ -106,7 +106,7 @@ using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    class RGLChecker : Checker
+    internal class RGLChecker : Checker
     {
         public RGLChecker(string statusOutput) : base(statusOutput)
         {
@@ -122,27 +122,24 @@ namespace TF2CompRosterChecker
         public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
-            var unique_ids = new HashSet<string>(SteamIDs);
+            HashSet<string> unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
             if (SteamIDs.Count != 0)
             {
-                percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
+                percentagefrac = (100 + unique_ids.Count) / unique_ids.Count;
             }
-            Parallel.ForEach(unique_ids,
+            _ = Parallel.ForEach(unique_ids,
                     id =>
                     {
                         //Initialize variables for each Player instance.
-                        int currentComp = -1;
-                        int counter = -1;
-                        string currentDiv = "";
                         string name = "";
                         string team = "";
                         string teamid = "";
                         string div = "";
                         string dl = "";
                         bool hasBans = false;
-                        string steamid = SteamIDTools.steamID64ToSteamID(id);
-                        string steamid3 = SteamIDTools.steamID64ToSteamID3(id);
+                        string steamid = SteamIDTools.SteamID64ToSteamID(id);
+                        string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
 
                         //Using a modified webclient, because the payload.tf api is quite slow (mostly)
                         //This will introduce another problem (players that are indeed registered at rgl
@@ -155,60 +152,60 @@ namespace TF2CompRosterChecker
                             {
                                 dl = wc.DownloadString(BaseApiUrl + id);
                             }
-                            catch (System.Net.WebException e)
+                            catch (WebException e)
                             {
                                 if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
                                 {
                                     playerlist.Add(new Player(
-                                                              id, 
-                                                              "!![Connect Failure]", 
-                                                              "", 
-                                                              "", 
+                                                              id,
+                                                              "!![Connect Failure]",
+                                                              "",
+                                                              "",
                                                               id,
                                                               steamid,
                                                               steamid3,
-                                                              "", 
-                                                              false, 
+                                                              "",
+                                                              false,
                                                               null
                                                               ));
                                 }
                                 else
                                 {
                                     playerlist.Add(new Player(
-                                                              id, 
-                                                              "!![No RGL Profile]", 
-                                                              "", 
-                                                              "", 
+                                                              id,
+                                                              "!![No RGL Profile]",
+                                                              "",
+                                                              "",
                                                               id,
                                                               steamid,
                                                               steamid3,
-                                                              "", 
-                                                              false, 
+                                                              "",
+                                                              false,
                                                               null
                                                               ));
                                 }
-                                
+
                                 if (progressBar != null)
                                 {
-                                    progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
+                                    _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
                                 }
                                 if (button != null)
                                 {
-                                    button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                    _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                                 }
                                 return;
                             }
 
                             if (progressBar != null)
                             {
-                                progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
+                                _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
                             }
                             if (button != null)
                             {
-                                button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                             }
 
-                            
+
 
                             //Create a dynamic object for ease of use.
                             dynamic doc2 = JObject.Parse(dl);
@@ -273,37 +270,37 @@ namespace TF2CompRosterChecker
                                         hasBans = true;
                                     }
                                 }
-                                catch (Exception ne)
+                                catch (Exception)
                                 {
                                     //Do nothing in this case...
                                 }
 
 
                                 playerlist.Add(new Player(
-                                                          name, 
-                                                          team, 
-                                                          teamid, 
-                                                          div, 
+                                                          name,
+                                                          team,
+                                                          teamid,
+                                                          div,
                                                           id,
                                                           steamid,
                                                           steamid3,
-                                                          id, 
-                                                          hasBans, 
+                                                          id,
+                                                          hasBans,
                                                           null
                                                           ));
                             }
                             else
                             {
                                 playerlist.Add(new Player(
-                                                          id, 
-                                                          "!![No RGL Profile]", 
-                                                          "", 
-                                                          "", 
+                                                          id,
+                                                          "!![No RGL Profile]",
+                                                          "",
+                                                          "",
                                                           id,
                                                           steamid,
                                                           steamid3,
-                                                          "", 
-                                                          false, 
+                                                          "",
+                                                          false,
                                                           null
                                                           ));
                             }

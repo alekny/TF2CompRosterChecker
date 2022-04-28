@@ -98,67 +98,50 @@ using System.Collections.Generic;
 
 namespace TF2CompRosterChecker
 {
-    class Player
+    internal class Player
     {
-        private string name;
-        private string team;
-        private string teamid;
-        private string div;
-        private string profileid;
-        private string steamid;
-        private string steamid3;
-        private string leagueid;
-        private bool hasBans;
-        private List<Ban> bans = null;
-
         public Player(string name, string team, string teamid, string div, string profileid, string steamid, string steamid3, string leagueid, bool hasBans, List<Ban> bans)
         {
-            this.name = name;
-            this.team = team;
-            this.teamid = teamid;
-            this.div = div;
-            this.profileid = profileid;
-            this.steamid = steamid;
-            this.steamid3 = steamid3;
-            this.leagueid = leagueid;
-            this.hasBans = hasBans;
-            this.bans = bans;
+            Name = name;
+            Team = team;
+            Teamid = teamid;
+            Div = div;
+            Profileid = profileid;
+            Steamid = steamid;
+            Steamid3 = steamid3;
+            Leagueid = leagueid;
+            HasBans = hasBans;
+            Bans = bans;
         }
 
-        public string Name { get { return this.name; } }
-        public string Team { get { return this.team; } }
-        public string Teamid { get { return this.teamid; } }
-        public string Div { get { return this.div; } }
-        public string Profileid { get { return this.profileid; } }
-        public string Steamid { get { return this.steamid; } }
-        public string Steamid3 { get { return this.steamid3; } }
-        public string Leagueid { get { return this.leagueid; } }
-        public bool HasBans { get { return this.hasBans; } }
-        public List<Ban> Bans { get { return this.bans; } }
+        public string Name { get; }
+        public string Team { get; }
+        public string Teamid { get; }
+        public string Div { get; }
+        public string Profileid { get; }
+        public string Steamid { get; }
+        public string Steamid3 { get; }
+        public string Leagueid { get; }
+        public bool HasBans { get; }
+        public List<Ban> Bans { get; } = null;
 
-        public void print()
+        public void Print()
         {
-            Console.WriteLine(string.Concat(name,string.Concat(",", string.Concat(team, string.Concat(",", div)))));
+            Console.WriteLine(string.Concat(Name,string.Concat(",", string.Concat(Team, string.Concat(",", Div)))));
         }
     }
 
     internal class Ban
     {
-        //Start and End contain unix timestamps.
-        private string start;
-        private string end;
-        private string reason;
-
         public Ban(string start, string end, string reason)
         {
-            this.start = start;
-            this.end = end;
-            this.reason = reason;
+            Start = start;
+            End = end;
+            Reason = reason;
         }
 
-        public string Start { get { return this.start; } }
-        public string End { get { return this.end; } }
-        public string Reason { get { return this.reason; } }
-
+        public string Start { get; }
+        public string End { get; }
+        public string Reason { get; }
     }
 }

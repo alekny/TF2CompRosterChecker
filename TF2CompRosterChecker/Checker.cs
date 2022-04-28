@@ -8,12 +8,8 @@ using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    abstract class Checker
+    internal abstract class Checker
     {
-        private List<string> steamIDs;
-        private string baseApiUrl;
-        private string baseUrl;
-        private string baseTeamUrl;
         public const int HL = 0;
         public const int Sixes = 1;
         public const int PL = 2;
@@ -38,7 +34,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                foundSteamIDs.Add(SteamIDTools.steamID3ToSteamID64(match.ToString()));
+                foundSteamIDs.Add(SteamIDTools.SteamID3ToSteamID64(match.ToString()));
                 index++;
             }
             foreach (Match match in matchesSteamID)
@@ -47,7 +43,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                foundSteamIDs.Add(SteamIDTools.steamIDToSteamID64(match.ToString()));
+                foundSteamIDs.Add(SteamIDTools.SteamIDToSteamID64(match.ToString()));
                 index++;
             }
             foreach (Match match in matchesProfileUrl)
@@ -82,51 +78,34 @@ namespace TF2CompRosterChecker
                         }
                         index++;
                     }
-                    catch (System.Net.WebException e)
+                    catch (System.Net.WebException)
                     {
                         // do nothing lul
                     }
                 }
             }
 
-            this.steamIDs = foundSteamIDs;
+            SteamIDs = foundSteamIDs;
         }
 
         public abstract List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button);
 
-        public List<string> SteamIDs
-        {
-            get { return this.steamIDs; }
-            set { this.steamIDs = value; }
-        }
+        public List<string> SteamIDs { get; set; }
 
-        public string BaseApiUrl
-        {
-            get { return this.baseApiUrl; }
-            set { this.baseApiUrl = value; }
-        }
-        public string BaseUrl
-        {
-            get { return this.baseUrl; }
-            set { this.baseUrl = value; }
-        }
-        public string BaseTeamUrl
-        {
-            get { return this.baseTeamUrl; }
-            set { this.baseTeamUrl = value; }
-        }
+        public string BaseApiUrl { get; set; }
+        public string BaseUrl { get; set; }
+        public string BaseTeamUrl { get; set; }
 
         /*
          * Debug stuff.
          */
-        public void printIDs()
+        public void PrintIDs()
         {
-            foreach (string steamID in this.SteamIDS)
+            foreach (string steamID in SteamIDs)
             {
                 Console.WriteLine(steamID);
             }
         }
 
-        public List<string> SteamIDS { get { return this.steamIDs; } }
     }
 }

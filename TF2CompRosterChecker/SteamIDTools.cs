@@ -99,7 +99,7 @@ using System.Text.RegularExpressions;
 
 namespace TF2CompRosterChecker
 {
-    class SteamIDTools
+    internal class SteamIDTools
     {
         public const string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]+";
         public const string steamID3regex = @"\[U:1:[0-9]+\]";
@@ -112,12 +112,12 @@ namespace TF2CompRosterChecker
         public const int RATECTRL = 50;
 
 
-        public static string steamIDToSteamID64(string steamID)
+        public static string SteamIDToSteamID64(string steamID)
         {
             //long just for adding some numbers? hmm...
             long steamID64 = 76561197960265728;
             string[] args = steamID.Split(':');
-            steamID64 += Int32.Parse(args[2]) * 2;
+            steamID64 += int.Parse(args[2]) * 2;
             if ("1".Equals(args[1]))
             {
                 steamID64 += 1;
@@ -126,25 +126,25 @@ namespace TF2CompRosterChecker
             
         }
 
-        public static string steamID3ToSteamID64(string steamID3)
+        public static string SteamID3ToSteamID64(string steamID3)
         {
             string[] args = steamID3.Split(':');
-            int accid = Int32.Parse(args[2].Substring(0, args[2].Length - 1));
+            int accid = int.Parse(args[2].Substring(0, args[2].Length - 1));
             int Y, Z = 0;
             if ((accid % 2) == 0)
             {
                 Y = 0;
-                Z = (accid / 2);
+                Z = accid / 2;
             }
             else
             {
                 Y = 1;
-                Z = ((accid - 1) / 2);
+                Z = (accid - 1) / 2;
             }
             return string.Concat("7656119", Convert.ToString((Z * 2) + (7960265728 + Y)));
         }
 
-        public static string getSteamID64FromCustomUrl(string customUrl)
+        public static string GetSteamID64FromCustomUrl(string customUrl)
         {
             using (WebClient wc = new WebClient())
             {
@@ -153,7 +153,7 @@ namespace TF2CompRosterChecker
                 {
                     dl = wc.DownloadString(customUrl);
                 }
-                catch (System.Net.WebException e)
+                catch (WebException)
                 {
                     return null;
                 }
@@ -166,14 +166,14 @@ namespace TF2CompRosterChecker
             }
         }
 
-        public static string steamID64ToSteamID3(string steamID64)
+        public static string SteamID64ToSteamID3(string steamID64)
         {
-            return "[U:1:" + (Int64.Parse(steamID64) - 76561197960265728) + "]";
+            return "[U:1:" + (long.Parse(steamID64) - 76561197960265728) + "]";
         }
 
-        public static string steamID64ToSteamID(string steamID64)
+        public static string SteamID64ToSteamID(string steamID64)
         {
-            Int64 accid = Int64.Parse(steamID64) - 76561197960265728;
+            long accid = long.Parse(steamID64) - 76561197960265728;
             int parity = 0;
             if (accid % 2 == 0)
             {

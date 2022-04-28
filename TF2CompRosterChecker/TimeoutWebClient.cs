@@ -102,9 +102,9 @@ namespace TF2CompRosterChecker
     //The default timeout for webrequests appears to be 100 seconds, 
     //which is far too much for our case, so we just make a new class
     //for our case
-    class TimeoutWebClient : WebClient
+    internal class TimeoutWebClient : WebClient
     {
-        private int timeout = 20 * 1000;
+        private readonly int timeout = 20 * 1000;
 
         public TimeoutWebClient(int timeout) : base()
         {
@@ -117,7 +117,7 @@ namespace TF2CompRosterChecker
         protected override WebRequest GetWebRequest(Uri uri)
         {
             WebRequest w = base.GetWebRequest(uri);
-            w.Timeout = this.timeout; //Set a custom timeout
+            w.Timeout = timeout; //Set a custom timeout
             return w;
         }
     }
