@@ -39,10 +39,10 @@
         <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000" Grid.ColumnSpan="2">
             <ComboBoxItem Content="ETF2L (Highlander)" IsSelected="True"/>
             <ComboBoxItem Content="ETF2L (6v6)"/>
-            <ComboBoxItem Content="RGL NA (Highlander)"/>
-            <ComboBoxItem Content="RGL NA (Prolander)"/>
-            <ComboBoxItem Content="RGL NA (Traditional 6v6)"/>
-            <ComboBoxItem Content="RGL NA (No Restrictions 6v6)"/>
+            <ComboBoxItem Content="RGL NA (Highlander)" IsEnabled="False"/>
+            <ComboBoxItem Content="RGL NA (Prolander)" IsEnabled="False"/>
+            <ComboBoxItem Content="RGL NA (Traditional 6v6)" IsEnabled="False"/>
+            <ComboBoxItem Content="RGL NA (No Restrictions 6v6)" IsEnabled="False"/>
             <ComboBoxItem Content="UGC (Highlander)"/>
             <ComboBoxItem Content="UGC (6v6)"/>
             <ComboBoxItem Content="UGC (4v4)"/>

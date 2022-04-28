@@ -107,96 +107,26 @@ using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    class UGCChecker
+    class UGCChecker : Checker
     {
-        List<string> steamIDs;
-        private List<Player> noprofile = new List<Player>();
-        
-        public const string baseUrl = "https://www.ugcleague.com/players_page.cfm?player_id=";
-        public const string baseTeamUrl = "https://www.ugcleague.com/team_page.cfm?clan_id=";
-        public const int HL = 0;
-        public const int Sixes = 1;
-        public const int FourVeeFour = 2;
-
-        public UGCChecker(string statusOutput)
+        public UGCChecker(string statusOutput) : base(statusOutput)
         {
-            int index = 0;
-            MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
-            MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
-            MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
-            MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            List<string> foundSteamIDs = new List<string>();
-            foreach (Match match in matchesSteamID3)
-            {
-                //Limit Max Results to 50 to not flood the apis.
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(SteamIDTools.steamID3ToSteamID64(match.ToString()));
-                index++;
-            }
-            foreach (Match match in matchesSteamID)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(SteamIDTools.steamIDToSteamID64(match.ToString()));
-                index++;
-            }
-            foreach (Match match in matchesProfileUrl)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(match.Groups[1].ToString());
-                index++;
-            }
-            foreach (Match match in matchesProfileCustomUrl)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    try
-                    {
-                        string dl = wc.DownloadString(match.ToString() + "/?xml=1");
-                        XmlDocument doc = new XmlDocument();
-                        doc.LoadXml(dl);
-                        XmlNodeList results = doc.GetElementsByTagName("steamID64");
+            BaseUrl = "https://www.ugcleague.com/players_page.cfm?player_id=";
+            BaseTeamUrl = "https://www.ugcleague.com/team_page.cfm?clan_id=";
 
-                        //Check if the steam profile even exists.
-                        if (results.Count == 1)
-                        {
-                            foundSteamIDs.Add(results.Item(0).InnerText);
-                        }
-                        index++;
-                    }
-                    catch (System.Net.WebException e)
-                    {
-                        // do nothing lul.
-                    }
-                }
-            }
-
-            this.steamIDs = foundSteamIDs;
         }
+
         /*
          * A little bit dirty to get our data from a html page, but UGC 
          * doesn't provide a proper API (xml or json) to work with.
          */
         [STAThread]
-        public List<Player> parseUGCPlayerPage(int leagueformat, ProgressBar progressBar, Button button)
+        public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
-            var unique_ids = new HashSet<string>(this.steamIDs);
+            var unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
-            if (this.steamIDs.Count != 0)
+            if (SteamIDs.Count != 0)
             {
                 percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
             }
@@ -213,7 +143,7 @@ namespace TF2CompRosterChecker
                     {
                         try
                         {
-                            webcontent = wc.DownloadString(string.Concat(baseUrl, id)).Replace("\n", string.Empty);
+                            webcontent = wc.DownloadString(string.Concat(BaseUrl, id)).Replace("\n", string.Empty);
                             //Console.WriteLine(string.Concat(baseApiUrl, SteamIDTools.steamID3ToSteamID64(this.steamIDs[i])).Replace("\n", string.Empty));
                             //Console.WriteLine(webcontent);
                         }
@@ -317,7 +247,7 @@ namespace TF2CompRosterChecker
                                     var div = node.Descendants("small").FirstOrDefault();
                                     if (div != null)
                                     {
-                                        if (leagueformat == UGCChecker.HL)
+                                        if (leagueformat == Checker.HL)
                                         {
                                             if (div.InnerHtml.Contains("Highlander"))
                                             {
@@ -329,7 +259,7 @@ namespace TF2CompRosterChecker
                                                 continue;
                                             }
                                         }
-                                        else if (leagueformat == UGCChecker.Sixes)
+                                        else if (leagueformat == Checker.Sixes)
                                         {
                                             if (div.InnerHtml.Contains("6vs6"))
                                             {
@@ -341,7 +271,7 @@ namespace TF2CompRosterChecker
                                                 continue;
                                             }
                                         }
-                                        else if (leagueformat == UGCChecker.FourVeeFour)
+                                        else if (leagueformat == Checker.FourVeeFour)
                                         {
                                             if (div.InnerHtml.Contains("4vs4"))
                                             {
@@ -410,7 +340,7 @@ namespace TF2CompRosterChecker
 
                             if (!hasTeam)
                             {
-                                if (leagueformat == UGCChecker.HL)
+                                if (leagueformat == Checker.HL)
                                 {
                                     playerlist.Add(new Player(
                                                               name, 
@@ -425,7 +355,7 @@ namespace TF2CompRosterChecker
                                                               null
                                                               ));
                                 }
-                                else if (leagueformat == UGCChecker.Sixes)
+                                else if (leagueformat == Checker.Sixes)
                                 {
                                     playerlist.Add(new Player(
                                                               name, 
@@ -440,7 +370,7 @@ namespace TF2CompRosterChecker
                                                               null
                                                               ));
                                 }
-                                else if (leagueformat == UGCChecker.FourVeeFour)
+                                else if (leagueformat == Checker.FourVeeFour)
                                 {
                                     playerlist.Add(new Player(
                                                               name, 
@@ -477,7 +407,5 @@ namespace TF2CompRosterChecker
                 });
             return playerlist;
         }
-
-        public List<string> SteamIDS { get { return this.steamIDs; } }
     }
 }

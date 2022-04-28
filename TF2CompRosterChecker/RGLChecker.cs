@@ -106,97 +106,25 @@ using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    class RGLChecker
+    class RGLChecker : Checker
     {
-        List<string> steamIDs;
-        private List<Player> noprofile = new List<Player>();
-        public const string baseApiUrl = "https://rgl.payload.tf/api/v1/profiles/";
-        public const string baseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
-
-        //For now just display the Player page (the payload api response has no direct link to any player's team id)
-        public const string baseTeamUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
-        public const int HL = 0;
-        public const int PL = 1;
-        public const int TradSixes = 2;
-        public const int NRSixes = 3;
-
-
-        public RGLChecker(string statusOutput)
+        public RGLChecker(string statusOutput) : base(statusOutput)
         {
-            int index = 0;
-            MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
-            MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
-            MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
-            MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            List<string> foundSteamIDs = new List<string>();
-            foreach (Match match in matchesSteamID3)
-            {
-                //Limit Max Results to 50 to not flood the apis.
-                if (foundSteamIDs.Count > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(SteamIDTools.steamID3ToSteamID64(match.ToString()));
-                index++;
-            }
-            foreach (Match match in matchesSteamID)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(SteamIDTools.steamIDToSteamID64(match.ToString()));
-                index++;
-            }
-            foreach (Match match in matchesProfileUrl)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(match.Groups[1].ToString());
-                index++;
-            }
-            foreach (Match match in matchesProfileCustomUrl)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    try
-                    {
-                        string dl = wc.DownloadString(match.ToString() + "/?xml=1");
-                        XmlDocument doc = new XmlDocument();
-                        doc.LoadXml(dl);
-                        XmlNodeList results = doc.GetElementsByTagName("steamID64");
+            BaseApiUrl = "https://rgl.payload.tf/api/v1/profiles/";
+            BaseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
 
-                        //Check if the steam profile even exists.
-                        if (results.Count == 1)
-                        {
-                            foundSteamIDs.Add(results.Item(0).InnerText);
-                        }
-                        index++;
-                    }
-                    catch (System.Net.WebException e)
-                    {
-                        // do nothing lul
-                    }
-                }               
-            }
-            this.steamIDs = foundSteamIDs;
+            //For now just display the Player page (the payload api response has no direct link to any player's team id)
+            BaseTeamUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
+
         }
 
-
         [STAThread]
-        public List<Player> ParseJSON(int leagueformat, ProgressBar progressBar, Button button)
+        public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
-            var unique_ids = new HashSet<string>(this.steamIDs);
+            var unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
-            if (this.steamIDs.Count != 0)
+            if (SteamIDs.Count != 0)
             {
                 percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
             }
@@ -225,7 +153,7 @@ namespace TF2CompRosterChecker
                             wc.Encoding = Encoding.UTF8;
                             try
                             {
-                                dl = wc.DownloadString(baseApiUrl + id);
+                                dl = wc.DownloadString(BaseApiUrl + id);
                             }
                             catch (System.Net.WebException e)
                             {
@@ -291,22 +219,22 @@ namespace TF2CompRosterChecker
                                 JArray teams = (JArray)doc2["data"]["experience"];
                                 string teamtype = "";
 
-                                if (leagueformat == RGLChecker.HL)
+                                if (leagueformat == Checker.HL)
                                 {
                                     teamtype = "na highlander";
                                     team = "![No RGL HL Team]";
                                 }
-                                else if (leagueformat == RGLChecker.PL)
+                                else if (leagueformat == Checker.PL)
                                 {
                                     teamtype = "na prolander";
                                     team = "![No RGL PL Team]";
                                 }
-                                else if (leagueformat == RGLChecker.TradSixes)
+                                else if (leagueformat == Checker.Sixes)
                                 {
                                     teamtype = "na traditional sixes";
                                     team = "![No RGL trad. 6v6 Team]";
                                 }
-                                else if (leagueformat == RGLChecker.NRSixes)
+                                else if (leagueformat == Checker.NRSixes)
                                 {
                                     teamtype = "na no restriction sixes";
                                     team = "![No RGL nr 6v6 Team]";
@@ -385,5 +313,6 @@ namespace TF2CompRosterChecker
                     );
             return playerlist;
         }
+
     }
 }

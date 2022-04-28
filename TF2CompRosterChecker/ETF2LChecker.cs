@@ -93,119 +93,41 @@
  * 
  */
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    class ETF2LChecker
+    class ETF2LChecker : Checker
     {
-        List<string> steamIDs;
-        private List<Player> noprofile = new List<Player>();
-        public const string baseApiUrl = "https://api.etf2l.org/player/";
-        public const string baseUrl = "https://etf2l.org/forum/user/";
-        public const string baseTeamUrl = "https://etf2l.org/teams/";
-        public const int HL = 0;
-        public const int Sixes = 1;
 
-        public ETF2LChecker(string statusOutput)
+        public ETF2LChecker(string statusOutput) : base(statusOutput)
         {
-            int index = 0;
-            MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
-            MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
-            MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
-            MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
-            List<string> foundSteamIDs = new List<string>();
-            //We cannot use fixed arrays anymore, since a valid custom profile url doesnt necessarily lead
-            //to a valid steam id. So List it is.
-            //string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count + matchesProfileCustomUrl.Count];
-            foreach (Match match in matchesSteamID3)
-            {
-                //Limit Max Results to 50 to not flood the apis.
-                if(index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(SteamIDTools.steamID3ToSteamID64(match.ToString()));
-                index++;
-            }
-            foreach (Match match in matchesSteamID)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(SteamIDTools.steamIDToSteamID64(match.ToString()));
-                index++;
-            }
-            foreach (Match match in matchesProfileUrl)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                foundSteamIDs.Add(match.Groups[1].ToString());
-                index++;
-            }
-            foreach (Match match in matchesProfileCustomUrl)
-            {
-                if (index > SteamIDTools.RATECTRL)
-                {
-                    break;
-                }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    try
-                    {
-                        string dl = wc.DownloadString(match.ToString() + "/?xml=1");
-                        XmlDocument doc = new XmlDocument();
-                        doc.LoadXml(dl);
-                        XmlNodeList results = doc.GetElementsByTagName("steamID64");
+            BaseApiUrl = "https://api.etf2l.org/player/";
+            BaseUrl = "https://etf2l.org/forum/user/";
+            BaseTeamUrl = "https://etf2l.org/teams/";
 
-                        //Check if the steam profile even exists.
-                        if (results.Count == 1)
-                        {
-                            foundSteamIDs.Add(results.Item(0).InnerText);
-                        }
-                        index++;
-                    }
-                    catch (System.Net.WebException e)
-                    {
-                        // do nothing lul
-                    }
-                }
-            }
-
-            this.steamIDs = foundSteamIDs;
         }
 
-        /*
-         * A little bit lazy to invoke UI updates from this method, but whatevr ;>
-         * TODO: Make this a little bit more elegant in the future.
-         */
+
         [STAThread]
-        public List<Player> parseJSON(int leagueformat, ProgressBar progressBar, Button button)
+        public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
-            var unique_ids = new HashSet<string>(this.steamIDs);
+            var unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
-            if (this.steamIDs.Count != 0)
+            if (SteamIDs.Count != 0)
             {
                 percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
             }
             //Only allow to check up to 50 SteamIDs per request.
-            Parallel.ForEach(unique_ids, 
+            Parallel.ForEach(unique_ids,
                     id =>
                     {
                         //Initialize variables for each Player instance.
@@ -227,7 +149,7 @@ namespace TF2CompRosterChecker
                             wc.Encoding = Encoding.UTF8;
                             try
                             {
-                                dl = wc.DownloadString(baseApiUrl + id + ".json");
+                                dl = wc.DownloadString(BaseApiUrl + id + ".json");
                             }
                             catch (System.Net.WebException e)
                             {
@@ -249,19 +171,19 @@ namespace TF2CompRosterChecker
                                 else
                                 {
                                     playerlist.Add(new Player(
-                                                              id, 
-                                                              "!![No ETF2L Profile]", 
-                                                              "", 
-                                                              "", 
+                                                              id,
+                                                              "!![No ETF2L Profile]",
+                                                              "",
+                                                              "",
                                                               id,
                                                               steamid,
                                                               steamid3,
-                                                              "", 
-                                                              false, 
+                                                              "",
+                                                              false,
                                                               null
                                                               ));
                                 }
-                                
+
                                 if (progressBar != null)
                                 {
                                     progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
@@ -289,12 +211,12 @@ namespace TF2CompRosterChecker
                             JArray teams = (JArray)doc2["player"]["teams"];
                             string teamtype = "";
 
-                            if (leagueformat == ETF2LChecker.HL)
+                            if (leagueformat == Checker.HL)
                             {
                                 teamtype = "Highlander";
                                 team = "![No ETF2L HL Team]";
                             }
-                            else if (leagueformat == ETF2LChecker.Sixes)
+                            else if (leagueformat == Checker.Sixes)
                             {
                                 teamtype = "6on6";
                                 team = "![No ETF2L 6v6 Team]";
@@ -351,15 +273,15 @@ namespace TF2CompRosterChecker
                             }
 
                             playerlist.Add(new Player(
-                                                      name, 
-                                                      team, 
-                                                      teamid, 
-                                                      div, 
+                                                      name,
+                                                      team,
+                                                      teamid,
+                                                      div,
                                                       id,
                                                       steamid,
                                                       steamid3,
-                                                      leagueid, 
-                                                      hasBans, 
+                                                      leagueid,
+                                                      hasBans,
                                                       bans
                                                       ));
                         }
@@ -368,18 +290,5 @@ namespace TF2CompRosterChecker
                     );
             return playerlist;
         }
-
-        /*
-         * Debug stuff.
-         */
-        public void printIDs()
-        {
-            foreach (string steamID in this.SteamIDS)
-            {
-                Console.WriteLine(steamID);
-            }
-        }
-
-        public List<string> SteamIDS { get { return this.steamIDs; } }
     }
 }

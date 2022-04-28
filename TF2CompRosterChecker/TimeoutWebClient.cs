@@ -109,7 +109,9 @@ namespace TF2CompRosterChecker
         public TimeoutWebClient(int timeout) : base()
         {
             if (timeout > 0 && timeout < 20 * 1000)
-            this.timeout = timeout;
+            {
+                this.timeout = timeout;
+            }
         }
 
         protected override WebRequest GetWebRequest(Uri uri)

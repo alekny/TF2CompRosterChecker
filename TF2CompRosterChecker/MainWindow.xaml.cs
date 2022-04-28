@@ -138,81 +138,81 @@ namespace TF2CompRosterChecker
                 case 0:
                     {
                         ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                        await Task.Run(() => result = ec.parseJSON(ETF2LChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = ETF2LChecker.baseUrl;
-                        baseTeamUrl = ETF2LChecker.baseTeamUrl;
+                        await Task.Run(() => result = ec.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = ec.BaseUrl;
+                        baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
                         break;
                     }
                 case 1:
                     {
                         ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                        await Task.Run(() => result = ec.parseJSON(ETF2LChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = ETF2LChecker.baseUrl;
-                        baseTeamUrl = ETF2LChecker.baseTeamUrl;
+                        await Task.Run(() => result = ec.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = ec.BaseUrl;
+                        baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
                         break;
                     }
                 case 2:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = RGLChecker.baseUrl;
-                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        await Task.Run(() => result = rc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = rc.BaseUrl;
+                        baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
                         break;
                     }
                 case 3:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = RGLChecker.baseUrl;
-                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        await Task.Run(() => result = rc.ParseData(Checker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = rc.BaseUrl;
+                        baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
                         break;
                     }
                 case 4:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.TradSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = RGLChecker.baseUrl;
-                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        await Task.Run(() => result = rc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = rc.BaseUrl;
+                        baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
                         break;
                     }
                 case 5:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseJSON(RGLChecker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = RGLChecker.baseUrl;
-                        baseTeamUrl = RGLChecker.baseTeamUrl;
+                        await Task.Run(() => result = rc.ParseData(Checker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = rc.BaseUrl;
+                        baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
                         break;
                     }
                 case 6:
                     {
                         UGCChecker uc = new UGCChecker(statusOutputText);
-                        await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = UGCChecker.baseUrl;
-                        baseTeamUrl = UGCChecker.baseTeamUrl;
+                        await Task.Run(() => result = uc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = uc.BaseUrl;
+                        baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
                         break;
                     }
                 case 7:
                     {
                         UGCChecker uc = new UGCChecker(statusOutputText);
-                        await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = UGCChecker.baseUrl;
-                        baseTeamUrl = UGCChecker.baseTeamUrl;
+                        await Task.Run(() => result = uc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = uc.BaseUrl;
+                        baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
                         break;
                     }
                 case 8:
                     {
                         UGCChecker uc = new UGCChecker(statusOutputText);
-                        await Task.Run(() => result = uc.parseUGCPlayerPage(UGCChecker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
-                        baseUrl = UGCChecker.baseUrl;
-                        baseTeamUrl = UGCChecker.baseTeamUrl;
+                        await Task.Run(() => result = uc.ParseData(Checker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        baseUrl = uc.BaseUrl;
+                        baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
                         break;
                     }
