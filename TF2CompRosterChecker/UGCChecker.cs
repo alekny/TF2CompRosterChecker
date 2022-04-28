@@ -98,16 +98,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    class UGCChecker : Checker
+    internal class UGCChecker : Checker
     {
         public UGCChecker(string statusOutput) : base(statusOutput)
         {
@@ -124,21 +121,21 @@ namespace TF2CompRosterChecker
         public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
-            var unique_ids = new HashSet<string>(SteamIDs);
+            HashSet<string> unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
             if (SteamIDs.Count != 0)
             {
-                percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
+                percentagefrac = (100 + unique_ids.Count) / unique_ids.Count;
             }
-            Parallel.ForEach(unique_ids,
+            _ = Parallel.ForEach(unique_ids,
                 id =>
                 {
                     string webcontent = "";
                     string setDiv = "";
                     string setTeam = "";
                     string teamid = "";
-                    string steamid = SteamIDTools.steamID64ToSteamID(id);
-                    string steamid3 = SteamIDTools.steamID64ToSteamID3(id);
+                    string steamid = SteamIDTools.SteamID64ToSteamID(id);
+                    string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
                     using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                     {
                         try
@@ -147,20 +144,20 @@ namespace TF2CompRosterChecker
                             //Console.WriteLine(string.Concat(baseApiUrl, SteamIDTools.steamID3ToSteamID64(this.steamIDs[i])).Replace("\n", string.Empty));
                             //Console.WriteLine(webcontent);
                         }
-                        catch (System.Net.WebException e)
+                        catch (WebException e)
                         {
                             if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
                             {
                                 playerlist.Add(new Player(
-                                                          id, 
-                                                          "!![Connect Failure]", 
-                                                          "", 
-                                                          "", 
+                                                          id,
+                                                          "!![Connect Failure]",
+                                                          "",
+                                                          "",
                                                           id,
                                                           steamid,
                                                           steamid3,
-                                                          "", 
-                                                          false, 
+                                                          "",
+                                                          false,
                                                           null
                                                           ));
                             }
@@ -168,50 +165,50 @@ namespace TF2CompRosterChecker
                             {
                                 playerlist.Add(new Player(
                                                           id, 
-                                                          "!![No UGC Profile]", 
-                                                          "", 
-                                                          "", 
+                                                          "!![No UGC Profile]",
+                                                          "",
+                                                          "",
                                                           id,
                                                           steamid,
                                                           steamid3,
-                                                          "", 
-                                                          false, 
+                                                          "",
+                                                          false,
                                                           null
                                                           ));
                             }
                             
                             if (progressBar != null)
                             {
-                                progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
+                                _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
                             }
                             if (button != null)
                             {
-                                button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                             }
                             return;
                         }
 
                         if (progressBar != null)
                         {
-                            progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
+                            _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
                         }
                         if (button != null)
                         {
-                            button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                            _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                         }
 
                         if (webcontent.Contains("No UGC TF2 League History"))
                         {
                             playerlist.Add(new Player(
-                                                      id, 
-                                                      "!![No UGC Profile]", 
-                                                      "", 
-                                                      "", 
+                                                      id,
+                                                      "!![No UGC Profile]",
+                                                      "",
+                                                      "",
                                                       id,
                                                       steamid,
                                                       steamid3,
-                                                      "", 
-                                                      false, 
+                                                      "",
+                                                      false,
                                                       null
                                                       ));
                             return;
@@ -220,12 +217,12 @@ namespace TF2CompRosterChecker
                         {
                             bool hasTeam = false;
                             bool hasBans = false;
-                            var doc = new HtmlDocument();
+                            HtmlDocument doc = new HtmlDocument();
                             try
                             {
                                 doc.LoadHtml(@webcontent);
                             }
-                            catch (WebException w)
+                            catch (WebException)
                             {
                                 return;
                             }
@@ -234,17 +231,17 @@ namespace TF2CompRosterChecker
                             string name = "";
                             try
                             {
-                                var h3 = doc.DocumentNode.Descendants("h3");
-                                foreach (var desc in h3)
+                                IEnumerable<HtmlNode> h3 = doc.DocumentNode.Descendants("h3");
+                                foreach (HtmlNode desc in h3)
                                 {
                                     if ("b".Equals(desc.FirstChild.Name))
                                     {
                                         name = desc.FirstChild.InnerHtml;
                                     }
                                 }
-                                foreach (var node in doc.DocumentNode.Descendants("p"))
+                                foreach (HtmlNode node in doc.DocumentNode.Descendants("p"))
                                 {
-                                    var div = node.Descendants("small").FirstOrDefault();
+                                    HtmlNode div = node.Descendants("small").FirstOrDefault();
                                     if (div != null)
                                     {
                                         if (leagueformat == Checker.HL)
@@ -290,10 +287,10 @@ namespace TF2CompRosterChecker
                                         continue;
                                     }
 
-                                    var next = node.Descendants("span").FirstOrDefault();
+                                    HtmlNode next = node.Descendants("span").FirstOrDefault();
                                     if (next != null)
                                     {
-                                        var team = next.Descendants("b").FirstOrDefault();
+                                        HtmlNode team = next.Descendants("b").FirstOrDefault();
 
                                         if (team != null && div != null)
                                         {
@@ -306,22 +303,22 @@ namespace TF2CompRosterChecker
                                     }
                                 }
                             }
-                             catch (System.NullReferenceException ex)
+                             catch (System.NullReferenceException)
                             {
                                 //HTML tag wasn't found, probably due to a design change...
                             }
                             
                             try
                             {
-                                var divs = doc.DocumentNode.Descendants("div");
+                                IEnumerable<HtmlNode> divs = doc.DocumentNode.Descendants("div");
                                 foreach (HtmlNode node in divs)
                                 {
-                                    var classes = node.GetClasses().FirstOrDefault();
+                                    string classes = node.GetClasses().FirstOrDefault();
                                     if (classes != null)
                                     {
                                         if (classes.Equals("col-md-10"))
                                         {
-                                            var spans = node.Descendants("span").FirstOrDefault().GetClasses().FirstOrDefault();
+                                            string spans = node.Descendants("span").FirstOrDefault().GetClasses().FirstOrDefault();
                                             if (spans.Equals("text-danger"))
                                             {
                                                 hasBans = true;
@@ -333,7 +330,7 @@ namespace TF2CompRosterChecker
                                 }
                             }
 
-                            catch (System.NullReferenceException ex)
+                            catch (NullReferenceException)
                             {
                                 //HTML tag wasn't found, probably due to a design change...
                             }
@@ -343,45 +340,45 @@ namespace TF2CompRosterChecker
                                 if (leagueformat == Checker.HL)
                                 {
                                     playerlist.Add(new Player(
-                                                              name, 
-                                                              "![No UGC HL Team]", 
-                                                              "", 
-                                                              "", 
-                                                              id, 
-                                                              steamid, 
-                                                              steamid3, 
-                                                              id, 
-                                                              hasBans, 
+                                                              name,
+                                                              "![No UGC HL Team]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
                                                               null
                                                               ));
                                 }
                                 else if (leagueformat == Checker.Sixes)
                                 {
                                     playerlist.Add(new Player(
-                                                              name, 
-                                                              "![No UGC 6v6 Team]", 
-                                                              "", 
-                                                              "", 
-                                                              id, 
-                                                              steamid, 
-                                                              steamid3, 
-                                                              id, 
-                                                              hasBans, 
+                                                              name,
+                                                              "![No UGC 6v6 Team]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
                                                               null
                                                               ));
                                 }
                                 else if (leagueformat == Checker.FourVeeFour)
                                 {
                                     playerlist.Add(new Player(
-                                                              name, 
-                                                              "![No UGC 4v4 Team]", 
-                                                              "", 
-                                                              "", 
-                                                              id, 
-                                                              steamid, 
-                                                              steamid3, 
-                                                              id, 
-                                                              hasBans, 
+                                                              name,
+                                                              "![No UGC 4v4 Team]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
                                                               null
                                                               ));
                                 }
@@ -389,15 +386,15 @@ namespace TF2CompRosterChecker
                             else
                             {
                                 playerlist.Add(new Player(
-                                                          name, 
-                                                          setTeam, 
-                                                          teamid, 
-                                                          setDiv, 
-                                                          id, 
-                                                          steamid, 
-                                                          steamid3, 
-                                                          id, 
-                                                          hasBans, 
+                                                          name,
+                                                          setTeam,
+                                                          teamid,
+                                                          setDiv,
+                                                          id,
+                                                          steamid,
+                                                          steamid3,
+                                                          id,
+                                                          hasBans,
                                                           null
                                                           ));
                             }

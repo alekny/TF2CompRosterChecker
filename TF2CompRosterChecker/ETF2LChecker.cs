@@ -104,7 +104,7 @@ using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
-    class ETF2LChecker : Checker
+    internal class ETF2LChecker : Checker
     {
 
         public ETF2LChecker(string statusOutput) : base(statusOutput)
@@ -115,19 +115,18 @@ namespace TF2CompRosterChecker
 
         }
 
-
         [STAThread]
         public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {
             List<Player> playerlist = new List<Player>();
-            var unique_ids = new HashSet<string>(SteamIDs);
+            HashSet<string> unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
             if (SteamIDs.Count != 0)
             {
-                percentagefrac = (int)(100 + unique_ids.Count) / unique_ids.Count;
+                percentagefrac = (100 + unique_ids.Count) / unique_ids.Count;
             }
             //Only allow to check up to 50 SteamIDs per request.
-            Parallel.ForEach(unique_ids,
+            _ = Parallel.ForEach(unique_ids,
                     id =>
                     {
                         //Initialize variables for each Player instance.
@@ -139,8 +138,8 @@ namespace TF2CompRosterChecker
                         string teamid = "";
                         string div = "";
                         string leagueid = "";
-                        string steamid = SteamIDTools.steamID64ToSteamID(id);
-                        string steamid3 = SteamIDTools.steamID64ToSteamID3(id);
+                        string steamid = SteamIDTools.SteamID64ToSteamID(id);
+                        string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
                         string dl = "";
                         bool hasBans = false;
                         List<Ban> bans = new List<Ban>();
@@ -151,7 +150,7 @@ namespace TF2CompRosterChecker
                             {
                                 dl = wc.DownloadString(BaseApiUrl + id + ".json");
                             }
-                            catch (System.Net.WebException e)
+                            catch (WebException e)
                             {
                                 if (e.Status == WebExceptionStatus.Timeout || e.Status == WebExceptionStatus.ConnectFailure)
                                 {
@@ -186,22 +185,22 @@ namespace TF2CompRosterChecker
 
                                 if (progressBar != null)
                                 {
-                                    progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
+                                    _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
                                 }
                                 if (button != null)
                                 {
-                                    button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                    _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                                 }
                                 return;
                             }
 
                             if (progressBar != null)
                             {
-                                progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
+                                _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
                             }
                             if (button != null)
                             {
-                                button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                             }
 
                             //Create a dynamic object for ease of use.
@@ -231,9 +230,9 @@ namespace TF2CompRosterChecker
 
                                 JObject comps = (JObject)hit["competitions"];
                                 counter = -1;
-                                foreach (var comp in comps)
+                                foreach (KeyValuePair<string, JToken> comp in comps)
                                 {
-                                    currentComp = Int32.Parse(comp.Key);
+                                    currentComp = int.Parse(comp.Key);
                                     currentDiv = (string)comp.Value["division"]["name"];
                                     if (counter < currentComp && currentDiv != null)
                                     {
@@ -267,7 +266,7 @@ namespace TF2CompRosterChecker
                                     bans = null;
                                 }
                             }
-                            catch (NullReferenceException ne)
+                            catch (NullReferenceException)
                             {
                                 //Do nothing in this case...
                             }
