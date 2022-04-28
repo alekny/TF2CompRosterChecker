@@ -119,7 +119,7 @@ namespace TF2CompRosterChecker
             InitializeComponent();
         }
 
-        private async void submitButton_Click(object sender, RoutedEventArgs e)
+        private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             int counter = 0;
             int marginleft = 0;
@@ -138,7 +138,7 @@ namespace TF2CompRosterChecker
                 case 0:
                     {
                         ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                        await Task.Run(() => result = ec.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = ec.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
@@ -147,7 +147,7 @@ namespace TF2CompRosterChecker
                 case 1:
                     {
                         ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                        await Task.Run(() => result = ec.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = Task.Run(() => result = ec.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
@@ -156,7 +156,7 @@ namespace TF2CompRosterChecker
                 case 2:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -165,7 +165,7 @@ namespace TF2CompRosterChecker
                 case 3:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseData(Checker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -174,7 +174,7 @@ namespace TF2CompRosterChecker
                 case 4:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -183,7 +183,7 @@ namespace TF2CompRosterChecker
                 case 5:
                     {
                         RGLChecker rc = new RGLChecker(statusOutputText);
-                        await Task.Run(() => result = rc.ParseData(Checker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -192,7 +192,7 @@ namespace TF2CompRosterChecker
                 case 6:
                     {
                         UGCChecker uc = new UGCChecker(statusOutputText);
-                        await Task.Run(() => result = uc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -201,7 +201,7 @@ namespace TF2CompRosterChecker
                 case 7:
                     {
                         UGCChecker uc = new UGCChecker(statusOutputText);
-                        await Task.Run(() => result = uc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -210,7 +210,7 @@ namespace TF2CompRosterChecker
                 case 8:
                     {
                         UGCChecker uc = new UGCChecker(statusOutputText);
-                        await Task.Run(() => result = uc.ParseData(Checker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -221,7 +221,7 @@ namespace TF2CompRosterChecker
             if (result.Any())
             {
                 statusOutput.Visibility = Visibility.Hidden;
-                foreach (var player in result)
+                foreach (Player player in result)
                 {
                     if (switcher)
                     {
@@ -242,22 +242,27 @@ namespace TF2CompRosterChecker
                     grid1.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid1, 0);
                     Grid.SetRow(grid1, counter);
+
                     Grid grid2 = new Grid();
                     grid2.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid2, 1);
                     Grid.SetRow(grid2, counter);
+
                     Grid grid3 = new Grid();
                     grid3.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid3, 2);
                     Grid.SetRow(grid3, counter);
+
                     Grid grid4 = new Grid();
                     grid4.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid4, 3);
                     Grid.SetRow(grid4, counter);
+
                     Grid grid5 = new Grid();
                     grid5.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid5, 4);
                     Grid.SetRow(grid5, counter);
+
                     Grid grid6 = new Grid();
                     grid6.Background = new SolidColorBrush(color);
                     Grid.SetColumn(grid6, 5);
@@ -271,7 +276,7 @@ namespace TF2CompRosterChecker
                         {
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                             Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
-                            grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, displayid, displayid3, marginleft, margintop, true));
+                            _ = grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, displayid, displayid3, marginleft, margintop, true));
                             displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                             displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                         }
@@ -285,7 +290,7 @@ namespace TF2CompRosterChecker
                             popup.ToolTip = "Show Bans";
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                             Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
-                            grid1.Children.Add(TBGen(new Run(player.Name), popup, displayid, displayid3, marginleft, margintop, true));
+                            _ = grid1.Children.Add(TBGen(new Run(player.Name), popup, displayid, displayid3, marginleft, margintop, true));
                             //Route necessary info into the EventHandler.
                             popup.Click += (senders, es) => OpenPopup(senders, es, player.Bans);
                             displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
@@ -297,7 +302,7 @@ namespace TF2CompRosterChecker
                     {
                         Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                         Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
-                        grid1.Children.Add(TBGen(new Run(player.Name), displayid, displayid3, marginleft, margintop, true));
+                        _ = grid1.Children.Add(TBGen(new Run(player.Name), displayid, displayid3, marginleft, margintop, true));
                         displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                         displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                     }
@@ -308,13 +313,13 @@ namespace TF2CompRosterChecker
                             NavigateUri = new Uri(baseTeamUrl + player.Teamid),
                         };
                         teamlink.RequestNavigate += Hyperlink_RequestNavigate;
-                        grid2.Children.Add(TBGen(new Run(player.Team), teamlink, marginleft, margintop, false));
+                        _ = grid2.Children.Add(TBGen(new Run(player.Team), teamlink, marginleft, margintop, false));
                     }
                     else
                     {
-                        grid2.Children.Add(TBGen(player.Team, marginleft, margintop, false));
+                        _ = grid2.Children.Add(TBGen(player.Team, marginleft, margintop, false));
                     }
-                    grid3.Children.Add(TBGen(player.Div, marginleft, margintop, false));
+                    _ = grid3.Children.Add(TBGen(player.Div, marginleft, margintop, false));
                     if (player.Leagueid != "")
                     {
                         Hyperlink leaguelink = new Hyperlink(new Run(league))
@@ -322,7 +327,7 @@ namespace TF2CompRosterChecker
                             NavigateUri = new Uri(baseUrl + player.Leagueid),
                         };
                         leaguelink.RequestNavigate += Hyperlink_RequestNavigate;
-                        grid4.Children.Add(TBGen(leaguelink, marginleft, margintop, false));
+                        _ = grid4.Children.Add(TBGen(leaguelink, marginleft, margintop, false));
                     }
 
                     Hyperlink logslink = new Hyperlink(new Run("Logs"))
@@ -330,22 +335,22 @@ namespace TF2CompRosterChecker
                         NavigateUri = new Uri(SteamIDTools.baseLogsUrl + player.Profileid),
                     };
                     logslink.RequestNavigate += Hyperlink_RequestNavigate;
-                    grid5.Children.Add(TBGen(logslink, marginleft, margintop, false));
+                    _ = grid5.Children.Add(TBGen(logslink, marginleft, margintop, false));
 
                     Hyperlink profilelink = new Hyperlink(new Run("Steam"))
                     {
                         NavigateUri = new Uri(SteamIDTools.baseUrl + player.Profileid),
                     };
                     profilelink.RequestNavigate += Hyperlink_RequestNavigate;
-                    grid6.Children.Add(TBGen(profilelink, marginleft, margintop, false));
+                    _ = grid6.Children.Add(TBGen(profilelink, marginleft, margintop, false));
 
 
-                    outputGrid.Children.Add(grid1);
-                    outputGrid.Children.Add(grid2);
-                    outputGrid.Children.Add(grid3);
-                    outputGrid.Children.Add(grid4);
-                    outputGrid.Children.Add(grid5);
-                    outputGrid.Children.Add(grid6);
+                    _ = outputGrid.Children.Add(grid1);
+                    _ = outputGrid.Children.Add(grid2);
+                    _ = outputGrid.Children.Add(grid3);
+                    _ = outputGrid.Children.Add(grid4);
+                    _ = outputGrid.Children.Add(grid5);
+                    _ = outputGrid.Children.Add(grid6);
 
                     counter++;
                 }
@@ -354,7 +359,7 @@ namespace TF2CompRosterChecker
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
-                submitButton.Click -= submitButton_Click;
+                submitButton.Click -= SubmitButton_Click;
                 submitButton.Click += ResetTextBox;
             }
             else
@@ -377,12 +382,12 @@ namespace TF2CompRosterChecker
             popupText.Text = bans.Count + " Ban(s) on Record:";
             popupText.FontWeight = FontWeights.Bold;
             popupText.FontSize = 14;
-            sp.Children.Add(popupText);
+            _ = sp.Children.Add(popupText);
             foreach (Ban ban in bans)
             {
                 TextBlock banline = new TextBlock();
                 banline.Foreground = Brushes.Black;
-                sp.Children.Add(banline);
+                _ = sp.Children.Add(banline);
                 banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - " 
                     + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
             }
@@ -393,8 +398,8 @@ namespace TF2CompRosterChecker
 
         private void TextToClipboard(object sender, EventArgs e, string text)
         {
-            //No evil stuff like phishing links possible, we calculate this id directly from the
-            //steamid64 we calculated before.
+            //No evil stuff like phishing links possible, we calculated this id directly from the
+            //steamid64.
             Clipboard.SetText(text);
             copiedNotice.Visibility = Visibility.Visible;
             Storyboard sb = Resources["copiedNoticeAnimation"] as Storyboard;
@@ -598,17 +603,18 @@ namespace TF2CompRosterChecker
             progressBar.Value = 0;
             statusOutput.Document.Blocks.Clear();
             submitButton.Click -= ResetTextBox;
-            submitButton.Click += submitButton_Click;
+            submitButton.Click += SubmitButton_Click;
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(e.Uri.ToString());
+            _ = System.Diagnostics.Process.Start(e.Uri.ToString());
         }
 
         public static IEnumerable<TextRange> GetAllWordRanges(FlowDocument document)
         {
-            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|" + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex;
+            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|"
+                + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex;
             TextPointer pointer = document.ContentStart;
             while (pointer != null)
             {
@@ -636,7 +642,7 @@ namespace TF2CompRosterChecker
                 statusOutput.Foreground = Brushes.Black;
                 IEnumerable<TextRange> wordRanges = null;
                 int counter = 0;
-                await Task.Run(() => wordRanges = GetAllWordRanges(statusOutput.Document));
+                _ = await Task.Run(() => wordRanges = GetAllWordRanges(statusOutput.Document));
                 if (wordRanges.Any())
                 {
                     foreach (TextRange wordRange in wordRanges)
@@ -667,6 +673,12 @@ namespace TF2CompRosterChecker
         {
             //Do the same as with changed Text.
             TextBox_TextChanged(sender, null);
+        }
+
+        //Remove any previous formatting from the pasted content.
+        private void TextBoxPasting(object sender, DataObjectPastingEventArgs e)
+        {
+            e.DataObject = new DataObject(DataFormats.Text, e.DataObject.GetData(DataFormats.Text) as string ?? string.Empty);
         }
 
         private void Show_Licenses(object sender, RoutedEventArgs e)
@@ -769,7 +781,7 @@ namespace TF2CompRosterChecker
             statusOutput.Document.Blocks.Clear();
             statusOutput.Document.Blocks.Add(new Paragraph(new Run(License)));
             submitButton.Content = "Reset";
-            submitButton.Click -= submitButton_Click;
+            submitButton.Click -= SubmitButton_Click;
             submitButton.Click += ResetTextBox;
         }
 
