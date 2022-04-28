@@ -98,7 +98,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -132,13 +131,18 @@ namespace TF2CompRosterChecker
             Color color = Colors.White;
             List<Player> result = new List<Player>();
 
+            //Avoid NullPointers.
+            ETF2LChecker ec;
+            RGLChecker rc;
+            UGCChecker uc;
+
             DisableUI();
             switch (leagueSelector.SelectedIndex)
             {
                 case 0:
                     {
-                        ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                        _ = await Task.Run(() => result = ec.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        ec = new ETF2LChecker(statusOutputText);
+                        _ = await Task.Run(() => result = ec.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
@@ -146,8 +150,8 @@ namespace TF2CompRosterChecker
                     }
                 case 1:
                     {
-                        ETF2LChecker ec = new ETF2LChecker(statusOutputText);
-                        _ = Task.Run(() => result = ec.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        ec = new ETF2LChecker(statusOutputText);
+                        _ = await Task.Run(() => result = ec.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
@@ -155,8 +159,8 @@ namespace TF2CompRosterChecker
                     }
                 case 2:
                     {
-                        RGLChecker rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        rc = new RGLChecker(statusOutputText);
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -164,8 +168,8 @@ namespace TF2CompRosterChecker
                     }
                 case 3:
                     {
-                        RGLChecker rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        rc = new RGLChecker(statusOutputText);
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -173,8 +177,8 @@ namespace TF2CompRosterChecker
                     }
                 case 4:
                     {
-                        RGLChecker rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        rc = new RGLChecker(statusOutputText);
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -182,8 +186,8 @@ namespace TF2CompRosterChecker
                     }
                 case 5:
                     {
-                        RGLChecker rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        rc = new RGLChecker(statusOutputText);
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -191,8 +195,8 @@ namespace TF2CompRosterChecker
                     }
                 case 6:
                     {
-                        UGCChecker uc = new UGCChecker(statusOutputText);
-                        _ = await Task.Run(() => result = uc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        uc = new UGCChecker(statusOutputText);
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -200,8 +204,8 @@ namespace TF2CompRosterChecker
                     }
                 case 7:
                     {
-                        UGCChecker uc = new UGCChecker(statusOutputText);
-                        _ = await Task.Run(() => result = uc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        uc = new UGCChecker(statusOutputText);
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -209,15 +213,18 @@ namespace TF2CompRosterChecker
                     }
                 case 8:
                     {
-                        UGCChecker uc = new UGCChecker(statusOutputText);
+                         uc = new UGCChecker(statusOutputText);
                         _ = await Task.Run(() => result = uc.ParseData(Checker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
                         break;
                     }
+
+                default:
+                    break;
             }
-            
+
             if (result.Any())
             {
                 statusOutput.Visibility = Visibility.Hidden;

@@ -115,7 +115,6 @@ namespace TF2CompRosterChecker
 
         }
 
-
         [STAThread]
         public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
         {

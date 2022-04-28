@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.7.2" Height="368" Width="790"
+        Title="TF2CompRosterChecker v1.7.3" Height="368" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">
@@ -37,19 +37,19 @@
         </ScrollViewer>
         <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Left" Margin="109.2,294,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="SubmitButton_Click" FontSize="14" BorderBrush="Black" Grid.Column="1"/>
         <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000" Grid.ColumnSpan="2">
-            <ComboBoxItem Content="ETF2L (Highlander)" IsSelected="True"/>
-            <ComboBoxItem Content="ETF2L (6v6)"/>
-            <ComboBoxItem Content="RGL NA (Highlander)" IsEnabled="False"/>
-            <ComboBoxItem Content="RGL NA (Prolander)" IsEnabled="False"/>
+            <ComboBoxItem Content="ETF2L (6v6)" IsSelected="True"/>
+            <ComboBoxItem Content="ETF2L (Highlander)"/>
             <ComboBoxItem Content="RGL NA (Traditional 6v6)" IsEnabled="False"/>
             <ComboBoxItem Content="RGL NA (No Restrictions 6v6)" IsEnabled="False"/>
-            <ComboBoxItem Content="UGC (Highlander)"/>
+            <ComboBoxItem Content="RGL NA (Highlander)" IsEnabled="False"/>
+            <ComboBoxItem Content="RGL NA (Prolander)" IsEnabled="False"/>
             <ComboBoxItem Content="UGC (6v6)"/>
+            <ComboBoxItem Content="UGC (Highlander)"/>
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,9,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.2 by <Hyperlink 
-        NavigateUri="https://pr0.pw"
+        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.3 by <Hyperlink 
+        NavigateUri="https://proph.im"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         proph
     </Hyperlink></TextBlock>
