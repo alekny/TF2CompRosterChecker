@@ -279,7 +279,7 @@ namespace TF2CompRosterChecker
                     if (player.HasBans)
                     {
                         //Only ETF2L-Checker will set this to a non-null object yet.
-                        if (player.Bans is null)
+                        if (player.Bans?.Any() != true)
                         {
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                             Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };

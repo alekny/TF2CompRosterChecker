@@ -93,6 +93,7 @@
  * 
  */
 
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -106,14 +107,23 @@ namespace TF2CompRosterChecker
 {
     internal class RGLChecker : Checker
     {
+
+        //BIG WIP!!!
         public RGLChecker(string statusOutput) : base(statusOutput)
         {
-            BaseApiUrl = "https://rgl.payload.tf/api/v1/profiles/";
+            BaseApiUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
             BaseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
 
-            //For now just display the Player page (the payload api response has no direct link to any player's team id)
-            BaseTeamUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
+            BaseTeamUrl = "https://rgl.gg/Public/Team.aspx?t=";
 
+        }
+
+        public static long ToUnixTimestamp(DateTime target)
+        {
+            var date = new DateTime(1970, 1, 1, 0, 0, 0, target.Kind);
+            var unixTimestamp = Convert.ToInt64((target - date).TotalSeconds);
+
+            return unixTimestamp;
         }
 
         [STAThread]
@@ -130,14 +140,15 @@ namespace TF2CompRosterChecker
                     id =>
                     {
                         //Initialize variables for each Player instance.
+                        string webcontent = "";
                         string name = "";
                         string team = "";
                         string teamid = "";
                         string div = "";
-                        string dl = "";
                         bool hasBans = false;
                         string steamid = SteamIDTools.SteamID64ToSteamID(id);
                         string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
+                        List<Ban> bans = null;
 
                         //Using a modified webclient, because the payload.tf api is quite slow (mostly)
                         //This will introduce another problem (players that are indeed registered at rgl
@@ -148,7 +159,7 @@ namespace TF2CompRosterChecker
                             wc.Encoding = Encoding.UTF8;
                             try
                             {
-                                dl = wc.DownloadString(BaseApiUrl + id);
+                                webcontent = wc.DownloadString(string.Concat(BaseUrl, id)).Replace("\n", string.Empty);
                             }
                             catch (WebException e)
                             {
@@ -203,91 +214,7 @@ namespace TF2CompRosterChecker
                                 _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
                             }
 
-
-
-                            //Create a dynamic object for ease of use.
-                            dynamic doc2 = JObject.Parse(dl);
-
-                            if (doc2["statusCode"] == null && doc2["data"]["statusCode"] == null)
-                            {
-                                name = (string)doc2["data"]["name"];
-                                JArray teams = (JArray)doc2["data"]["experience"];
-                                string teamtype = "";
-
-                                if (leagueformat == Checker.HL)
-                                {
-                                    teamtype = "na highlander";
-                                    team = "![No RGL HL Team]";
-                                }
-                                else if (leagueformat == Checker.PL)
-                                {
-                                    teamtype = "na prolander";
-                                    team = "![No RGL PL Team]";
-                                }
-                                else if (leagueformat == Checker.Sixes)
-                                {
-                                    teamtype = "na traditional sixes";
-                                    team = "![No RGL trad. 6v6 Team]";
-                                }
-                                else if (leagueformat == Checker.NRSixes)
-                                {
-                                    teamtype = "na no restriction sixes";
-                                    team = "![No RGL nr 6v6 Team]";
-                                }
-
-
-                                //Not that nice, there has to be a more elegant way?
-                                try
-                                {
-                                    IEnumerable<JToken> hit = teams.SelectTokens(@"$.[?(@.format == '" + teamtype + "')]");
-
-                                    foreach (JToken entry in hit)
-                                    {
-                                        if ((bool)entry["isCurrentTeam"])
-                                        {
-                                            //Workaround for now
-                                            teamid = id;
-                                            team = (string)entry["team"];
-                                            div = (string)entry["div"];
-                                        }
-                                    }
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    if (ex is NullReferenceException || ex is InvalidCastException)
-                                    {
-                                        div = "[inactive]";
-                                    }
-                                }
-
-                                try
-                                {
-                                    if ((bool)doc2["data"]["status"]["banned"] || (bool)doc2["data"]["status"]["probation"])
-                                    {
-                                        hasBans = true;
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    //Do nothing in this case...
-                                }
-
-
-                                playerlist.Add(new Player(
-                                                          name,
-                                                          team,
-                                                          teamid,
-                                                          div,
-                                                          id,
-                                                          steamid,
-                                                          steamid3,
-                                                          id,
-                                                          hasBans,
-                                                          null
-                                                          ));
-                            }
-                            else
+                            if (webcontent.Contains("Player does not exist in RGL"))
                             {
                                 playerlist.Add(new Player(
                                                           id,
@@ -301,7 +228,215 @@ namespace TF2CompRosterChecker
                                                           false,
                                                           null
                                                           ));
+                                return;
                             }
+                            else
+                            {
+                                bool hasTeam = false;
+                                HtmlDocument doc = new HtmlDocument();
+                                try
+                                {
+                                    doc.LoadHtml(@webcontent);
+                                }
+                                catch (WebException)
+                                {
+                                    return;
+                                }
+
+                                try
+                                {
+                                    //This apparently has some problems with names containing "@".
+                                    //Those will show "email protected" as current name, the rest should work properly tho.
+                                    name = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_lblPlayerName").InnerText;
+
+                                }
+                                catch (NullReferenceException)
+                                {
+                                    //HTML tag wasn't found, probably due to a frontend design change...
+                                    playerlist.Add(new Player(
+                                                          id,
+                                                          "!![No RGL Profile]",
+                                                          "",
+                                                          "",
+                                                          id,
+                                                          steamid,
+                                                          steamid3,
+                                                          "",
+                                                          false,
+                                                          null
+                                                          ));
+                                    return;
+                                }
+
+                                try
+                                {
+                                    if (!doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_lblPlayerBanHistory").InnerText.Equals("Player has no discipline history"))
+                                    {
+                                        hasBans = true;
+                                        bans = new List<Ban>();
+                                        HtmlNode bantitle = doc.DocumentNode.SelectSingleNode("//h3[@id=\"banhistory\"]");
+                                        HtmlNode bantable = bantitle.NextSibling.NextSibling.ChildNodes["table"];
+                                        string[] startdate, enddate;
+                                        long unixstart, unixend = -1;
+                                        string reason = "";
+                                        foreach (HtmlNode row in bantable.SelectNodes("tr"))
+                                        {
+                                            //Skip the title row
+                                            if (row.SelectSingleNode("(th|td)[1]").InnerText == "Active")
+                                            {
+                                                continue;
+                                            }
+                                            startdate = row.SelectSingleNode("(th|td)[2]").InnerText.Trim().Split('/');
+                                            unixstart = ToUnixTimestamp(new DateTime(int.Parse(startdate[2]), int.Parse(startdate[0]), int.Parse(startdate[1])));
+                                            enddate = row.SelectSingleNode("(th|td)[3]").InnerText.Trim().Split('/');
+                                            unixend = ToUnixTimestamp(new DateTime(int.Parse(enddate[2]), int.Parse(enddate[0]), int.Parse(enddate[1])));
+                                            reason = row.SelectSingleNode("(th|td)[4]").InnerText.Trim();
+                                            bans.Add(new Ban(unixstart.ToString(), unixend.ToString(), reason));
+                                        }
+                                    }
+                                }
+                                catch (NullReferenceException)
+                                {
+
+                                }
+
+                                try
+                                {
+                                    HtmlNode leagueNode = null;
+                                    HtmlNode tablepointer = null;
+                                    HtmlNode table = null;
+                                    string leaguename = "";
+
+                                    if (leagueformat == Checker.Sixes)
+                                    {
+                                        //Sixes
+                                        leagueNode = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_rptLeagues_lblLeagueName_0");
+                                        leaguename = "Trad. Sixes";
+                                    }
+                                    else if (leagueformat == Checker.HL)
+                                    {
+                                        //Highlander
+                                        leagueNode = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_rptLeagues_lblLeagueName_1");
+                                        leaguename = "Highlander";
+                                    }
+                                    else if (leagueformat == Checker.PL)
+                                    {
+                                        //Prolander
+                                        leagueNode = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_rptLeagues_lblLeagueName_2");
+                                        leaguename = "Prolander";
+                                    }
+
+                                    if (leagueNode != null)
+                                    {
+                                        HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//h3");
+
+                                        foreach (HtmlNode title in nodes)
+                                        {
+                                            if (title.InnerHtml.Contains(leaguename))
+                                            {
+                                                tablepointer = title;
+                                                break;
+                                            }
+                                        }
+
+                                        if (tablepointer != null)
+                                        {
+                                            //May God have mercy on my soul
+                                            table = tablepointer.NextSibling.NextSibling.NextSibling.NextSibling.ChildNodes["table"];
+                                            HtmlNode temptd = null;
+                                            foreach (HtmlNode row in table.SelectNodes("tr"))
+                                            {
+                                                if (row.Attributes["style"]?.Value != null)
+                                                {
+                                                    temptd = row.SelectSingleNode("(th|td)[3]").SelectSingleNode("a");
+                                                    //That Last bit: WTF? Why is it even necessary to do this??
+                                                    team = temptd.InnerText.Trim();
+                                                    //At first it might not make sense to splite the id from the rest of
+                                                    //the url, but this should prevent link injections.
+                                                    teamid = temptd.Attributes["href"].Value.Remove(0, BaseTeamUrl.Length);
+                                                    div = row.SelectSingleNode("(th|td)[2]").InnerText.Trim();
+                                                    //Too long, remember when divs were all numbers?
+                                                    if (div == "Admin Placement")
+                                                    {
+                                                        div = "Admin Plcmt.";
+                                                    }
+                                                    hasTeam = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (hasTeam)
+                                            {
+                                                playerlist.Add(new Player(
+                                                              name,
+                                                              team,
+                                                              teamid,
+                                                              div,
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
+                                                              bans
+                                                              ));
+                                            }
+                                            else
+                                            {
+                                                playerlist.Add(new Player(
+                                                              name,
+                                                              "![No RGL " + leaguename + " Team]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
+                                                              bans
+                                                              ));
+                                            }
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            playerlist.Add(new Player(
+                                                              name,
+                                                              "![No RGL " + leaguename + " Team]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
+                                                              bans
+                                                              ));
+                                            return;
+                                        }
+
+                                    }
+                                    {
+                                        playerlist.Add(new Player(
+                                                              name,
+                                                              "![No RGL " + leaguename + " Team]",
+                                                              "",
+                                                              "",
+                                                              id,
+                                                              steamid,
+                                                              steamid3,
+                                                              id,
+                                                              hasBans,
+                                                              bans
+                                                              ));
+                                        return;
+                                    }
+
+                                }
+                                catch (NullReferenceException)
+                                {
+                                    //HTML tag wasn't found, probably due to a frontend design change...
+                                }
+                            }
+
                         }
                     }
 

@@ -303,7 +303,7 @@ namespace TF2CompRosterChecker
                                     }
                                 }
                             }
-                             catch (System.NullReferenceException)
+                             catch (NullReferenceException)
                             {
                                 //HTML tag wasn't found, probably due to a design change...
                             }
