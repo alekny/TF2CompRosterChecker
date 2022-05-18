@@ -395,8 +395,17 @@ namespace TF2CompRosterChecker
                 TextBlock banline = new TextBlock();
                 banline.Foreground = Brushes.Black;
                 _ = sp.Children.Add(banline);
-                banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - " 
+                //Display Permabans in a better way (currently only used by RGL)
+                if (ban.End.Equals("2147483647"))
+                {
+                    banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                    + "Permanent" + ", Reason: " + ban.Reason;
+                }
+                else
+                {
+                    banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
                     + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                }
             }
             codePopup.Child = sp;
             codePopup.StaysOpen = false;

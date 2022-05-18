@@ -287,17 +287,35 @@ namespace TF2CompRosterChecker
                                                 continue;
                                             }
                                             startdate = row.SelectSingleNode("(th|td)[2]").InnerText.Trim().Split('/');
-                                            unixstart = ToUnixTimestamp(new DateTime(int.Parse(startdate[2]), int.Parse(startdate[0]), int.Parse(startdate[1])));
+                                            //Contains correct Date
+                                            if (startdate.Length == 3)
+                                            {
+                                                unixstart = ToUnixTimestamp(new DateTime(int.Parse(startdate[2]), int.Parse(startdate[0]), int.Parse(startdate[1])));
+                                                
+                                            }
+                                            else
+                                            {
+                                                unixstart = 0;
+                                            }
                                             enddate = row.SelectSingleNode("(th|td)[3]").InnerText.Trim().Split('/');
-                                            unixend = ToUnixTimestamp(new DateTime(int.Parse(enddate[2]), int.Parse(enddate[0]), int.Parse(enddate[1])));
+                                            //If there is no data given, it means this column contains "Permanent"
+                                            if (enddate.Length == 3)
+                                            {
+                                                unixend = ToUnixTimestamp(new DateTime(int.Parse(enddate[2]), int.Parse(enddate[0]), int.Parse(enddate[1])));
+                                            }
+                                            else
+                                            {
+                                                //This essientially means Permaban!
+                                                unixend = 2147483647;
+                                            }
                                             reason = row.SelectSingleNode("(th|td)[4]").InnerText.Trim();
                                             bans.Add(new Ban(unixstart.ToString(), unixend.ToString(), reason));
                                         }
                                     }
                                 }
-                                catch (NullReferenceException)
+                                catch (Exception)
                                 {
-
+                                    //A bit lazy but for now it's fine (to prevent crashes if RGL changes html stuff)
                                 }
 
                                 try
