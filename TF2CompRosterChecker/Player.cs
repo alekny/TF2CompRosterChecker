@@ -95,10 +95,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace TF2CompRosterChecker
 {
-    internal class Player
+    internal sealed class Player
     {
         public Player(string name, string team, string teamid, string div, string profileid, string steamid, string steamid3, string leagueid, bool hasBans, List<Ban> bans)
         {
@@ -127,11 +128,16 @@ namespace TF2CompRosterChecker
 
         public void Print()
         {
-            Console.WriteLine(string.Concat(Name,string.Concat(",", string.Concat(Team, string.Concat(",", Div)))));
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(this))
+            {
+                string name = descriptor.Name;
+                object value = descriptor.GetValue(this);
+                Console.WriteLine("{0}={1}", name, value);
+            }
         }
     }
 
-    internal class Ban
+    internal sealed class Ban
     {
         public Ban(string start, string end, string reason)
         {

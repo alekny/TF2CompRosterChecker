@@ -105,7 +105,7 @@ using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
-    internal class RGLChecker : Checker
+    internal sealed class RGLChecker : Checker
     {
 
         //BIG WIP!!!
@@ -120,22 +120,24 @@ namespace TF2CompRosterChecker
 
         public static long ToUnixTimestamp(DateTime target)
         {
-            var date = new DateTime(1970, 1, 1, 0, 0, 0, target.Kind);
-            var unixTimestamp = Convert.ToInt64((target - date).TotalSeconds);
+            DateTime date = new DateTime(1970, 1, 1, 0, 0, 0, target.Kind);
+            long unixTimestamp = Convert.ToInt64((target - date).TotalSeconds);
 
             return unixTimestamp;
         }
 
         [STAThread]
-        public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
+        public override List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress)
         {
             List<Player> playerlist = new List<Player>();
             HashSet<string> unique_ids = new HashSet<string>(SteamIDs);
             int percentagefrac = 0;
+
             if (SteamIDs.Count != 0)
             {
                 percentagefrac = (100 + unique_ids.Count) / unique_ids.Count;
             }
+
             _ = Parallel.ForEach(unique_ids,
                     id =>
                     {
@@ -150,10 +152,13 @@ namespace TF2CompRosterChecker
                         string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
                         List<Ban> bans = null;
 
+                        
+
                         //Using a modified webclient, because the payload.tf api is quite slow (mostly)
                         //This will introduce another problem (players that are indeed registered at rgl
                         //will be shown as unregistered, if the timout is reached), but at least the
                         //program wont hang for 100...
+
                         using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
                         {
                             wc.Encoding = Encoding.UTF8;
@@ -193,25 +198,15 @@ namespace TF2CompRosterChecker
                                                               null
                                                               ));
                                 }
-
-                                if (progressBar != null)
+                                if (progress != null)
                                 {
-                                    _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
-                                }
-                                if (button != null)
-                                {
-                                    _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                    progress.Report(percentagefrac);
                                 }
                                 return;
                             }
-
-                            if (progressBar != null)
+                            if (progress != null)
                             {
-                                _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
-                            }
-                            if (button != null)
-                            {
-                                _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                progress.Report(percentagefrac);
                             }
 
                             if (webcontent.Contains("Player does not exist in RGL"))
@@ -325,19 +320,19 @@ namespace TF2CompRosterChecker
                                     HtmlNode table = null;
                                     string leaguename = "";
 
-                                    if (leagueformat == Checker.Sixes)
+                                    if (leagueformat == LeagueFormat.Sixes)
                                     {
                                         //Sixes
                                         leagueNode = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_rptLeagues_lblLeagueName_0");
                                         leaguename = "Trad. Sixes";
                                     }
-                                    else if (leagueformat == Checker.HL)
+                                    else if (leagueformat == LeagueFormat.HL)
                                     {
                                         //Highlander
                                         leagueNode = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_rptLeagues_lblLeagueName_1");
                                         leaguename = "Highlander";
                                     }
-                                    else if (leagueformat == Checker.PL)
+                                    else if (leagueformat == LeagueFormat.PL)
                                     {
                                         //Prolander
                                         leagueNode = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_rptLeagues_lblLeagueName_2");

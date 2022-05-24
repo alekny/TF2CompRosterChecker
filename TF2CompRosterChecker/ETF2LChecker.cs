@@ -104,7 +104,7 @@ using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
-    internal class ETF2LChecker : Checker
+    internal sealed class ETF2LChecker : Checker
     {
 
         public ETF2LChecker(string statusOutput) : base(statusOutput)
@@ -116,7 +116,7 @@ namespace TF2CompRosterChecker
         }
 
         [STAThread]
-        public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
+        public override List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress)
         {
             List<Player> playerlist = new List<Player>();
             HashSet<string> unique_ids = new HashSet<string>(SteamIDs);
@@ -143,6 +143,9 @@ namespace TF2CompRosterChecker
                         string dl = "";
                         bool hasBans = false;
                         List<Ban> bans = new List<Ban>();
+
+                        
+
                         using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                         {
                             wc.Encoding = Encoding.UTF8;
@@ -182,25 +185,15 @@ namespace TF2CompRosterChecker
                                                               null
                                                               ));
                                 }
-
-                                if (progressBar != null)
+                                if (progress != null)
                                 {
-                                    _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
-                                }
-                                if (button != null)
-                                {
-                                    _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                    progress.Report(percentagefrac);
                                 }
                                 return;
                             }
-
-                            if (progressBar != null)
+                            if (progress != null)
                             {
-                                _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
-                            }
-                            if (button != null)
-                            {
-                                _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                progress.Report(percentagefrac);
                             }
 
                             //Create a dynamic object for ease of use.
@@ -210,12 +203,12 @@ namespace TF2CompRosterChecker
                             JArray teams = (JArray)doc2["player"]["teams"];
                             string teamtype = "";
 
-                            if (leagueformat == Checker.HL)
+                            if (leagueformat == LeagueFormat.HL)
                             {
                                 teamtype = "Highlander";
                                 team = "![No ETF2L HL Team]";
                             }
-                            else if (leagueformat == Checker.Sixes)
+                            else if (leagueformat == LeagueFormat.Sixes)
                             {
                                 teamtype = "6on6";
                                 team = "![No ETF2L 6v6 Team]";

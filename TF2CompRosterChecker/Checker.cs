@@ -10,11 +10,14 @@ namespace TF2CompRosterChecker
 {
     internal abstract class Checker
     {
-        public const int HL = 0;
-        public const int Sixes = 1;
-        public const int PL = 2;
-        public const int NRSixes = 3;
-        public const int FourVeeFour = 4;
+        public enum LeagueFormat
+        {
+            HL,
+            Sixes,
+            PL,
+            NRSixes,
+            FourVeeFour
+        }
 
         public Checker(string statusOutput)
         {
@@ -88,7 +91,7 @@ namespace TF2CompRosterChecker
             SteamIDs = foundSteamIDs;
         }
 
-        public abstract List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button);
+        public abstract List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress);
 
         public List<string> SteamIDs { get; set; }
 

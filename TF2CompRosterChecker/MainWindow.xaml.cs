@@ -111,7 +111,7 @@ namespace TF2CompRosterChecker
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public sealed partial class MainWindow : Window
     {
         public MainWindow()
         {
@@ -131,6 +131,9 @@ namespace TF2CompRosterChecker
             Color color = Colors.White;
             List<Player> result = new List<Player>();
 
+            Progress<int> progress = new Progress<int>();
+            progress.ProgressChanged += ReportProgress;
+
             //Avoid NullPointers.
             ETF2LChecker ec;
             RGLChecker rc;
@@ -142,7 +145,7 @@ namespace TF2CompRosterChecker
                 case 0:
                     {
                         ec = new ETF2LChecker(statusOutputText);
-                        _ = await Task.Run(() => result = ec.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = ec.ParseData(Checker.LeagueFormat.Sixes, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
@@ -151,7 +154,7 @@ namespace TF2CompRosterChecker
                 case 1:
                     {
                         ec = new ETF2LChecker(statusOutputText);
-                        _ = await Task.Run(() => result = ec.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = ec.ParseData(Checker.LeagueFormat.HL, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
@@ -160,7 +163,7 @@ namespace TF2CompRosterChecker
                 case 2:
                     {
                         rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.LeagueFormat.Sixes, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -169,7 +172,7 @@ namespace TF2CompRosterChecker
                 case 3:
                     {
                         rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.NRSixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.LeagueFormat.NRSixes, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -178,7 +181,7 @@ namespace TF2CompRosterChecker
                 case 4:
                     {
                         rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.LeagueFormat.HL, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -187,7 +190,7 @@ namespace TF2CompRosterChecker
                 case 5:
                     {
                         rc = new RGLChecker(statusOutputText);
-                        _ = await Task.Run(() => result = rc.ParseData(Checker.PL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = rc.ParseData(Checker.LeagueFormat.PL, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
@@ -196,7 +199,7 @@ namespace TF2CompRosterChecker
                 case 6:
                     {
                         uc = new UGCChecker(statusOutputText);
-                        _ = await Task.Run(() => result = uc.ParseData(Checker.Sixes, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.LeagueFormat.Sixes, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -205,7 +208,7 @@ namespace TF2CompRosterChecker
                 case 7:
                     {
                         uc = new UGCChecker(statusOutputText);
-                        _ = await Task.Run(() => result = uc.ParseData(Checker.HL, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.LeagueFormat.HL, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -214,7 +217,7 @@ namespace TF2CompRosterChecker
                 case 8:
                     {
                          uc = new UGCChecker(statusOutputText);
-                        _ = await Task.Run(() => result = uc.ParseData(Checker.FourVeeFour, progressBar, submitButton).OrderBy(o => o.Team).ToList());
+                        _ = await Task.Run(() => result = uc.ParseData(Checker.LeagueFormat.FourVeeFour, progress).OrderBy(o => o.Team).ToList());
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
@@ -376,6 +379,12 @@ namespace TF2CompRosterChecker
             }
             foundIDs.Text = "";
             EnableUI();
+        }
+
+        private void ReportProgress(object sender, int e)
+        {
+            progressBar.Value += e;
+            submitButton.Content = "Checking: " + progressBar.Value + "%";
         }
 
         private void OpenPopup(object sender, EventArgs e, List<Ban> bans)

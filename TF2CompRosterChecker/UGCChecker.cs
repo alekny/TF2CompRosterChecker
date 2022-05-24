@@ -104,7 +104,7 @@ using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
-    internal class UGCChecker : Checker
+    internal sealed class UGCChecker : Checker
     {
         public UGCChecker(string statusOutput) : base(statusOutput)
         {
@@ -118,7 +118,7 @@ namespace TF2CompRosterChecker
          * doesn't provide a proper API (xml or json) to work with.
          */
         [STAThread]
-        public override List<Player> ParseData(int leagueformat, ProgressBar progressBar, Button button)
+        public override List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress)
         {
             List<Player> playerlist = new List<Player>();
             HashSet<string> unique_ids = new HashSet<string>(SteamIDs);
@@ -136,6 +136,7 @@ namespace TF2CompRosterChecker
                     string teamid = "";
                     string steamid = SteamIDTools.SteamID64ToSteamID(id);
                     string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
+
                     using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                     {
                         try
@@ -176,25 +177,15 @@ namespace TF2CompRosterChecker
                                                           null
                                                           ));
                             }
-                            
-                            if (progressBar != null)
+                            if (progress != null)
                             {
-                                _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
-                            }
-                            if (button != null)
-                            {
-                                _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                                progress.Report(percentagefrac);
                             }
                             return;
                         }
-
-                        if (progressBar != null)
+                        if (progress != null)
                         {
-                            _ = progressBar.Dispatcher.Invoke(() => progressBar.Value += percentagefrac, DispatcherPriority.Background);
-                        }
-                        if (button != null)
-                        {
-                            _ = button.Dispatcher.Invoke(() => button.Content = "Checking: " + progressBar.Value + "%", DispatcherPriority.Background);
+                            progress.Report(percentagefrac);
                         }
 
                         if (webcontent.Contains("No UGC TF2 League History"))
@@ -244,7 +235,7 @@ namespace TF2CompRosterChecker
                                     HtmlNode div = node.Descendants("small").FirstOrDefault();
                                     if (div != null)
                                     {
-                                        if (leagueformat == Checker.HL)
+                                        if (leagueformat == LeagueFormat.HL)
                                         {
                                             if (div.InnerHtml.Contains("Highlander"))
                                             {
@@ -256,7 +247,7 @@ namespace TF2CompRosterChecker
                                                 continue;
                                             }
                                         }
-                                        else if (leagueformat == Checker.Sixes)
+                                        else if (leagueformat == LeagueFormat.Sixes)
                                         {
                                             if (div.InnerHtml.Contains("6vs6"))
                                             {
@@ -268,7 +259,7 @@ namespace TF2CompRosterChecker
                                                 continue;
                                             }
                                         }
-                                        else if (leagueformat == Checker.FourVeeFour)
+                                        else if (leagueformat == LeagueFormat.FourVeeFour)
                                         {
                                             if (div.InnerHtml.Contains("4vs4"))
                                             {
@@ -337,7 +328,7 @@ namespace TF2CompRosterChecker
 
                             if (!hasTeam)
                             {
-                                if (leagueformat == Checker.HL)
+                                if (leagueformat == LeagueFormat.HL)
                                 {
                                     playerlist.Add(new Player(
                                                               name,
@@ -352,7 +343,7 @@ namespace TF2CompRosterChecker
                                                               null
                                                               ));
                                 }
-                                else if (leagueformat == Checker.Sixes)
+                                else if (leagueformat == LeagueFormat.Sixes)
                                 {
                                     playerlist.Add(new Player(
                                                               name,
@@ -367,7 +358,7 @@ namespace TF2CompRosterChecker
                                                               null
                                                               ));
                                 }
-                                else if (leagueformat == Checker.FourVeeFour)
+                                else if (leagueformat == LeagueFormat.FourVeeFour)
                                 {
                                     playerlist.Add(new Player(
                                                               name,

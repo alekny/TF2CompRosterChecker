@@ -99,7 +99,7 @@ using System.Text.RegularExpressions;
 
 namespace TF2CompRosterChecker
 {
-    internal class SteamIDTools
+    internal sealed class SteamIDTools
     {
         public const string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]+";
         public const string steamID3regex = @"\[U:1:[0-9]+\]";
