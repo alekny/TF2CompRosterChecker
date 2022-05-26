@@ -381,12 +381,14 @@ namespace TF2CompRosterChecker
             EnableUI();
         }
 
+        //Callback to update the UI
         private void ReportProgress(object sender, int e)
         {
             progressBar.Value += e;
             submitButton.Content = "Checking: " + progressBar.Value + "%";
         }
 
+        //Popup for the ban-details
         private void OpenPopup(object sender, EventArgs e, List<Ban> bans)
         {
             Popup codePopup = new Popup();

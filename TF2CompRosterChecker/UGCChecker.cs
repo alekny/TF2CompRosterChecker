@@ -187,7 +187,7 @@ namespace TF2CompRosterChecker
                         {
                             progress.Report(percentagefrac);
                         }
-
+                     
                         if (webcontent.Contains("No UGC TF2 League History"))
                         {
                             playerlist.Add(new Player(

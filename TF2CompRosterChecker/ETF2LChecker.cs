@@ -144,7 +144,7 @@ namespace TF2CompRosterChecker
                         bool hasBans = false;
                         List<Ban> bans = new List<Ban>();
 
-                        
+
 
                         using (TimeoutWebClient wc = new TimeoutWebClient(8000))
                         {
@@ -214,7 +214,6 @@ namespace TF2CompRosterChecker
                                 team = "![No ETF2L 6v6 Team]";
                             }
 
-                            //Not that nice, there has to be a more elegant way?
                             try
                             {
                                 JToken hit = teams.SelectToken(@"$.[?(@.type == '" + teamtype + "')]");
@@ -233,13 +232,13 @@ namespace TF2CompRosterChecker
                                         div = currentDiv;
                                     }
                                 }
+
+
                             }
-                            catch (Exception ex)
+                            //If any Exception is caught here, there is no team data and no div
+                            catch (Exception)
                             {
-                                if (ex is NullReferenceException || ex is InvalidCastException)
-                                {
-                                    div = "";
-                                }
+                                div = "";
                             }
 
                             try
