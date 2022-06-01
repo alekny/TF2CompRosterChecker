@@ -109,8 +109,6 @@ namespace TF2CompRosterChecker
         public const string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]+";
         public const string idFinderRegex = "\"steamid\":\"([0-9]+)\"";
         public const string profileCustomUrlXml = "https://steamcommunity.com/id/";
-        public const int RATECTRL = 50;
-
 
         public static string SteamIDToSteamID64(string steamID)
         {

@@ -18,6 +18,8 @@ namespace TF2CompRosterChecker
             FourVeeFour
         }
 
+        public const int maxParallelThreads = 5;
+        public const int RATECTRL = 100;
         public abstract List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress);
         public List<string> SteamIDs { get; set; }
         public string BaseApiUrl { get; set; }
@@ -38,7 +40,7 @@ namespace TF2CompRosterChecker
             foreach (Match match in matchesSteamID3)
             {
                 //Limit Max Results to 50 to not flood the apis.
-                if (index > SteamIDTools.RATECTRL)
+                if (index > RATECTRL)
                 {
                     break;
                 }
@@ -47,7 +49,7 @@ namespace TF2CompRosterChecker
             }
             foreach (Match match in matchesSteamID)
             {
-                if (index > SteamIDTools.RATECTRL)
+                if (index > RATECTRL)
                 {
                     break;
                 }
@@ -56,7 +58,7 @@ namespace TF2CompRosterChecker
             }
             foreach (Match match in matchesProfileUrl)
             {
-                if (index > SteamIDTools.RATECTRL)
+                if (index > RATECTRL)
                 {
                     break;
                 }
@@ -65,7 +67,7 @@ namespace TF2CompRosterChecker
             }
             foreach (Match match in matchesProfileCustomUrl)
             {
-                if (index > SteamIDTools.RATECTRL)
+                if (index > RATECTRL)
                 {
                     break;
                 }

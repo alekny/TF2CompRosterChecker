@@ -678,21 +678,21 @@ namespace TF2CompRosterChecker
                 {
                     foreach (TextRange wordRange in wordRanges)
                     {
-                        if (counter < SteamIDTools.RATECTRL)
+                        if (counter < Checker.RATECTRL)
                         {
                             wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
                         }
                         counter++;
                         //statusOutput.Select(match.Index, match.Length);
                     }
-                    if (counter <= SteamIDTools.RATECTRL)
+                    if (counter <= Checker.RATECTRL)
                     {
                         foundIDs.Text = wordRanges.Count() + " SteamIDs/Profile Urls found";
                         submitButton.IsEnabled = true;
                     }
                     else
                     {
-                        foundIDs.Text = "Too many SteamIDs entered (" + wordRanges.Count() + "), max 50 allowed per request!";
+                        foundIDs.Text = "Too many SteamIDs entered (" + wordRanges.Count() + "), max " + Checker.RATECTRL + " allowed per request!";
                         submitButton.IsEnabled = false;
                     }
                     

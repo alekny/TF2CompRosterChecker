@@ -126,7 +126,7 @@ namespace TF2CompRosterChecker
             {
                 percentagefrac = (100 + unique_ids.Count) / unique_ids.Count;
             }
-            _ = Parallel.ForEach(unique_ids,
+            _ = Parallel.ForEach(unique_ids, new ParallelOptions { MaxDegreeOfParallelism = Checker.maxParallelThreads },
                 id =>
                 {
                     string webcontent = "";
