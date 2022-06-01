@@ -122,15 +122,14 @@ namespace TF2CompRosterChecker
             {
                 steamID64 += 1;
             }
-            return Convert.ToString(steamID64);
-            
+            return Convert.ToString(steamID64); 
         }
 
         public static string SteamID3ToSteamID64(string steamID3)
         {
             string[] args = steamID3.Split(':');
             int accid = int.Parse(args[2].Substring(0, args[2].Length - 1));
-            int Y, Z = 0;
+            int Y, Z;
             if ((accid % 2) == 0)
             {
                 Y = 0;
@@ -141,7 +140,7 @@ namespace TF2CompRosterChecker
                 Y = 1;
                 Z = (accid - 1) / 2;
             }
-            return string.Concat("7656119", Convert.ToString((Z * 2) + (7960265728 + Y)));
+            return "7656119" + Convert.ToString((Z * 2) + (7960265728 + Y));
         }
 
         public static string GetSteamID64FromCustomUrl(string customUrl)

@@ -101,7 +101,11 @@ namespace TF2CompRosterChecker
 {
     internal sealed class Player
     {
-        public Player(string name, string team, string teamid, string div, string profileid, string steamid, string steamid3, string leagueid, bool hasBans, List<Ban> bans)
+        //Do we want the output inside the TextBox or in console?
+        public delegate void Printer(string message);
+
+        public Player(string name, string team, string teamid, string div, string profileid, 
+            string steamid, string steamid3, string leagueid, bool hasBans, List<Ban> bans)
         {
             Name = name;
             Team = team;
@@ -126,13 +130,13 @@ namespace TF2CompRosterChecker
         public bool HasBans { get; }
         public List<Ban> Bans { get; } = null;
 
-        public void Print()
+        public void Print(Printer printer)
         {
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(this))
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(this);
-                Console.WriteLine("{0}={1}", name, value);
+                printer(name + ", " + value + "\n");
             }
         }
     }

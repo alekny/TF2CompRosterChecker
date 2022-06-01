@@ -94,14 +94,11 @@
  */
 
 using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
@@ -113,9 +110,7 @@ namespace TF2CompRosterChecker
         {
             BaseApiUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
             BaseUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
-
             BaseTeamUrl = "https://rgl.gg/Public/Team.aspx?t=";
-
         }
 
         public static long ToUnixTimestamp(DateTime target)

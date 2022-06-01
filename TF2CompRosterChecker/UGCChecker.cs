@@ -110,7 +110,6 @@ namespace TF2CompRosterChecker
         {
             BaseUrl = "https://www.ugcleague.com/players_page.cfm?player_id=";
             BaseTeamUrl = "https://www.ugcleague.com/team_page.cfm?clan_id=";
-
         }
 
         /*

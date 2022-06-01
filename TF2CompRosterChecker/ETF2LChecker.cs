@@ -99,8 +99,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
@@ -112,7 +110,6 @@ namespace TF2CompRosterChecker
             BaseApiUrl = "https://api.etf2l.org/player/";
             BaseUrl = "https://etf2l.org/forum/user/";
             BaseTeamUrl = "https://etf2l.org/teams/";
-
         }
 
         [STAThread]
@@ -143,7 +140,6 @@ namespace TF2CompRosterChecker
                         string dl = "";
                         bool hasBans = false;
                         List<Ban> bans = new List<Ban>();
-
 
 
                         using (TimeoutWebClient wc = new TimeoutWebClient(8000))

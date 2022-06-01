@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
 using System.Xml;
 
 namespace TF2CompRosterChecker
@@ -18,6 +17,12 @@ namespace TF2CompRosterChecker
             NRSixes,
             FourVeeFour
         }
+
+        public abstract List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress);
+        public List<string> SteamIDs { get; set; }
+        public string BaseApiUrl { get; set; }
+        public string BaseUrl { get; set; }
+        public string BaseTeamUrl { get; set; }
 
         public Checker(string statusOutput)
         {
@@ -90,14 +95,6 @@ namespace TF2CompRosterChecker
 
             SteamIDs = foundSteamIDs;
         }
-
-        public abstract List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress);
-
-        public List<string> SteamIDs { get; set; }
-
-        public string BaseApiUrl { get; set; }
-        public string BaseUrl { get; set; }
-        public string BaseTeamUrl { get; set; }
 
         /*
          * Debug stuff.
