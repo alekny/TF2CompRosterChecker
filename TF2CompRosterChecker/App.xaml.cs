@@ -13,5 +13,6 @@ namespace TF2CompRosterChecker
     /// </summary>
     public partial class App : Application
     {
+        
     }
 }

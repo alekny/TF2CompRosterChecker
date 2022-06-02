@@ -1,0 +1,24 @@
+﻿<SyntaxDefinition name="lol"
+        xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+
+  <!-- This is the main ruleset. -->
+  <RuleSet>
+    
+    <!-- SteamID -->
+    <Rule foreground="Blue">
+      STEAM_[0-5]:[01]:[0-9]+
+    </Rule>
+    <!-- SteamID3 -->
+    <Rule foreground="Blue">
+      \[U:1:[0-9]+\]
+    </Rule>
+    <!-- Profile-URL -->
+    <Rule foreground="Blue">
+      (?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)
+    </Rule>
+    <!-- Custom-Profile-URL -->
+    <Rule foreground="Blue">
+      (?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]+
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>
