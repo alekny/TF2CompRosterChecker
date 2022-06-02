@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.7.6" Height="368" Width="790"
+        Title="TF2CompRosterChecker v1.7.7" Height="368" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">
@@ -48,7 +48,7 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,9,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.6 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.7 by <Hyperlink 
         NavigateUri="https://proph.im"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         proph
@@ -59,18 +59,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="361.2,291,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
         <TextBlock HorizontalAlignment="Left" Margin="488.2,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="10" Grid.Column="1"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="348.2,291,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" Grid.Column="1" FontSize="13"/>
-        <RichTextBox Name="statusOutput" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" FontFamily="Consolas" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown" DataObject.Pasting="TextBoxPasting" BorderBrush="#000000" SelectionBrush="#7fd0ff" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="744" FontSize="13">
-            <RichTextBox.Resources>
-                <Style TargetType="{x:Type Paragraph}">
-                    <Setter Property="Margin" Value="0"/>
-                </Style>
-            </RichTextBox.Resources>
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" Name="statusOutput" FontFamily="Consolas" FontSize="13" Margin="17,31,17,48" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Hidden" TextChanged="statusOutput_TextChanged" KeyDown="statusOutput_KeyDown"/>
         <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
         <TextBlock Name="copiedNotice" HorizontalAlignment="Left" Margin="129.2,9,0,0" TextWrapping="Wrap" Text="SteamID copied to Clipboard" VerticalAlignment="Top" Foreground="Yellow" Grid.Column="1" FontSize="13" Visibility="Hidden" />
     </Grid>

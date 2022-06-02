@@ -1,101 +1,11 @@
-﻿/**
- * 
- *  Costura.Fody
- *  Copyright (c) Simon Cropp, Cameron MacFarland
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
- * of this software and associated documentation files (the "Software"), to deal 
- * in the Software without restriction, including without limitation the rights 
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- * copies of the Software, and to permit persons to whom the Software is 
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in 
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
- * IN THE SOFTWARE.
- * 
- * -----------------------------------------------------------------------------
- * 
- *  Fody
- *  Copyright (c) Simon Cropp
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
- * of this software and associated documentation files (the "Software"), to deal 
- * in the Software without restriction, including without limitation the rights 
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- * copies of the Software, and to permit persons to whom the Software is 
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in 
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
- * IN THE SOFTWARE.
- * 
- * -----------------------------------------------------------------------------
- * 
- * 
- *  Html Agility Pack (HAP)
- *  Copyright (c)ZZZ Projects, Simon Mourrier, Jeff Klawiter, Stephan Grell
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
- * of this software and associated documentation files (the "Software"), to deal 
- * in the Software without restriction, including without limitation the rights 
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- * copies of the Software, and to permit persons to whom the Software is 
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in 
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
- * IN THE SOFTWARE.
- * 
- * -----------------------------------------------------------------------------
- * 
- *  Newtonsoft.Json
- *  Copyright (c) James Newton-King
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
- * of this software and associated documentation files (the "Software"), to deal 
- * in the Software without restriction, including without limitation the rights 
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- * copies of the Software, and to permit persons to whom the Software is 
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in 
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
- * IN THE SOFTWARE.
- * 
- */
-
+﻿
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -105,6 +15,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using System.Xml;
 
 namespace TF2CompRosterChecker
 {
@@ -116,6 +27,14 @@ namespace TF2CompRosterChecker
         public MainWindow()
         {
             InitializeComponent();
+            var test = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("TF2CompRosterChecker.SteamIDSyntaxHL.xml"))
+            {
+                using (XmlTextReader reader = new XmlTextReader(s))
+                {
+                    statusOutput.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+            }
         }
 
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
@@ -127,7 +46,7 @@ namespace TF2CompRosterChecker
             string baseUrl = "";
             string baseTeamUrl = "";
             string league = "";
-            string statusOutputText = new TextRange(statusOutput.Document.ContentStart, statusOutput.Document.ContentEnd).Text;
+            string statusOutputText = statusOutput.Text;
             Color color = Colors.White;
             List<Player> result = new List<Player>();
 
@@ -302,7 +221,7 @@ namespace TF2CompRosterChecker
                             displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                             displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                         }
-                         
+
                     }
                     else
                     {
@@ -360,8 +279,7 @@ namespace TF2CompRosterChecker
 
                     counter++;
                 }
-                statusOutput.Document.Blocks.Clear();
-                statusOutput.Document.Blocks.Add(new Paragraph(new Run("")));
+                statusOutput.Text = "";
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
@@ -370,8 +288,7 @@ namespace TF2CompRosterChecker
             }
             else
             {
-                statusOutput.Document.Blocks.Clear();
-                statusOutput.Document.Blocks.Add(new Paragraph(new Run("No SteamIDs found")));
+                statusOutput.Text = "No SteamIDs found";
             }
             foundIDs.Text = "";
             EnableUI();
@@ -632,7 +549,7 @@ namespace TF2CompRosterChecker
             outputGrid.Children.Clear();
             submitButton.Content = "Check Roster";
             progressBar.Value = 0;
-            statusOutput.Document.Blocks.Clear();
+            statusOutput.Text = "";
             submitButton.Click -= ResetTextBox;
             submitButton.Click += SubmitButton_Click;
         }
@@ -642,68 +559,39 @@ namespace TF2CompRosterChecker
             _ = System.Diagnostics.Process.Start(e.Uri.ToString());
         }
 
-        public static IEnumerable<TextRange> GetAllWordRanges(FlowDocument document)
+        public static int GetAllSteamIDs(string input)
         {
             string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|"
                 + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex;
-            TextPointer pointer = document.ContentStart;
-            while (pointer != null)
-            {
-                if (pointer.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
-                {
-                    string textRun = pointer.GetTextInRun(LogicalDirection.Forward);
-                    MatchCollection matches = Regex.Matches(textRun, pattern);
-                    foreach (Match match in matches)
-                    {
-                        int startIndex = match.Index;
-                        int length = match.Length;
-                        TextPointer start = pointer.GetPositionAtOffset(startIndex);
-                        TextPointer end = start.GetPositionAtOffset(length);
-                        yield return new TextRange(start, end);
-                    }
-                }
-                pointer = pointer.GetNextContextPosition(LogicalDirection.Forward);
-            }
+            MatchCollection matches = Regex.Matches(input, pattern);
+            return matches.Count;
         }
-
-        private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private async void statusOutput_TextChanged(object sender, EventArgs e)
         {
-            if (!new TextRange(statusOutput.Document.ContentStart, statusOutput.Document.ContentEnd).Text.Equals(""))
+            if (!statusOutput.Text.Equals(""))
             {
-                statusOutput.Foreground = Brushes.Black;
-                IEnumerable<TextRange> wordRanges = null;
+                string input = statusOutput.Text;
                 int counter = 0;
-                _ = await Task.Run(() => wordRanges = GetAllWordRanges(statusOutput.Document));
-                if (wordRanges.Any())
+                _ = await Task.Run(() => counter = GetAllSteamIDs(input));
+
+                if (counter <= Checker.RATECTRL)
                 {
-                    foreach (TextRange wordRange in wordRanges)
-                    {
-                        if (counter < Checker.RATECTRL)
-                        {
-                            wordRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Blue);
-                        }
-                        counter++;
-                        //statusOutput.Select(match.Index, match.Length);
-                    }
-                    if (counter <= Checker.RATECTRL)
-                    {
-                        foundIDs.Text = wordRanges.Count() + " SteamIDs/Profile Urls found";
-                        submitButton.IsEnabled = true;
-                    }
-                    else
-                    {
-                        foundIDs.Text = "Too many SteamIDs entered (" + wordRanges.Count() + "), max " + Checker.RATECTRL + " allowed per request!";
-                        submitButton.IsEnabled = false;
-                    }
-                    
+                    foundIDs.Text = counter + " SteamIDs/Profile Urls found";
+                    submitButton.IsEnabled = true;
                 }
+                else
+                {
+                    foundIDs.Text = "Too many SteamIDs entered (" + counter + "), max " + Checker.RATECTRL + " allowed per request!";
+                    submitButton.IsEnabled = false;
+                }
+
             }
         }
 
-        private void TextBox_KeyDown(object sender, EventArgs e)
+        private void statusOutput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             //Do the same as with changed Text.
-            TextBox_TextChanged(sender, null);
+            statusOutput_TextChanged(sender, null);
         }
 
         //Remove any previous formatting from the pasted content.
@@ -720,7 +608,7 @@ namespace TF2CompRosterChecker
             outputGrid.Children.Clear();
             submitButton.Content = "Check Roster";
             progressBar.Value = 0;
-            string License = "Fody\n"
+            string license = "Fody\n"
             + "Copyright (c) Simon Cropp\n"
             + "\n"
             + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
@@ -786,7 +674,7 @@ namespace TF2CompRosterChecker
             + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
             + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
             + "IN THE SOFTWARE.\n"
-            +"\n"
+            + "\n"
             + "-----------------------------------------------------------------------------\n"
             + "\n"
             + "Newtonsoft.Json\n"
@@ -808,13 +696,35 @@ namespace TF2CompRosterChecker
             + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
             + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
             + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
-            + "IN THE SOFTWARE.\n";
-            statusOutput.Document.Blocks.Clear();
-            statusOutput.Document.Blocks.Add(new Paragraph(new Run(License)));
+            + "IN THE SOFTWARE.\n"
+            + "\n"
+            + "-----------------------------------------------------------------------------\n"
+            + "\n"
+            + "AvalonEdit\n"
+            + "Copyright (c) AvalonEdit Contributors\n"
+            + "\n"
+            + "Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+            + "of this software and associated documentation files (the \"Software\"), to deal\n"
+            + "in the Software without restriction, including without limitation the rights\n"
+            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n"
+            + "copies of the Software, and to permit persons to whom the Software is\n"
+            + "furnished to do so, subject to the following conditions:\n"
+            + "\n"
+            + "The above copyright notice and this permission notice shall be included in all\n"
+            + "copies or substantial portions of the Software.\n"
+            + "\n"
+            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
+            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
+            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n"
+            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
+            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
+            + "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
+            + "SOFTWARE.\n";
+
+            statusOutput.Text = license;
             submitButton.Content = "Reset";
             submitButton.Click -= SubmitButton_Click;
             submitButton.Click += ResetTextBox;
         }
-
     }
 }
