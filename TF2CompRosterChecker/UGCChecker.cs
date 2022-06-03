@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace TF2CompRosterChecker
 {
-    internal sealed class UGCChecker : Checker
+    public sealed class UGCChecker : Checker
     {
         public UGCChecker(string statusOutput) : base(statusOutput)
         {

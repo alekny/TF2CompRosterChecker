@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace TF2CompRosterChecker
 {
-    internal sealed class Player
+    public sealed class Player
     {
         //Do we want the output inside the TextBox or in console?
         public delegate void Printer(string message);
@@ -46,7 +46,7 @@ namespace TF2CompRosterChecker
         }
     }
 
-    internal sealed class Ban
+    public sealed class Ban
     {
         public Ban(string start, string end, string reason)
         {

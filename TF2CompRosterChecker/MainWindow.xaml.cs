@@ -27,7 +27,6 @@ namespace TF2CompRosterChecker
         public MainWindow()
         {
             InitializeComponent();
-            var test = Assembly.GetExecutingAssembly().GetManifestResourceNames();
             using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("TF2CompRosterChecker.SteamIDSyntaxHL.xml"))
             {
                 using (XmlTextReader reader = new XmlTextReader(s))

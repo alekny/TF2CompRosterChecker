@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TF2CompRosterChecker
 {
-    internal sealed class ETF2LChecker : Checker
+    public sealed class ETF2LChecker : Checker
     {
 
         public ETF2LChecker(string statusOutput) : base(statusOutput)

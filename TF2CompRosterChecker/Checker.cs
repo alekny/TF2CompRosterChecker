@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace TF2CompRosterChecker
 {
-    internal abstract class Checker
+    public abstract class Checker
     {
         public enum LeagueFormat
         {
