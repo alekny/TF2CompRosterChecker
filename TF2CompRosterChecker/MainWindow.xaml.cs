@@ -35,7 +35,6 @@ namespace TF2CompRosterChecker
                 }
             }
         }
-
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             int counter = 0;
@@ -208,14 +207,14 @@ namespace TF2CompRosterChecker
                         {
                             Hyperlink popup = new Hyperlink(new Run("[!]"))
                             {
+                                Tag = "Show Bans",
+                                Foreground = Brushes.Red,
+                                ToolTip = "Show Bans"
                             };
-                            popup.Tag = "Show Bans";
-                            popup.Foreground = Brushes.Red;
-                            popup.ToolTip = "Show Bans";
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                             Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
                             _ = grid1.Children.Add(TBGen(new Run(player.Name), popup, displayid, displayid3, marginleft, margintop, true));
-                            //Route necessary info into the EventHandler.
+                            //Route necessary info into the EventHandler. 
                             popup.Click += (senders, es) => OpenPopup(senders, es, player.Bans);
                             displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                             displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
