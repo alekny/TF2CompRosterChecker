@@ -34,6 +34,7 @@ namespace TF2CompRosterChecker
                     statusOutput.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
                 }
             }
+            statusOutput.Options.EnableHyperlinks = false;
         }
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -560,7 +561,9 @@ namespace TF2CompRosterChecker
         public static int GetAllSteamIDs(string input)
         {
             string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|"
-                + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex;
+                + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex + "|"
+                + SteamIDTools.etf2lProfileUrl + "|" + SteamIDTools.ugcProfileUrl + "|" 
+                + SteamIDTools.rglProfileUrl;
             MatchCollection matches = Regex.Matches(input, pattern);
             return matches.Count;
         }

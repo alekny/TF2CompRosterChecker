@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,6 +34,9 @@ namespace TF2CompRosterChecker
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
             MatchCollection matchesProfileCustomUrl = Regex.Matches(statusOutput, SteamIDTools.profileCustomUrlregex);
+            MatchCollection matchesEtf2lUrl = Regex.Matches(statusOutput, SteamIDTools.etf2lProfileUrl);
+            MatchCollection matchesUgcUrl = Regex.Matches(statusOutput, SteamIDTools.ugcProfileUrl);
+            MatchCollection matchesRglUrl = Regex.Matches(statusOutput, SteamIDTools.rglProfileUrl);
             List<string> foundSteamIDs = new List<string>();
             //We cannot use fixed arrays anymore, since a valid custom profile url doesnt necessarily lead
             //to a valid steam id. So List it is.
@@ -85,14 +89,63 @@ namespace TF2CompRosterChecker
                         if (results.Count == 1)
                         {
                             foundSteamIDs.Add(results.Item(0).InnerText);
+                            index++;
                         }
-                        index++;
                     }
                     catch (System.Net.WebException)
                     {
                         // do nothing lul
                     }
                 }
+            }
+            foreach (Match match in matchesEtf2lUrl)
+            {
+                if (index > RATECTRL)
+                {
+                    break;
+                }
+                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                {
+                    wc.Encoding = Encoding.UTF8;
+                    try
+                    {
+                        string lol = "https://api.etf2l.org/player/" + match.Groups[1].ToString() + ".json";
+                        //uglyyyyyy
+                        string dl = wc.DownloadString("https://api.etf2l.org/player/" + match.Groups[1].ToString() + ".json");
+
+                        dynamic doc = JObject.Parse(dl);
+                        string steamid = (string)doc["player"]["steam"]["id64"];
+
+                        //Check if the steam profile even exists.
+                        if (steamid != null)
+                        {
+                            foundSteamIDs.Add(steamid);
+                            index++;
+                        }
+                    }
+                    catch (System.Net.WebException)
+                    {
+                        // do nothing lul
+                    }
+                }
+            }
+            foreach (Match match in matchesUgcUrl)
+            {
+                if (index > RATECTRL)
+                {
+                    break;
+                }
+                foundSteamIDs.Add(match.Groups[1].ToString());
+                index++;
+            }
+            foreach (Match match in matchesRglUrl)
+            {
+                if (index > RATECTRL)
+                {
+                    break;
+                }
+                foundSteamIDs.Add(match.Groups[1].ToString());
+                index++;
             }
 
             SteamIDs = foundSteamIDs;

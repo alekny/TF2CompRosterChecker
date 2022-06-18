@@ -7,14 +7,17 @@ namespace TF2CompRosterChecker
 {
     internal sealed class SteamIDTools
     {
-        public const string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]+";
-        public const string steamID3regex = @"\[U:1:[0-9]+\]";
+        public const string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]{1,9}";
+        public const string steamID3regex = @"\[U:1:[0-9]{1,10}\]";
         public const string baseUrl = "https://steamcommunity.com/profiles/";
         public const string baseLogsUrl = "https://logs.tf/profile/";
         public const string profileUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)";
-        public const string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]+";
+        public const string profileCustomUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]{1,50}";
         public const string idFinderRegex = "\"steamid\":\"([0-9]+)\"";
         public const string profileCustomUrlXml = "https://steamcommunity.com/id/";
+        public const string etf2lProfileUrl = @"(?:https?:\/\/)?etf2l.org\/forum\/user\/([0-9]{1,9})(?:\/?)";
+        public const string ugcProfileUrl = @"(?:https?:\/\/)?ugcleague\.com\/players_page\.cfm\?player_id=([0-9]{17})(?:\/?)";
+        public const string rglProfileUrl = @"(?:https?:\/\/)?rgl.gg\/Public\/PlayerProfile\.aspx\?p=([0-9]{17})(?:\/?)";
 
         public static string SteamIDToSteamID64(string steamID)
         {

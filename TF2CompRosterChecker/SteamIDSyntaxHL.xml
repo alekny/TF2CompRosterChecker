@@ -6,11 +6,11 @@
     
     <!-- SteamID -->
     <Rule foreground="Blue">
-      STEAM_[0-5]:[01]:[0-9]+
+      STEAM_[0-5]:[01]:[0-9]{1,9}
     </Rule>
     <!-- SteamID3 -->
     <Rule foreground="Blue">
-      \[U:1:[0-9]+\]
+      \[U:1:[0-9]{1,10}\]
     </Rule>
     <!-- Profile-URL -->
     <Rule foreground="Blue">
@@ -18,7 +18,19 @@
     </Rule>
     <!-- Custom-Profile-URL -->
     <Rule foreground="Blue">
-      (?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]+
+      (?:https?:\/\/)?steamcommunity\.com\/id\/[a-zA-Z0-9_-]{1,50}
+    </Rule>
+    <!-- Custom-ETF2L-Profile-URL -->
+    <Rule foreground="Blue">
+      (?:https?:\/\/)?etf2l.org\/forum\/user\/([0-9]{1,9})(?:\/?)
+    </Rule>
+    <!-- Custom-UGC-Profile-URL -->
+    <Rule foreground="Blue">
+      (?:https?:\/\/)?ugcleague\.com\/players_page\.cfm\?player_id=([0-9]{17})(?:\/?)
+    </Rule>
+    <!-- Custom-RGL-Profile-URL -->
+    <Rule foreground="Blue">
+      (?:https?:\/\/)?rgl.gg\/Public\/PlayerProfile\.aspx\?p=([0-9]{17})(?:\/?)
     </Rule>
   </RuleSet>
 </SyntaxDefinition>
