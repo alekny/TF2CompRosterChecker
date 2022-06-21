@@ -60,7 +60,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="488.2,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="10" Grid.Column="1"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
         <TextBlock HorizontalAlignment="Left" Margin="348.2,291,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" Grid.Column="1" FontSize="13"/>
         <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" Name="statusOutput" FontFamily="Consolas" FontSize="13" Margin="17,31,17,48" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Hidden" TextChanged="statusOutput_TextChanged" KeyDown="statusOutput_KeyDown"/>
-        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
+        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
         <TextBlock Name="copiedNotice" HorizontalAlignment="Left" Margin="129.2,9,0,0" TextWrapping="Wrap" Text="SteamID copied to Clipboard" VerticalAlignment="Top" Foreground="Yellow" Grid.Column="1" FontSize="13" Visibility="Hidden" />
     </Grid>
 </Window>

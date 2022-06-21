@@ -19,6 +19,8 @@ namespace TF2CompRosterChecker
             FourVeeFour
         }
 
+        public delegate void Printer(string message);
+
         public const int maxParallelThreads = 5;
         public const int RATECTRL = 100;
         public abstract List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress);
@@ -38,12 +40,10 @@ namespace TF2CompRosterChecker
             MatchCollection matchesUgcUrl = Regex.Matches(statusOutput, SteamIDTools.ugcProfileUrl);
             MatchCollection matchesRglUrl = Regex.Matches(statusOutput, SteamIDTools.rglProfileUrl);
             List<string> foundSteamIDs = new List<string>();
-            //We cannot use fixed arrays anymore, since a valid custom profile url doesnt necessarily lead
-            //to a valid steam id. So List it is.
-            //string[] foundSteamIDs = new string[matchesSteamID.Count + matchesSteamID3.Count + matchesProfileUrl.Count + matchesProfileCustomUrl.Count];
+
             foreach (Match match in matchesSteamID3)
             {
-                //Limit Max Results to 50 to not flood the apis.
+                //Limit Max Results to RATECTRL to not flood the apis.
                 if (index > RATECTRL)
                 {
                     break;
@@ -94,7 +94,7 @@ namespace TF2CompRosterChecker
                     }
                     catch (System.Net.WebException)
                     {
-                        // do nothing lul
+                        // do nothing
                     }
                 }
             }
@@ -109,10 +109,8 @@ namespace TF2CompRosterChecker
                     wc.Encoding = Encoding.UTF8;
                     try
                     {
-                        string lol = "https://api.etf2l.org/player/" + match.Groups[1].ToString() + ".json";
                         //uglyyyyyy
                         string dl = wc.DownloadString("https://api.etf2l.org/player/" + match.Groups[1].ToString() + ".json");
-
                         dynamic doc = JObject.Parse(dl);
                         string steamid = (string)doc["player"]["steam"]["id64"];
 
@@ -123,9 +121,9 @@ namespace TF2CompRosterChecker
                             index++;
                         }
                     }
-                    catch (System.Net.WebException)
+                    catch (Exception)
                     {
-                        // do nothing lul
+                        // do nothing
                     }
                 }
             }
@@ -154,11 +152,11 @@ namespace TF2CompRosterChecker
         /*
          * Debug stuff.
          */
-        public void PrintIDs()
+        public void PrintIDs(Printer printer)
         {
             foreach (string steamID in SteamIDs)
             {
-                Console.WriteLine(steamID);
+                printer(steamID);
             }
         }
 

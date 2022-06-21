@@ -1,4 +1,4 @@
-﻿<SyntaxDefinition name="lol"
+﻿<SyntaxDefinition name="PlayerMatchHighlighting"
         xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
   <!-- This is the main ruleset. -->
