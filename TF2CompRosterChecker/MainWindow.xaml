@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.7.8" Height="368" Width="790"
+        Title="TF2CompRosterChecker v1.7.9" Height="368" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">
@@ -48,7 +48,7 @@
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
         <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,9,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.8 by <Hyperlink 
+        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.7.9 by <Hyperlink 
         NavigateUri="https://proph.im"
         RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
         proph

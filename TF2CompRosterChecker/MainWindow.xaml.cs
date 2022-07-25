@@ -35,6 +35,60 @@ namespace TF2CompRosterChecker
                 }
             }
             statusOutput.Options.EnableHyperlinks = false;
+
+            //Enable Right-Click Menu
+            ContextMenu cm = new ContextMenu();
+            MenuItem undo = new MenuItem();
+            undo.Name = "Undo";
+            undo.Header = "Undo";
+            undo.Click += (sender, e) => statusOutput.Undo();
+
+            MenuItem redo = new MenuItem();
+            redo.Name = "Redo";
+            redo.Header = "Redo";
+            redo.Click += (sender, e) => statusOutput.Redo();
+
+            MenuItem cut = new MenuItem();
+            cut.Name = "Cut";
+            cut.Header = "Cut";
+            cut.Click += (sender, e) => statusOutput.Cut();
+
+            MenuItem copy = new MenuItem();
+            copy.Name = "Copy";
+            copy.Header = "Copy";
+            copy.Click += (sender, e) => statusOutput.Copy();
+
+            MenuItem paste = new MenuItem();
+            paste.Name = "Paste";
+            paste.Header = "Paste";
+            paste.Click += (sender, e) => statusOutput.Paste();
+
+            MenuItem selectall = new MenuItem();
+            selectall.Name = "Select_All";
+            selectall.Header = "Select All";
+            selectall.Click += (sender, e) => statusOutput.SelectAll();
+
+            cm.Items.Add(undo);
+            cm.Items.Add(redo);
+            cm.Items.Add(new Separator());
+            cm.Items.Add(cut);
+            cm.Items.Add(copy);
+            cm.Items.Add(paste);
+            cm.Items.Add(new Separator());
+            cm.Items.Add(selectall);
+
+            //Only make MenuItems accessible if it makes sense
+            cm.Opened += (sender, e) =>
+            {
+                undo.IsEnabled = !statusOutput.IsReadOnly && statusOutput.CanUndo;
+                redo.IsEnabled = !statusOutput.IsReadOnly && statusOutput.CanRedo;
+                cut.IsEnabled = !statusOutput.IsReadOnly && statusOutput.SelectionLength > 0;
+                copy.IsEnabled = statusOutput.SelectionLength > 0;
+                paste.IsEnabled = !statusOutput.IsReadOnly && Clipboard.ContainsText();
+                selectall.IsEnabled = statusOutput.Text.Length > 0 && statusOutput.SelectionLength < statusOutput.Text.Length;
+            };
+
+            statusOutput.ContextMenu = cm;
         }
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
