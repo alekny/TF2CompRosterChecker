@@ -8,7 +8,7 @@ namespace TF2CompRosterChecker
     internal sealed class SteamIDTools
     {
         public const string steamIDregex = @"STEAM_[0-5]:[01]:[0-9]{1,9}";
-        public const string steamID3regex = @"\[U:1:[0-9]{1,10}\]";
+        public const string steamID3regex = @"U:1:[0-9]{1,10}";
         public const string baseUrl = "https://steamcommunity.com/profiles/";
         public const string baseLogsUrl = "https://logs.tf/profile/";
         public const string profileUrlregex = @"(?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)";
@@ -18,6 +18,7 @@ namespace TF2CompRosterChecker
         public const string etf2lProfileUrl = @"(?:https?:\/\/)?etf2l.org\/forum\/user\/([0-9]{1,9})(?:\/?)";
         public const string ugcProfileUrl = @"(?:https?:\/\/)?ugcleague\.com\/players_page\.cfm\?player_id=([0-9]{17})(?:\/?)";
         public const string rglProfileUrl = @"(?:https?:\/\/)?rgl.gg\/Public\/PlayerProfile\.aspx\?p=([0-9]{17})(?:\/?)";
+        public const string urlRegex = @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
 
         public static string SteamIDToSteamID64(string steamID)
         {
@@ -35,7 +36,8 @@ namespace TF2CompRosterChecker
         public static string SteamID3ToSteamID64(string steamID3)
         {
             string[] args = steamID3.Split(':');
-            int accid = int.Parse(args[2].Substring(0, args[2].Length - 1));
+            
+            int accid = int.Parse(args[2].Substring(0, args[2].Length));
             int Y, Z;
             if ((accid % 2) == 0)
             {

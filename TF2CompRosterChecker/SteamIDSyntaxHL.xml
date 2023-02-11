@@ -12,6 +12,10 @@
     <Rule foreground="Blue">
       \[U:1:[0-9]{1,10}\]
     </Rule>
+    <!-- SteamID3-No-Brackets -->
+    <Rule foreground="Blue">
+      U:1:[0-9]{1,10}
+    </Rule>
     <!-- Profile-URL -->
     <Rule foreground="Blue">
       (?:https?:\/\/)?steamcommunity\.com\/profiles\/([0-9]{17})(?:\/?)

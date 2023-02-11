@@ -19,11 +19,15 @@ using System.Xml;
 
 namespace TF2CompRosterChecker
 {
+
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        //We use this to trace the recheck-functionality
+        private bool checkCompleted = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -196,6 +200,7 @@ namespace TF2CompRosterChecker
                     break;
             }
 
+            outputGrid.Children.Clear();
             if (result.Any())
             {
                 statusOutput.Visibility = Visibility.Hidden;
@@ -332,7 +337,7 @@ namespace TF2CompRosterChecker
 
                     counter++;
                 }
-                statusOutput.Text = "";
+                checkCompleted = true;
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
@@ -359,7 +364,8 @@ namespace TF2CompRosterChecker
         {
             Popup codePopup = new Popup
             {
-                Placement = PlacementMode.Mouse
+                Placement = PlacementMode.Mouse,
+                MaxWidth = 700
             };
             StackPanel sp = new StackPanel
             {
@@ -370,18 +376,27 @@ namespace TF2CompRosterChecker
                 Foreground = Brushes.Black,
                 Text = bans.Count + " Ban(s) on Record:",
                 FontWeight = FontWeights.Bold,
-                FontSize = 14
+                FontSize = 14,
+                Margin = new Thickness(2, 2, 2, 8),
+                TextWrapping = TextWrapping.Wrap
             };
             _ = sp.Children.Add(popupText);
-            foreach (Ban ban in bans)
+            foreach (Ban ban in bans.OrderByDescending(o => o.Start).ToList())
             {
                 TextBlock banline = new TextBlock
                 {
-                    Foreground = Brushes.Black
+                    Foreground = Brushes.Black,
+                    FontSize = 13,
+                    Margin = new Thickness(2, 0, 2, 2),
+                    TextWrapping = TextWrapping.Wrap
                 };
                 _ = sp.Children.Add(banline);
-                //Display Permabans in a better way (currently only used by RGL)
-                if (ban.End.Equals("2147483647"))
+
+                //TODO: Search ban reason for urls and make them clickable (RGL likes to do this...)
+
+                //Display Permabans in a better way (currently only used by RGL & ETF2L)
+                //RGL uses UTS of 2147483647 and ETF2L 2145826800
+                if (ban.End.Equals("2147483647") || ban.End.Equals("2145826800"))
                 {
                     banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
                     + "Permanent" + ", Reason: " + ban.Reason;
@@ -594,6 +609,7 @@ namespace TF2CompRosterChecker
 
         private void ResetTextBox(object sender, RoutedEventArgs e)
         {
+            checkCompleted = false;
             outputFrame.Visibility = Visibility.Hidden;
             statusOutput.Visibility = Visibility.Visible;
             foundIDs.Visibility = Visibility.Visible;
@@ -605,6 +621,18 @@ namespace TF2CompRosterChecker
             statusOutput.Text = "";
             submitButton.Click -= ResetTextBox;
             submitButton.Click += SubmitButton_Click;
+        }
+
+        private void RecheckTextBox(object sender, SelectionChangedEventArgs e)
+        {
+            //Only offer a recheck after one check already went through successfully
+            if (checkCompleted)
+            {
+                progressBar.Value = 0;
+                submitButton.Content = "Recheck Roster";
+                submitButton.Click -= ResetTextBox;
+                submitButton.Click += SubmitButton_Click;
+            }
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -655,12 +683,12 @@ namespace TF2CompRosterChecker
             e.DataObject = new DataObject(DataFormats.Text, e.DataObject.GetData(DataFormats.Text) as string ?? string.Empty);
         }
 
+        //This actually got quite a lot, problby putting it into a separate resource later.
         private void Show_Licenses(object sender, RoutedEventArgs e)
         {
             outputFrame.Visibility = Visibility.Hidden;
             statusOutput.Visibility = Visibility.Visible;
             header.Text = "Paste Status Output here:";
-            outputGrid.Children.Clear();
             submitButton.Content = "Check Roster";
             progressBar.Value = 0;
             string license = "Fody\n"
@@ -774,10 +802,45 @@ namespace TF2CompRosterChecker
             + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
             + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
             + "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
+            + "SOFTWARE.\n"
+            + "-----------------------------------------------------------------------------\n"
+            + "\n"
+            + "TF2CompRosterChecker\n"
+            + "https://github.com/alekny/TF2CompRosterChecker\n"
+            + "\n"
+            + "MIT License\n"
+            + "\n"
+            + "Copyright (c) alekny 2023\n"
+            + "\n"
+            + "Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+            + "of this software and associated documentation files (the \"Software\"), to deal\n"
+            + "in the Software without restriction, including without limitation the rights\n"
+            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n"
+            + "copies of the Software, and to permit persons to whom the Software is\n"
+            + "furnished to do so, subject to the following conditions:\n"
+            + "\n"
+            + "The above copyright notice and this permission notice shall be included in all\n"
+            + "copies or substantial portions of the Software.\n"
+            + "\n"
+            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
+            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
+            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n"
+            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
+            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
+            + "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
             + "SOFTWARE.\n";
 
             statusOutput.Text = license;
             submitButton.Content = "Reset";
+
+            //From this point on we cannot recheck anymore, since we are overwriting the
+            //statusOutput input. This is a corner-case i might fix at some point, but rn
+            //it doesn't affect the intended recheck functionality.
+            checkCompleted = false;
+
+            //In case the event-handler already got set by the finished check.
+            submitButton.Click -= ResetTextBox;
+
             submitButton.Click -= SubmitButton_Click;
             submitButton.Click += ResetTextBox;
         }
