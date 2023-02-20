@@ -47,6 +47,7 @@ namespace TF2CompRosterChecker
         public MainWindow()
         {
             InitializeComponent();
+            
             using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("TF2CompRosterChecker.SteamIDSyntaxHL.xml"))
             {
                 using (XmlTextReader reader = new XmlTextReader(s))
@@ -363,6 +364,8 @@ namespace TF2CompRosterChecker
                     counter++;
                 }
                 checkCompleted = true;
+                MenuSave.IsEnabled = true;
+                MenuJson.IsEnabled = true;
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
@@ -635,6 +638,8 @@ namespace TF2CompRosterChecker
         private void ResetTextBox(object sender, RoutedEventArgs e)
         {
             checkCompleted = false;
+            MenuSave.IsEnabled = false;
+            MenuJson.IsEnabled = false;
             outputFrame.Visibility = Visibility.Hidden;
             statusOutput.Visibility = Visibility.Visible;
             foundIDs.Visibility = Visibility.Visible;
@@ -862,6 +867,8 @@ namespace TF2CompRosterChecker
             //statusOutput input. This is a corner-case i might fix at some point, but rn
             //it doesn't affect the intended recheck functionality.
             checkCompleted = false;
+            MenuSave.IsEnabled = false;
+            MenuJson.IsEnabled = false;
 
             //In case the event-handler already got set by the finished check.
             submitButton.Click -= ResetTextBox;
@@ -893,111 +900,183 @@ namespace TF2CompRosterChecker
         {
             if (this.result != null && this.result.Count > 0)
             {
-                string tempFilePath = Path.GetTempPath() + "Report_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() + ".txt";
-                string output = "";
-                string bantable = "";
-                int maxwidthname = "Name".Length, maxwidthsteamid3 = "SteamId3".Length, maxwidthteam = "Team".Length, maxwidthteamid = "TeamId".Length,
-                    maxwidthdiv = "Divsion".Length;
-                bool bansfound = false;
-
-                //We have to iterate twice anyway, so use this to find the max lengths for each column.
-                //Check for bans as well.
-                foreach (Player player in this.result)
+                try
                 {
-                    maxwidthname = (player.Name.Length > maxwidthname) ? player.Name.Length : maxwidthname;
-                    maxwidthsteamid3 = (player.Steamid3.Length > maxwidthsteamid3) ? player.Steamid3.Length : maxwidthsteamid3;
-                    maxwidthteam = (player.Team.Length > maxwidthteam) ? player.Team.Length : maxwidthteam;
-                    maxwidthteamid = (player.Teamid.Length > maxwidthteamid) ? player.Teamid.Length : maxwidthteamid;
-                    maxwidthdiv = (player.Div.Length > maxwidthdiv) ? player.Div.Length : maxwidthdiv;
-                    if (player.HasBans)
+                    string tempFilePath = Path.GetTempPath() + "Report_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() + ".txt";
+                    string output = "";
+                    string bantable = "";
+                    int maxwidthname = "Name".Length, maxwidthleagueid = "LeagueId/ProfileId".Length, maxwidthsteamid3 = "SteamId3".Length, maxwidthteam = "Team".Length,
+                        maxwidthteamid = "TeamId".Length, maxwidthdiv = "Divsion".Length;
+                    bool bansfound = false;
+
+                    //We have to iterate twice anyway, so use this to find the max lengths for each column.
+                    //Check for bans as well.
+                    foreach (Player player in this.result)
                     {
-                        bansfound= true;
-                    }
-                }
-
-                string tableformat = "{0,-" + (maxwidthname + 3) + "}{1,-" + (maxwidthsteamid3 + 3) + "}{2,-" + (maxwidthteam + 3) 
-                    + "}{3,-" + (maxwidthteamid + 3) + "}{4,-" + (maxwidthdiv + 3) + "}{5,-9}";
-
-
-                output += ".: Query Report of " + this.league + " / " + Checker.FormatToString(this.checkedFormat) + " at "
-                    + this.completedAt.ToString("dd.MM.yyyy HH:mm:ss ('UTC'zzz)") + " :. \n";
-
-                output += "Showing results for " + this.result.Count + " player(s):\n\n";
-
-                if (bansfound)
-                {
-                    output += "!! Warning: Players in this list have active or past bans on record !!\n\n";
-                }
-
-                output += String.Format(tableformat, "Name", "SteamId3", "Team", "TeamId", "Division", "Bans?") + "\n";
-                for (int i = 0; i <= maxwidthname + maxwidthsteamid3 + maxwidthteam + maxwidthteamid + maxwidthdiv + 24; i++)
-                {
-                    output += "-";
-                }
-
-                output += "\n";
-
-                foreach (Player player in this.result)
-                {
-                    output += String.Format(tableformat, player.Name, player.Steamid3, player.Team, player.Teamid, player.Div,
-                        player.HasBans ? "!" : "") + "\n";
-                    if (player.HasBans && !"UGC".Equals(this.league))
-                    {
-                        bantable += "\n";
-                        bantable += "Bans for player \"" + player.Name + "\":\n";
-                        foreach (Ban ban in player.Bans)
+                        maxwidthname = (player.Name.Length > maxwidthname) ? player.Name.Length : maxwidthname;
+                        maxwidthleagueid = (player.Leagueid.Length > maxwidthleagueid) ? player.Leagueid.Length : maxwidthleagueid;
+                        maxwidthsteamid3 = (player.Steamid3.Length > maxwidthsteamid3) ? player.Steamid3.Length : maxwidthsteamid3;
+                        maxwidthteam = (player.Team.Length > maxwidthteam) ? player.Team.Length : maxwidthteam;
+                        maxwidthteamid = (player.Teamid.Length > maxwidthteamid) ? player.Teamid.Length : maxwidthteamid;
+                        maxwidthdiv = (player.Div.Length > maxwidthdiv) ? player.Div.Length : maxwidthdiv;
+                        if (player.HasBans)
                         {
-                            if (ban.End.Equals("2147483647") || ban.End.Equals("2145826800"))
+                            bansfound = true;
+                        }
+                    }
+
+                    string tableformat = "{0,-" + (maxwidthname + 3) + "}{1,-" + (maxwidthleagueid + 3) + "}{2,-" + (maxwidthsteamid3 + 3)
+                        + "}{3,-" + (maxwidthteam + 3) + "}{4,-" + (maxwidthteamid + 3) + "}{5,-" + (maxwidthdiv + 3) + "}{6,-9}";
+
+
+                    output += ".: Query Report of " + this.league + " / " + Checker.FormatToString(this.checkedFormat) + " at "
+                        + this.completedAt.ToString("dd.MM.yyyy HH:mm:ss ('UTC'zzz)") + " :. \n";
+
+                    output += "Showing results for " + this.result.Count + " player(s):\n\n";
+
+                    if (bansfound)
+                    {
+                        output += "!! Warning: Players in this list have active or past bans on record !!\n\n";
+                    }
+
+                    output += String.Format(tableformat, "Name", "LeagueId/ProfileId", "SteamId3", "Team", "TeamId", "Division", "Bans?") + "\n";
+                    for (int i = 0; i <= maxwidthname + maxwidthleagueid + maxwidthsteamid3 + maxwidthteam + maxwidthteamid + maxwidthdiv + 23; i++)
+                    {
+                        output += "-";
+                    }
+
+                    output += "\n";
+
+                    foreach (Player player in this.result)
+                    {
+                        output += String.Format(tableformat, player.Name, player.Leagueid, player.Steamid3, player.Team, player.Teamid, player.Div,
+                            player.HasBans ? "!" : "") + "\n";
+                        if (player.HasBans && !"UGC".Equals(this.league))
+                        {
+                            bantable += "\n";
+                            bantable += "Bans for player \"" + player.Name + "\":\n";
+                            foreach (Ban ban in player.Bans)
                             {
-                                bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
-                                + "Permanent" + ", Reason: " + ban.Reason;
+                                if (ban.End.Equals("2147483647") || ban.End.Equals("2145826800"))
+                                {
+                                    bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                                    + "Permanent" + ", Reason: " + ban.Reason;
+                                }
+                                else
+                                {
+                                    bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                                    + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                                }
+                                bantable += "\n";
+                            }
+                        }
+                    }
+
+                    if (bansfound && !"UGC".Equals(this.league))
+                    {
+                        output += "\n\nFound Bans:\n";
+                        output += bantable;
+                    }
+
+                    string copy = String.Copy(output);
+                    string hash = Sha256Hash(copy);
+
+                    //Now this is no pgp signature, just simple and designed to be tedious to do by hand ;>
+                    while (copy.Length > 7)
+                    {
+                        copy = copy.Substring(7);
+                        hash = Sha256Hash(hash + copy);
+                    }
+
+                    output += "\n\n" + hash;
+
+                    File.WriteAllText(tempFilePath, output);
+                    Process.Start("notepad.exe", tempFilePath);
+                }
+                catch(Exception ex) 
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void VerifyReport_Click(object sender, EventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt";
+            openFileDialog.Title = "Open report file";
+
+            bool? dialogResultesult = openFileDialog.ShowDialog();
+            if (dialogResultesult == true)
+            {
+                string fileName = openFileDialog.FileName;
+                try
+                {
+                    FileInfo fileInfo = new FileInfo(fileName);
+                    Console.WriteLine(fileInfo.Length);
+
+                    if (fileInfo.Length < 102400)
+                    {
+                        string input = File.ReadAllText(fileName);
+
+                        if(input.Length > 66)
+                        {
+                            string hash = input.Split('\n').Last();
+                            string data = input.Substring(0, input.Length - 66);
+
+                            string newhash = Sha256Hash(data);
+
+                            while (data.Length > 7)
+                            {
+                                data = data.Substring(7);
+                                newhash = Sha256Hash(newhash + data);
+                            }
+
+                            if (newhash.Equals(hash))
+                            {
+                                MessageBox.Show("The report was successfully verified", "Success!", MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             else
                             {
-                                bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
-                                + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                                MessageBox.Show("The report was likely altered", "Failed!", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
-                            bantable += "\n";
+                        }
+                        else
+                        {
+                            MessageBox.Show("The given file is too small!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
+                    else
+                    {
+                        MessageBox.Show("The given file is too big!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-
-                if (bansfound && !"UGC".Equals(this.league))
+                catch (Exception ex)
                 {
-                    output += "\n\nFound Bans:\n";
-                    output += bantable;
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-
-                string copy = String.Copy(output);
-                string hash = Sha256Hash(copy);
-
-                //Now this is no pgp signature, just simple and designed to be tedious to do by hand ;>
-                while (copy.Length > 2)
-                {
-                    copy = copy.Substring(2);
-                    hash = Sha256Hash(hash + copy);
-                }
-
-                output += "\n\n" + hash;
-
-                File.WriteAllText(tempFilePath, output);
-                Process.Start("notepad.exe", tempFilePath);
             }
-            
         }
 
         private void ExportJson_Click(object sender, RoutedEventArgs e)
         {
 
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
-            saveFileDialog.Filter = "SON files (*.json)|*.json|All files (*.*)|*.*";
-            saveFileDialog.Title = "Save text file";
+            saveFileDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+            saveFileDialog.Title = "Save json file";
 
-            bool? result = saveFileDialog.ShowDialog();
-            if (result == true)
+            bool? dialogResult = saveFileDialog.ShowDialog();
+            if (dialogResult == true)
             {
                 string fileName = saveFileDialog.FileName;
-                File.WriteAllText(fileName, JsonConvert.SerializeObject(this.result, Newtonsoft.Json.Formatting.Indented));
+                try
+                {
+                    File.WriteAllText(fileName, JsonConvert.SerializeObject(this.result, Newtonsoft.Json.Formatting.Indented));
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }
