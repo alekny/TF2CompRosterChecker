@@ -3,6 +3,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -843,6 +844,15 @@ namespace TF2CompRosterChecker
 
             submitButton.Click -= SubmitButton_Click;
             submitButton.Click += ResetTextBox;
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+        private void OpenGithub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/alekny/TF2CompRosterChecker");
         }
     }
 }
