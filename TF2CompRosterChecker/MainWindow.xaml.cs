@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -1013,8 +1012,6 @@ namespace TF2CompRosterChecker
                 try
                 {
                     FileInfo fileInfo = new FileInfo(fileName);
-                    Console.WriteLine(fileInfo.Length);
-
                     if (fileInfo.Length < 102400)
                     {
                         string input = File.ReadAllText(fileName);
@@ -1038,7 +1035,7 @@ namespace TF2CompRosterChecker
                             }
                             else
                             {
-                                MessageBox.Show("The report was likely altered", "Failed!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBox.Show("Could not verify the given report", "Failed!", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
                         }
                         else

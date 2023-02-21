@@ -23,9 +23,9 @@
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
             <Menu DockPanel.Dock="Top" Background="#141517" Foreground="#d1d1d1" FontSize="13">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Save Report" x:Name="MenuSave" Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_Verfiy Report" Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_Export JSON" x:Name="MenuJson" Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Save Report..." x:Name="MenuSave" Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Verfiy Report..." Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Export JSON..." x:Name="MenuJson" Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
                     <Separator />
                     <MenuItem Header="_Exit" Click="Exit_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </MenuItem>
