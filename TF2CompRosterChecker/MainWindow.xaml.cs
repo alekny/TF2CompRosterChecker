@@ -1,11 +1,14 @@
 ﻿
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,12 +28,25 @@ namespace TF2CompRosterChecker
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        //We use this to trace the recheck-functionality
+        //We use this to trace the recheck-functionality.
         private bool checkCompleted = false;
+
+        //Store when our last query was finished.
+        private DateTimeOffset completedAt;
+
+        //Store the last checked league here.
+        private string league = "";
+
+        //Store the last checked leagueformat here.
+        private Checker.LeagueFormat checkedFormat;
+
+        //Let other methods and handlers use this.
+        private List<Player> result = null;
 
         public MainWindow()
         {
             InitializeComponent();
+            
             using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("TF2CompRosterChecker.SteamIDSyntaxHL.xml"))
             {
                 using (XmlTextReader reader = new XmlTextReader(s))
@@ -102,10 +118,10 @@ namespace TF2CompRosterChecker
             bool switcher = true;
             string baseUrl = "";
             string baseTeamUrl = "";
-            string league = "";
+            league = "";
             string statusOutputText = statusOutput.Text;
             Color color = Colors.White;
-            List<Player> result = new List<Player>();
+            result = new List<Player>();
 
             //Update UI progressbar
             Progress<int> progress = new Progress<int>();
@@ -121,6 +137,7 @@ namespace TF2CompRosterChecker
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
+                        checkedFormat = Checker.LeagueFormat.Sixes;
                         break;
                     }
                 case 1:
@@ -130,6 +147,7 @@ namespace TF2CompRosterChecker
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
                         league = "ETF2L";
+                        checkedFormat = Checker.LeagueFormat.HL;
                         break;
                     }
                 case 2:
@@ -139,6 +157,7 @@ namespace TF2CompRosterChecker
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
+                        checkedFormat = Checker.LeagueFormat.Sixes;
                         break;
                     }
                 case 3:
@@ -148,6 +167,7 @@ namespace TF2CompRosterChecker
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
+                        checkedFormat = Checker.LeagueFormat.NRSixes;
                         break;
                     }
                 case 4:
@@ -157,6 +177,7 @@ namespace TF2CompRosterChecker
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
+                        checkedFormat = Checker.LeagueFormat.HL;
                         break;
                     }
                 case 5:
@@ -166,6 +187,7 @@ namespace TF2CompRosterChecker
                         baseUrl = rc.BaseUrl;
                         baseTeamUrl = rc.BaseTeamUrl;
                         league = "RGL";
+                        checkedFormat = Checker.LeagueFormat.PL;
                         break;
                     }
                 case 6:
@@ -175,6 +197,7 @@ namespace TF2CompRosterChecker
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
+                        checkedFormat = Checker.LeagueFormat.Sixes;
                         break;
                     }
                 case 7:
@@ -184,6 +207,7 @@ namespace TF2CompRosterChecker
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
+                        checkedFormat = Checker.LeagueFormat.HL;
                         break;
                     }
                 case 8:
@@ -193,13 +217,14 @@ namespace TF2CompRosterChecker
                         baseUrl = uc.BaseUrl;
                         baseTeamUrl = uc.BaseTeamUrl;
                         league = "UGC";
+                        checkedFormat = Checker.LeagueFormat.FourVeeFour;
                         break;
                     }
 
                 default:
                     break;
             }
-
+            this.completedAt = DateTimeOffset.Now;
             outputGrid.Children.Clear();
             if (result.Any())
             {
@@ -338,6 +363,8 @@ namespace TF2CompRosterChecker
                     counter++;
                 }
                 checkCompleted = true;
+                MenuSave.IsEnabled = true;
+                MenuJson.IsEnabled = true;
                 header.Text = "Results";
                 outputFrame.Visibility = Visibility.Visible;
                 submitButton.Content = "Reset";
@@ -610,6 +637,8 @@ namespace TF2CompRosterChecker
         private void ResetTextBox(object sender, RoutedEventArgs e)
         {
             checkCompleted = false;
+            MenuSave.IsEnabled = false;
+            MenuJson.IsEnabled = false;
             outputFrame.Visibility = Visibility.Hidden;
             statusOutput.Visibility = Visibility.Visible;
             foundIDs.Visibility = Visibility.Visible;
@@ -837,12 +866,215 @@ namespace TF2CompRosterChecker
             //statusOutput input. This is a corner-case i might fix at some point, but rn
             //it doesn't affect the intended recheck functionality.
             checkCompleted = false;
+            MenuSave.IsEnabled = false;
+            MenuJson.IsEnabled = false;
 
             //In case the event-handler already got set by the finished check.
             submitButton.Click -= ResetTextBox;
 
             submitButton.Click -= SubmitButton_Click;
             submitButton.Click += ResetTextBox;
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+        private void OpenGithub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/alekny/TF2CompRosterChecker");
+        }
+        private static string Sha256Hash(string input)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
+                byte[] hashBytes = sha256.ComputeHash(inputBytes);
+                string hash = BitConverter.ToString(hashBytes).Replace("-", "");
+                return hash;
+            }
+        }
+
+        private void GenerateReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.result != null && this.result.Count > 0)
+            {
+                try
+                {
+                    string tempFilePath = Path.GetTempPath() + "Report_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() + ".txt";
+                    string output = "";
+                    string bantable = "";
+                    int maxwidthname = "Name".Length, maxwidthleagueid = "LeagueId/ProfileId".Length, maxwidthsteamid3 = "SteamId3".Length, maxwidthteam = "Team".Length,
+                        maxwidthteamid = "TeamId".Length, maxwidthdiv = "Divsion".Length;
+                    bool bansfound = false;
+
+                    //We have to iterate twice anyway, so use this to find the max lengths for each column.
+                    //Check for bans as well.
+                    foreach (Player player in this.result)
+                    {
+                        maxwidthname = (player.Name.Length > maxwidthname) ? player.Name.Length : maxwidthname;
+                        maxwidthleagueid = (player.Leagueid.Length > maxwidthleagueid) ? player.Leagueid.Length : maxwidthleagueid;
+                        maxwidthsteamid3 = (player.Steamid3.Length > maxwidthsteamid3) ? player.Steamid3.Length : maxwidthsteamid3;
+                        maxwidthteam = (player.Team.Length > maxwidthteam) ? player.Team.Length : maxwidthteam;
+                        maxwidthteamid = (player.Teamid.Length > maxwidthteamid) ? player.Teamid.Length : maxwidthteamid;
+                        maxwidthdiv = (player.Div.Length > maxwidthdiv) ? player.Div.Length : maxwidthdiv;
+                        if (player.HasBans)
+                        {
+                            bansfound = true;
+                        }
+                    }
+
+                    string tableformat = "{0,-" + (maxwidthname + 3) + "}{1,-" + (maxwidthleagueid + 3) + "}{2,-" + (maxwidthsteamid3 + 3)
+                        + "}{3,-" + (maxwidthteam + 3) + "}{4,-" + (maxwidthteamid + 3) + "}{5,-" + (maxwidthdiv + 3) + "}{6,-9}";
+
+
+                    output += ".: Query Report of " + this.league + " / " + Checker.FormatToString(this.checkedFormat) + " at "
+                        + this.completedAt.ToString("dd.MM.yyyy HH:mm:ss ('UTC'zzz)") + " :. \n";
+
+                    output += "Showing results for " + this.result.Count + " player(s):\n\n";
+
+                    if (bansfound)
+                    {
+                        output += "!! Warning: Players in this list have active or past bans on record !!\n\n";
+                    }
+
+                    output += String.Format(tableformat, "Name", "LeagueId/ProfileId", "SteamId3", "Team", "TeamId", "Division", "Bans?") + "\n";
+                    for (int i = 0; i <= maxwidthname + maxwidthleagueid + maxwidthsteamid3 + maxwidthteam + maxwidthteamid + maxwidthdiv + 23; i++)
+                    {
+                        output += "-";
+                    }
+
+                    output += "\n";
+
+                    foreach (Player player in this.result)
+                    {
+                        output += String.Format(tableformat, player.Name, player.Leagueid, player.Steamid3, player.Team, player.Teamid, player.Div,
+                            player.HasBans ? "!" : "") + "\n";
+                        if (player.HasBans && !"UGC".Equals(this.league))
+                        {
+                            bantable += "\n";
+                            bantable += "Bans for player \"" + player.Name + "\":\n";
+                            foreach (Ban ban in player.Bans)
+                            {
+                                if (ban.End.Equals("2147483647") || ban.End.Equals("2145826800"))
+                                {
+                                    bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                                    + "Permanent" + ", Reason: " + ban.Reason;
+                                }
+                                else
+                                {
+                                    bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                                    + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                                }
+                                bantable += "\n";
+                            }
+                        }
+                    }
+
+                    if (bansfound && !"UGC".Equals(this.league))
+                    {
+                        output += "\n\nFound Bans:\n";
+                        output += bantable;
+                    }
+
+                    string copy = String.Copy(output);
+                    string hash = Sha256Hash(copy);
+
+                    //Now this is no pgp signature, just simple and designed to be tedious to do by hand ;>
+                    while (copy.Length > 7)
+                    {
+                        copy = copy.Substring(7);
+                        hash = Sha256Hash(hash + copy);
+                    }
+
+                    output += "\n\n" + hash;
+
+                    File.WriteAllText(tempFilePath, output);
+                    Process.Start("notepad.exe", tempFilePath);
+                }
+                catch(Exception ex) 
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void VerifyReport_Click(object sender, EventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt";
+            openFileDialog.Title = "Open report file";
+
+            bool? dialogResultesult = openFileDialog.ShowDialog();
+            if (dialogResultesult == true)
+            {
+                string fileName = openFileDialog.FileName;
+                try
+                {
+                    FileInfo fileInfo = new FileInfo(fileName);
+                    if (fileInfo.Length < 102400)
+                    {
+                        string input = File.ReadAllText(fileName);
+
+                        if(input.Length > 66)
+                        {
+                            string hash = input.Split('\n').Last();
+                            string data = input.Substring(0, input.Length - 66);
+
+                            string newhash = Sha256Hash(data);
+
+                            while (data.Length > 7)
+                            {
+                                data = data.Substring(7);
+                                newhash = Sha256Hash(newhash + data);
+                            }
+
+                            if (newhash.Equals(hash))
+                            {
+                                MessageBox.Show("The report was successfully verified", "Success!", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Could not verify the given report", "Failed!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("The given file is too small!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("The given file is too big!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void ExportJson_Click(object sender, RoutedEventArgs e)
+        {
+
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+            saveFileDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+            saveFileDialog.Title = "Save json file";
+
+            bool? dialogResult = saveFileDialog.ShowDialog();
+            if (dialogResult == true)
+            {
+                string fileName = saveFileDialog.FileName;
+                try
+                {
+                    File.WriteAllText(fileName, JsonConvert.SerializeObject(this.result, Newtonsoft.Json.Formatting.Indented));
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

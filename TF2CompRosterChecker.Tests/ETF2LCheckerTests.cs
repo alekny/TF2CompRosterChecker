@@ -19,7 +19,6 @@ namespace TF2CompRosterChecker.Tests
 
             ETF2LChecker ec = new ETF2LChecker("STEAM_0:0:99999999");
             //Compare against testdata
-            ec.BaseApiUrl = "https://proph.im/testdata/";
             List<Player> actual = ec.ParseData(Checker.LeagueFormat.Sixes, null);
 
             //Easier to compare
