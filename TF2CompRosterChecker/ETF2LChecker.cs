@@ -12,7 +12,7 @@ namespace TF2CompRosterChecker
 
         public ETF2LChecker(string statusOutput) : base(statusOutput)
         {
-            BaseApiUrl = "https://api.etf2l.org/player/";
+            BaseApiUrl = "https://api-v2.etf2l.org/player/";
             BaseUrl = "https://etf2l.org/forum/user/";
             BaseTeamUrl = "https://etf2l.org/teams/";
         }
@@ -52,7 +52,7 @@ namespace TF2CompRosterChecker
                             wc.Encoding = Encoding.UTF8;
                             try
                             {
-                                dl = wc.DownloadString(BaseApiUrl + id + ".json");
+                                dl = wc.DownloadString(BaseApiUrl + id);
                             }
                             catch (WebException e)
                             {
