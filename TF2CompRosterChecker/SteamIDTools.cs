@@ -18,6 +18,7 @@ namespace TF2CompRosterChecker
         public const string etf2lProfileUrl = @"(?:https?:\/\/)?etf2l.org\/forum\/user\/([0-9]{1,9})(?:\/?)";
         public const string ugcProfileUrl = @"(?:https?:\/\/)?ugcleague\.com\/players_page\.cfm\?player_id=([0-9]{17})(?:\/?)";
         public const string rglProfileUrl = @"(?:https?:\/\/)?rgl.gg\/Public\/PlayerProfile\.aspx\?p=([0-9]{17})(?:\/?)";
+        public const string tf2centerProfileUrl = @"(?:https?:\/\/)?tf2center\.com\/profile\/([0-9]{17})(?:\/?)";
         public const string urlRegex = @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
 
         public static string SteamIDToSteamID64(string steamID)

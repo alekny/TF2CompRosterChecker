@@ -674,7 +674,7 @@ namespace TF2CompRosterChecker
             string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|"
                 + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex + "|"
                 + SteamIDTools.etf2lProfileUrl + "|" + SteamIDTools.ugcProfileUrl + "|" 
-                + SteamIDTools.rglProfileUrl;
+                + SteamIDTools.rglProfileUrl + "|" + SteamIDTools.tf2centerProfileUrl;
             MatchCollection matches = Regex.Matches(input, pattern);
             return matches.Count;
         }

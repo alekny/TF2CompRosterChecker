@@ -32,6 +32,8 @@ namespace TF2CompRosterChecker
         public Checker(string statusOutput)
         {
             int index = 0;
+
+            //TODO: Put all those in a List maybe.
             MatchCollection matchesSteamID = Regex.Matches(statusOutput, SteamIDTools.steamIDregex);
             MatchCollection matchesSteamID3 = Regex.Matches(statusOutput, SteamIDTools.steamID3regex);
             MatchCollection matchesProfileUrl = Regex.Matches(statusOutput, SteamIDTools.profileUrlregex);
@@ -39,6 +41,7 @@ namespace TF2CompRosterChecker
             MatchCollection matchesEtf2lUrl = Regex.Matches(statusOutput, SteamIDTools.etf2lProfileUrl);
             MatchCollection matchesUgcUrl = Regex.Matches(statusOutput, SteamIDTools.ugcProfileUrl);
             MatchCollection matchesRglUrl = Regex.Matches(statusOutput, SteamIDTools.rglProfileUrl);
+            MatchCollection matchesTf2centerUrl = Regex.Matches(statusOutput, SteamIDTools.tf2centerProfileUrl);
             List<string> foundSteamIDs = new List<string>();
 
             foreach (Match match in matchesSteamID3)
@@ -137,6 +140,15 @@ namespace TF2CompRosterChecker
                 index++;
             }
             foreach (Match match in matchesRglUrl)
+            {
+                if (index > RATECTRL)
+                {
+                    break;
+                }
+                foundSteamIDs.Add(match.Groups[1].ToString());
+                index++;
+            }
+            foreach (Match match in matchesTf2centerUrl)
             {
                 if (index > RATECTRL)
                 {
