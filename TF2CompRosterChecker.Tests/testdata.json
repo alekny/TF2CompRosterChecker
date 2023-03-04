@@ -1,0 +1,164 @@
+{
+  "player": {
+    "steam": {
+      "id64": "76561198960265727",
+      "id3": "U:1:999999999",
+      "id": "STEAM_0:1:499999999",
+      "avatar": "https://avatars.akamai.steamstatic.com/doesntmatter.jpg"
+    },
+    "teams": [
+      {
+        "name": "Team 1",
+        "irc": {
+          "network": null,
+          "channel": null
+        },
+        "urls": {
+          "self": "https://api.etf2l.org/team/99999",
+          "transfers": "https://api.etf2l.org/team/99999/transfers/1.json",
+          "results": "https://api.etf2l.org/team/99999/results/1.json",
+          "matches": "https://api.etf2l.org/team/99999/matches/1.json"
+        },
+        "type": "Highlander",
+        "country": "SouthKorea",
+        "id": 99999,
+        "steam": {
+          "avatar": "http://etf2l.org/images/avatars/random.jpg",
+          "group": null
+        },
+        "homepage": "https://home.page",
+        "competitions": {
+          "999": {
+            "category": "Highlander Season",
+            "competition": "Highlander Season 19: Top Tiers",
+            "division": {
+              "name": "Division 2",
+              "skill_contrib": 20,
+              "tier": 2
+            },
+            "url": "https://api.etf2l.org/competition/999.json"
+          },
+          "998": {
+            "division": {
+              "skill_contrib": null,
+              "tier": null,
+              "name": null
+            },
+            "url": "https://api.etf2l.org/competition/998.json",
+            "competition": "Highlander Season 22: Premiership Qualifiers",
+            "category": "Highlander Season"
+          },
+          "997": {
+            "category": "Highlander Season",
+            "competition": "Highlander Season 25 Premiership Qualifiers",
+            "url": "https://api.etf2l.org/competition/997.json",
+            "division": {
+              "name": null,
+              "tier": null,
+              "skill_contrib": null
+            }
+          }
+        }
+      },
+      {
+        "server": null,
+        "name": "Team 2",
+        "type": "Fun Team",
+        "irc": {
+          "channel": "team2",
+          "network": "discord"
+        },
+        "urls": {
+          "transfers": "https://api.etf2l.org/team/12345/transfers/1.json",
+          "self": "https://api.etf2l.org/team/12345",
+          "matches": "https://api.etf2l.org/team/12345/matches/1.json",
+          "results": "https://api.etf2l.org/team/12345/results/1.json"
+        },
+        "tag": "team2",
+        "country": "France",
+        "id": 12345
+      },
+      {
+        "steam": {
+          "avatar": "http://etf2l.org/images/avatars/random.jpg",
+          "group": null
+        },
+        "homepage": null,
+        "competitions": {
+          "888": {
+            "category": "6v6 Season",
+            "competition": "6v6 Autumn 2022",
+            "url": "https://api.etf2l.org/competition/888.json",
+            "division": {
+              "name": "Low",
+              "tier": 3,
+              "skill_contrib": 9
+            }
+          },
+          "887": {
+            "category": "6v6 Season",
+            "competition": "6v6 Autumn 22: Low Playoffs",
+            "division": {
+              "name": null,
+              "skill_contrib": null,
+              "tier": null
+            },
+            "url": "https://api.etf2l.org/competition/887.json"
+          }
+        },
+        "server": null,
+        "name": "Team 3",
+        "irc": {
+          "channel": null,
+          "network": null
+        },
+        "urls": {
+          "self": "https://api.etf2l.org/team/54321",
+          "transfers": "https://api.etf2l.org/team/54321/transfers/1.json",
+          "results": "https://api.etf2l.org/team/54321/results/1.json",
+          "matches": "https://api.etf2l.org/team/54321/matches/1.json"
+        },
+        "type": "6on6",
+        "tag": "team3",
+        "country": "European",
+        "id": 54321
+      }
+    ],
+    "classes": [
+      "Scout",
+      "Sniper",
+      "Spy"
+    ],
+    "title": "Player",
+    "bans": [
+      {
+        "end": 1484607600,
+        "start": 1481927653,
+        "reason": "VAC"
+      },
+      {
+        "reason": "Failure to provide 2 demo requests.",
+        "start": 1590333973,
+        "end": 1573426800
+      },
+      {
+        "reason": "Failure to provide 3 demo requests",
+        "end": 1670972400,
+        "start": 1665740926
+      }
+    ],
+    "name": "testplayer",
+    "urls": {
+      "transfers": "https://api.etf2l.org/player/999999/transfers/1.json",
+      "self": "https://api.etf2l.org/player/999999.json",
+      "results": "https://api.etf2l.org/player/999999/results/1.json"
+    },
+    "registered": 1431143555,
+    "id": 999999,
+    "country": "Switzerland"
+  },
+  "status": {
+    "code": 200,
+    "message": "OK"
+  }
+}

@@ -149,6 +149,44 @@ namespace TF2CompRosterChecker
             SteamIDs = foundSteamIDs;
         }
 
+        public static string FormatToString(LeagueFormat lf)
+        {
+            string format = "";
+            switch (lf)
+            {
+                case LeagueFormat.Sixes:
+                    {
+                        format = "6v6";
+                        break;
+                    }
+                case LeagueFormat.HL:
+                    {
+                        format = "Highlander";
+                        break;
+                    }
+                case LeagueFormat.PL:
+                    {
+                        format = "Prolander";
+                        break;
+                    }
+                case LeagueFormat.NRSixes:
+                    {
+                        format = "No Restrictions 6v6";
+                        break;
+                    }
+                case LeagueFormat.FourVeeFour:
+                    {
+                        format = "4v4";
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+            return format;
+        }
+
         /*
          * Debug stuff.
          */

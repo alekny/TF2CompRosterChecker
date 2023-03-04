@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v1.8.0" Height="368" Width="790"
+        Title="TF2CompRosterChecker v2" Height="380" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">
@@ -14,14 +14,28 @@
             <DoubleAnimation Storyboard.TargetProperty="Opacity" BeginTime="0:0:1" From="1" To="0" DecelerationRatio=".5" Duration="0:0:1" />
             <!--Fade out the label after 3 sec-->
         </Storyboard>
+        <Style x:Key="DarkMenuItemStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="black" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
     </Window.Resources>
     <Grid Background="#2a2c30">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="167*"/>
-            <ColumnDefinition Width="574*"/>
-        </Grid.ColumnDefinitions>
-
-        <ScrollViewer x:Name="outputFrame" HorizontalAlignment="Left" Height="257" Margin="17,31,0,0" VerticalAlignment="Top" Width="744" BorderBrush="#000000" Visibility="Hidden" Grid.ColumnSpan="2">
+        <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
+            <Menu DockPanel.Dock="Top" Background="#141517" Foreground="#d1d1d1" FontSize="13">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Save Report..." x:Name="MenuSave" Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Verfiy Report..." Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Export JSON..." x:Name="MenuJson" Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <Separator />
+                    <MenuItem Header="_Exit" Click="Exit_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_Open Source Licenses" Click="Show_Licenses" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_About" Click="OpenGithub_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <ScrollViewer x:Name="outputFrame" HorizontalAlignment="Left" Height="257" Margin="17,42,0,0" VerticalAlignment="Top" Width="744" BorderBrush="#000000" Visibility="Hidden" Grid.ColumnSpan="2">
             <Grid x:Name="outputGrid" Background="White" VerticalAlignment="Top" HorizontalAlignment="Stretch" ShowGridLines="False">
                 <Grid.ColumnDefinitions >
                     <ColumnDefinition Width="230" />
@@ -35,8 +49,8 @@
                 </Grid.RowDefinitions>
             </Grid>
         </ScrollViewer>
-        <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Left" Margin="109.2,294,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="SubmitButton_Click" FontSize="14" BorderBrush="Black" Grid.Column="1"/>
-        <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000" Grid.ColumnSpan="2" SelectionChanged="RecheckTextBox">
+        <Button x:Name="submitButton" Content="Check Roster" HorizontalAlignment="Center" Margin="0,305,0,0" VerticalAlignment="Top" Width="214" Height="27" Click="SubmitButton_Click" FontSize="14" BorderBrush="Black"/>
+        <ComboBox x:Name="leagueSelector" HorizontalAlignment="Left" Margin="17,305,0,0" VerticalAlignment="Top" Width="190" Height="27" FontSize="14" BorderBrush="#000000" Grid.ColumnSpan="2" SelectionChanged="RecheckTextBox">
             <ComboBoxItem Content="ETF2L (6v6)" IsSelected="True"/>
             <ComboBoxItem Content="ETF2L (Highlander)"/>
             <ComboBoxItem Content="RGL NA (Traditional 6v6)"/>
@@ -47,20 +61,14 @@
             <ComboBoxItem Content="UGC (Highlander)"/>
             <ComboBoxItem Content="UGC (4v4)"/>
         </ComboBox>
-        <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,9,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="495.2,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13">v1.8.0 by <Hyperlink 
-        NavigateUri="https://proph.im"
-        RequestNavigate="Hyperlink_RequestNavigate" Foreground="#7fd0ff">
-        proph
-    </Hyperlink></TextBlock>
-        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,326,0,0" VerticalAlignment="Top" Width="784" BorderBrush="Black" Grid.ColumnSpan="2"/>
-        <TextBlock HorizontalAlignment="Left" Margin="361.2,304,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="344.2,304,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff" Grid.Column="1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="361.2,291,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
-        <TextBlock HorizontalAlignment="Left" Margin="488.2,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="10" Grid.Column="1"><Hyperlink Click="Show_Licenses" Foreground="#7fd0ff">Open Source Licenses</Hyperlink></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="348.2,291,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" Grid.Column="1" FontSize="13"/>
-        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" Name="statusOutput" FontFamily="Consolas" FontSize="13" Margin="17,31,17,48" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Hidden" TextChanged="statusOutput_TextChanged" KeyDown="statusOutput_KeyDown"/>
-        <TextBlock Name="foundIDs" HorizontalAlignment="Left" Margin="12.836,9,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
-        <TextBlock Name="copiedNotice" HorizontalAlignment="Left" Margin="129.2,9,0,0" TextWrapping="Wrap" Text="SteamID copied to Clipboard" VerticalAlignment="Top" Foreground="Yellow" Grid.Column="1" FontSize="13" Visibility="Hidden" />
+        <TextBlock Name="header" HorizontalAlignment="Left" Margin="17,22,0,0" TextWrapping="Wrap" Text="Paste Status Output here:" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
+        <TextBlock Name="foundIDs" HorizontalAlignment="Right" Margin="0,22,17,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="#d1d1d1" Grid.Column="1" FontSize="13"/>
+        <TextBlock Name="copiedNotice" HorizontalAlignment="Center" Margin="0,22,0,0" TextWrapping="Wrap" Text="SteamID copied to Clipboard" VerticalAlignment="Top" Foreground="Yellow" Grid.Column="1" FontSize="13" Visibility="Hidden" />
+        <ProgressBar Name="progressBar" HorizontalAlignment="Left" Height="10" Margin="0,0,0,0" VerticalAlignment="Bottom" Width="784" BorderBrush="Black" Grid.ColumnSpan="2"/>
+        <TextBlock HorizontalAlignment="Left" Margin="636,314,0,0" TextWrapping="Wrap" Text="- open up team page" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
+        <TextBlock HorizontalAlignment="Left" Margin="619,314,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff" FontSize="13"/>
+        <TextBlock HorizontalAlignment="Left" Margin="636,301,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
+        <TextBlock HorizontalAlignment="Left" Margin="623,301,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" FontSize="13"/>
+        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" Name="statusOutput" FontFamily="Consolas" FontSize="13" Margin="17,42,17,48" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Hidden" TextChanged="statusOutput_TextChanged" KeyDown="statusOutput_KeyDown"/>
     </Grid>
 </Window>
