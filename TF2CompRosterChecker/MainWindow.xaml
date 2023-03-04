@@ -23,9 +23,9 @@
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
             <Menu DockPanel.Dock="Top" Background="#141517" Foreground="#d1d1d1" FontSize="13">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Save Report..." x:Name="MenuSave" Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_Verfiy Report..." Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_Export JSON..." x:Name="MenuJson" Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Generate Report..." x:Name="MenuSave" ToolTip="Generates and saves a query report in the Windows Temp folder and opens it in Notepad, you can copy and paste it somewhere or just save the file from Notepad to a location of your choice." Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Verfiy Report..." ToolTip="Verify the integrity of an exported report." Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Export JSON..." x:Name="MenuJson" ToolTip="Export all data to a json file." Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
                     <Separator />
                     <MenuItem Header="_Exit" Click="Exit_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </MenuItem>

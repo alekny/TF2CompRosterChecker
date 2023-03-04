@@ -151,7 +151,7 @@ namespace TF2CompRosterChecker
                                     //Fetch specifics about found ban
                                     foreach (JToken ban in foundbans)
                                     {
-                                        bans.Add(new Ban(ban["start"].ToString(), ban["end"].ToString(), ban["reason"].ToString()));
+                                        bans.Add(new Ban(ban["start"].ToString(), ban["end"].ToString(), ban["reason"].ToString().Replace("&amp;", "&")));
                                     }
                                 }
                                 else

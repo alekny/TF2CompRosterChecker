@@ -23,9 +23,6 @@ using System.Xml;
 namespace TF2CompRosterChecker
 {
 
-    /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
         //We use this to trace the recheck-functionality.
@@ -97,7 +94,7 @@ namespace TF2CompRosterChecker
             cm.Items.Add(new Separator());
             cm.Items.Add(selectall);
 
-            //Only make MenuItems accessible if it makes sense
+            //Only make MenuItems accessible if it makes sense.
             cm.Opened += (sender, e) =>
             {
                 undo.IsEnabled = !statusOutput.IsReadOnly && statusOutput.CanUndo;
@@ -279,7 +276,7 @@ namespace TF2CompRosterChecker
 
                     if (player.HasBans)
                     {
-                        //Only ETF2L-Checker will set this to a non-null object yet.
+                        //Only ETF2L- and RGL-Checker will set this to a non-null object yet.
                         if (player.Bans?.Any() != true)
                         {
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
@@ -863,7 +860,7 @@ namespace TF2CompRosterChecker
             submitButton.Content = "Reset";
 
             //From this point on we cannot recheck anymore, since we are overwriting the
-            //statusOutput input. This is a corner-case i might fix at some point, but rn
+            //statusOutput content. This is a corner-case i might fix at some point, but rn
             //it doesn't affect the intended recheck functionality.
             checkCompleted = false;
             MenuSave.IsEnabled = false;
@@ -880,10 +877,12 @@ namespace TF2CompRosterChecker
         {
             System.Windows.Application.Current.Shutdown();
         }
+
         private void OpenGithub_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://github.com/alekny/TF2CompRosterChecker");
         }
+
         private static string Sha256Hash(string input)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -929,10 +928,17 @@ namespace TF2CompRosterChecker
 
 
                     output += ".: Query Report of " + this.league + " / " + Checker.FormatToString(this.checkedFormat) + " at "
-                        + this.completedAt.ToString("dd.MM.yyyy HH:mm:ss ('UTC'zzz)") + " :. \n";
+                        + this.completedAt.ToString("dd.MM.yyyy HH:mm:ss ('UTC'zzz)") + " :.\n";
 
-                    output += "Showing results for " + this.result.Count + " player(s):\n\n";
-
+                    if (this.result.Count == 1)
+                    {
+                        output += "Showing results for 1 player:\n\n";
+                    }
+                    else
+                    {
+                        output += "Showing results for " + this.result.Count + " players:\n\n";
+                    }
+                    
                     if (bansfound)
                     {
                         output += "!! Warning: Players in this list have active or past bans on record !!\n\n";
