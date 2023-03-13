@@ -29,9 +29,12 @@
                     <Separator />
                     <MenuItem Header="_Exit" Click="Exit_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="Use ETF2l-API v1 fallback" x:Name="ETF2LFallback" IsCheckable="True" IsChecked="False" ToolTip="Use the old ETF2L-API v1 instead of the new one. Only set this, if the v2 API causes problems. Has no effect on RGL/UGC queries." Style="{StaticResource DarkMenuItemStyle}"/>
+                </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_Open Source Licenses" Click="Show_Licenses" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_About" Click="OpenGithub_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_About..." Click="OpenGithub_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

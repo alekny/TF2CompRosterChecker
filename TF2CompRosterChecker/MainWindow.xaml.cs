@@ -129,7 +129,7 @@ namespace TF2CompRosterChecker
             {
                 case 0:
                     {
-                        ETF2LChecker ec = new ETF2LChecker(statusOutputText);
+                        ETF2LChecker ec = new ETF2LChecker(statusOutputText, ETF2LFallback.IsChecked);
                         _ = await Task.Run(() => result = ec.ParseData(Checker.LeagueFormat.Sixes, progress).OrderBy(o => o.Team).ThenBy(o => o.Name).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
@@ -139,7 +139,7 @@ namespace TF2CompRosterChecker
                     }
                 case 1:
                     {
-                        ETF2LChecker ec = new ETF2LChecker(statusOutputText);
+                        ETF2LChecker ec = new ETF2LChecker(statusOutputText, ETF2LFallback.IsChecked);
                         _ = await Task.Run(() => result = ec.ParseData(Checker.LeagueFormat.HL, progress).OrderBy(o => o.Team).ThenBy(o => o.Name).ToList());
                         baseUrl = ec.BaseUrl;
                         baseTeamUrl = ec.BaseTeamUrl;
