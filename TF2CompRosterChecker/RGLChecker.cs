@@ -344,7 +344,7 @@ namespace TF2CompRosterChecker
                                     }
 
                                 }
-                                catch (NullReferenceException)
+                                catch (Exception)
                                 {
                                     //HTML tag wasn't found, probably due to a frontend design change...
                                 }

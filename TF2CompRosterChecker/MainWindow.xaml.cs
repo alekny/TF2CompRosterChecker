@@ -311,6 +311,7 @@ namespace TF2CompRosterChecker
                         displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                         displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                     }
+
                     if (player.Teamid != "")
                     {
                         Hyperlink teamlink = new Hyperlink(new Run("[+]"))
