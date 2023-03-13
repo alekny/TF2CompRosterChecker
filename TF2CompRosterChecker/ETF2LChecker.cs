@@ -9,10 +9,20 @@ namespace TF2CompRosterChecker
 {
     public sealed class ETF2LChecker : Checker
     {
+        private bool fallback = false;
 
-        public ETF2LChecker(string statusOutput) : base(statusOutput)
+        public ETF2LChecker(string statusOutput, bool fallback = false) : base(statusOutput)
         {
-            BaseApiUrl = "https://api.etf2l.org/player/";
+            this.fallback = fallback;
+            if (this.fallback)
+            {
+                BaseApiUrl = "https://api.etf2l.org/player/";
+            }
+            else 
+            {
+                BaseApiUrl = "https://api-v2.etf2l.org/player/";
+            }
+
             BaseUrl = "https://etf2l.org/forum/user/";
             BaseTeamUrl = "https://etf2l.org/teams/";
         }
@@ -52,7 +62,15 @@ namespace TF2CompRosterChecker
                             wc.Encoding = Encoding.UTF8;
                             try
                             {
-                                dl = wc.DownloadString(BaseApiUrl + id + ".json");
+                                if (this.fallback)
+                                {
+                                    dl = wc.DownloadString(BaseApiUrl + id + ".json");
+                                }
+                                else
+                                {
+                                    //The new api is not 100% compatible, so we get this:
+                                    dl = wc.DownloadString(BaseApiUrl + id);
+                                }
                             }
                             catch (WebException e)
                             {
@@ -151,7 +169,7 @@ namespace TF2CompRosterChecker
                                     //Fetch specifics about found ban
                                     foreach (JToken ban in foundbans)
                                     {
-                                        bans.Add(new Ban(ban["start"].ToString(), ban["end"].ToString(), ban["reason"].ToString()));
+                                        bans.Add(new Ban(ban["start"].ToString(), ban["end"].ToString(), ban["reason"].ToString().Replace("&amp;", "&")));
                                     }
                                 }
                                 else

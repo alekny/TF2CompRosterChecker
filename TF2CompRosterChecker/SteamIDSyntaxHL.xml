@@ -36,5 +36,9 @@
     <Rule foreground="Blue">
       (?:https?:\/\/)?rgl.gg\/Public\/PlayerProfile\.aspx\?p=([0-9]{17})(?:\/?)
     </Rule>
+    <!-- Custom-TF2Center-Profile-URL -->
+    <Rule foreground="Blue">
+      (?:https?:\/\/)?tf2center\.com\/profile\/([0-9]{17})(?:\/?)
+    </Rule>
   </RuleSet>
 </SyntaxDefinition>

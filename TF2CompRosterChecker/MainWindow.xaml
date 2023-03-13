@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v2" Height="380" Width="790"
+        Title="TF2CompRosterChecker v2.1" Height="380" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">
@@ -23,15 +23,18 @@
         <DockPanel LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
             <Menu DockPanel.Dock="Top" Background="#141517" Foreground="#d1d1d1" FontSize="13">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Save Report..." x:Name="MenuSave" Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_Verfiy Report..." Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_Export JSON..." x:Name="MenuJson" Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Generate Report..." x:Name="MenuSave" ToolTip="Generates and saves a query report in the Windows Temp folder and opens it in Notepad. You can copy and paste it somewhere or just save the file from Notepad to a location of your choice." Click="GenerateReport_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Verfiy Report..." ToolTip="Verify the integrity of an exported report." Click="VerifyReport_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_Export JSON..." x:Name="MenuJson" ToolTip="Export all data to a JSON file." Click="ExportJson_Click" IsEnabled="False" Style="{StaticResource DarkMenuItemStyle}"/>
                     <Separator />
                     <MenuItem Header="_Exit" Click="Exit_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="Use ETF2L-API v1 fallback" x:Name="ETF2LFallback" IsCheckable="True" IsChecked="False" ToolTip="Use the old ETF2L-API v1 instead. Only set this, if the v2 API causes problems. Has no effect on RGL/UGC queries." Style="{StaticResource DarkMenuItemStyle}"/>
+                </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_Open Source Licenses" Click="Show_Licenses" Style="{StaticResource DarkMenuItemStyle}"/>
-                    <MenuItem Header="_About" Click="OpenGithub_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="_About..." Click="OpenGithub_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

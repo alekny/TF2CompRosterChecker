@@ -11,7 +11,6 @@ namespace TF2CompRosterChecker
     internal sealed class RGLChecker : Checker
     {
 
-        //BIG WIP!!!
         public RGLChecker(string statusOutput) : base(statusOutput)
         {
             BaseApiUrl = "https://rgl.gg/Public/PlayerProfile.aspx?p=";
@@ -55,10 +54,10 @@ namespace TF2CompRosterChecker
 
                         
 
-                        //Using a modified webclient, because the payload.tf api is quite slow (mostly)
+                        //Using a modified webclient, because the rgl website sometimes responds quite slowly.
                         //This will introduce another problem (players that are indeed registered at rgl
                         //will be shown as unregistered, if the timout is reached), but at least the
-                        //program wont hang for 100...
+                        //program wont hang for 100 seconds...
 
                         using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
                         {
@@ -141,7 +140,7 @@ namespace TF2CompRosterChecker
 
                                 try
                                 {
-                                    //This apparently has some problems with names containing "@".
+                                    //This apparently has some problems with names containing "@" (cloudflare email protection).
                                     //Those will show "email protected" as current name, the rest should work properly tho.
                                     name = doc.GetElementbyId("ContentPlaceHolder1_ContentPlaceHolder1_ContentPlaceHolder1_lblPlayerName").InnerText;
 
@@ -265,7 +264,7 @@ namespace TF2CompRosterChecker
                                                     temptd = row.SelectSingleNode("(th|td)[3]").SelectSingleNode("a");
                                                     //That Last bit: WTF? Why is it even necessary to do this??
                                                     team = temptd.InnerText.Trim();
-                                                    //At first it might not make sense to splite the id from the rest of
+                                                    //At first it might not make sense to split the id from the rest of
                                                     //the url, but this should prevent link injections.
                                                     teamid = temptd.Attributes["href"].Value.Remove(0, BaseTeamUrl.Length);
                                                     div = row.SelectSingleNode("(th|td)[2]").InnerText.Trim();
@@ -345,7 +344,7 @@ namespace TF2CompRosterChecker
                                     }
 
                                 }
-                                catch (NullReferenceException)
+                                catch (Exception)
                                 {
                                     //HTML tag wasn't found, probably due to a frontend design change...
                                 }
