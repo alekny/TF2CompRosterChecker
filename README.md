@@ -2,7 +2,7 @@
 # TF2CompRosterChecker
 Checks ETF2L/RGL/UGC-Roster via status output
 
-[![Github Version](https://img.shields.io/github/v/release/alekny/TF2CompRosterChecker?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/releases) [![Github All Releases](https://img.shields.io/github/downloads/alekny/TF2CompRosterChecker/total.svg?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/releases) [![Github License](https://img.shields.io/github/license/alekny/TF2CompRosterChecker?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/blob/master/README.md)
+[![Github Version](https://img.shields.io/github/v/release/alekny/TF2CompRosterChecker?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/releases) [![Build](https://img.shields.io/github/actions/workflow/status/alekny/TF2CompRosterChecker/build.yml?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/actions/workflows/build.yml) [![Github All Releases](https://img.shields.io/github/downloads/alekny/TF2CompRosterChecker/total.svg?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/releases) [![Github License](https://img.shields.io/github/license/alekny/TF2CompRosterChecker?style=flat-square)](https://github.com/alekny/TF2CompRosterChecker/blob/master/README.md)
 
 [Download Version 2.1](https://github.com/alekny/TF2CompRosterChecker/releases/tag/2.1)
 
