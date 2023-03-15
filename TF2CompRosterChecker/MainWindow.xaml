@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v2.1" Height="380" Width="790"
+        Title="TF2CompRosterChecker v2.1-next" Height="380" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">

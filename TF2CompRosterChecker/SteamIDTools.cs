@@ -55,7 +55,7 @@ namespace TF2CompRosterChecker
 
         public static string GetSteamID64FromCustomUrl(string customUrl)
         {
-            using (TimeoutWebClient wc = new TimeoutWebClient(8000))
+            using (CustomWebClient wc = new CustomWebClient(8000))
             {
                 string dl = "";
                 try

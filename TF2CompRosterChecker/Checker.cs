@@ -78,7 +78,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                using (CustomWebClient wc = new CustomWebClient(8 * 1000))
                 {
                     wc.Encoding = Encoding.UTF8;
                     try
@@ -107,7 +107,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                using (CustomWebClient wc = new CustomWebClient(8 * 1000))
                 {
                     wc.Encoding = Encoding.UTF8;
                     try

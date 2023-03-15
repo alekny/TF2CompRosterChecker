@@ -142,9 +142,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Checker.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="RGLChecker.cs" />
     <Compile Include="SteamIDTools.cs" />
-    <Compile Include="TimeoutWebClient.cs">
+    <Compile Include="CustomWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UGCChecker.cs" />
