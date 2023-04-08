@@ -95,5 +95,13 @@ namespace TF2CompRosterChecker
             }
             return "STEAM_0:" + parity + ":" + accid;
         }
+
+        public static int GetAllSteamIDs(string input)
+        {
+            string pattern = steamID3regex + "|" + profileUrlregex + "|" + steamIDregex + "|" + profileCustomUrlregex + "|"
+                + etf2lProfileUrl + "|" + ugcProfileUrl + "|" + rglProfileUrl + "|" + tf2centerProfileUrl;
+            MatchCollection matches = Regex.Matches(input, pattern);
+            return matches.Count;
+        }
     }
 }

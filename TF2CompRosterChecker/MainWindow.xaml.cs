@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -505,7 +503,7 @@ namespace TF2CompRosterChecker
             {
                 string input = statusOutput.Text;
                 int counter = 0;
-                _ = await Task.Run(() => counter = Utility.GetAllSteamIDs(input));
+                _ = await Task.Run(() => counter = SteamIDTools.GetAllSteamIDs(input));
 
                 if (counter <= Checker.RATECTRL)
                 {

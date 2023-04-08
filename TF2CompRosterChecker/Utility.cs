@@ -330,16 +330,6 @@ namespace TF2CompRosterChecker
             return tb;
         }
 
-        public static int GetAllSteamIDs(string input)
-        {
-            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|"
-                + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex + "|"
-                + SteamIDTools.etf2lProfileUrl + "|" + SteamIDTools.ugcProfileUrl + "|"
-                + SteamIDTools.rglProfileUrl + "|" + SteamIDTools.tf2centerProfileUrl;
-            MatchCollection matches = Regex.Matches(input, pattern);
-            return matches.Count;
-        }
-
         //Thanks: https://stackoverflow.com/a/250400
         public static DateTime UnixTimeStampToDateTime(string unixTimeStamp)
         {
