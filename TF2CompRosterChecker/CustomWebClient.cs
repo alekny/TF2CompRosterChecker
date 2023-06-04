@@ -7,7 +7,6 @@ namespace TF2CompRosterChecker
     //The default timeout for webrequests appears to be 100 seconds, 
     //which is far too much for our case, so we just make a new class
     internal class CustomWebClient : WebClient
-
     {
         private readonly int timeout = 20 * 1000;
 
