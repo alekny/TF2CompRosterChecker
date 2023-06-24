@@ -729,6 +729,7 @@ namespace TF2CompRosterChecker
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
             saveFileDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
             saveFileDialog.Title = "Save json file";
+            saveFileDialog.FileName = "Export_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
 
             bool? dialogResult = saveFileDialog.ShowDialog();
             if (dialogResult == true)
