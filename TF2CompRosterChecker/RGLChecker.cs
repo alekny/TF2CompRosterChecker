@@ -59,7 +59,7 @@ namespace TF2CompRosterChecker
                         //will be shown as unregistered, if the timout is reached), but at least the
                         //program wont hang for 100 seconds...
 
-                        using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                        using (CustomWebClient wc = new CustomWebClient(8 * 1000))
                         {
                             wc.Encoding = Encoding.UTF8;
                             try

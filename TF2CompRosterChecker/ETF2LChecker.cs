@@ -9,8 +9,6 @@ namespace TF2CompRosterChecker
 {
     public sealed class ETF2LChecker : Checker
     {
-        private bool fallback = false;
-
         public ETF2LChecker(string statusOutput, bool fallback = false) : base(statusOutput)
         {
             this.fallback = fallback;
@@ -57,7 +55,7 @@ namespace TF2CompRosterChecker
                         List<Ban> bans = new List<Ban>();
 
 
-                        using (TimeoutWebClient wc = new TimeoutWebClient(8000))
+                        using (CustomWebClient wc = new CustomWebClient(8000))
                         {
                             wc.Encoding = Encoding.UTF8;
                             try

@@ -23,6 +23,11 @@ namespace TF2CompRosterChecker
 
         public const int maxParallelThreads = 5;
         public const int RATECTRL = 100;
+
+        //Provide a way for fallback apis.
+        //Only used by ETF2L so far (the only league site with a proper api :/)
+        protected bool fallback = false;
+
         public abstract List<Player> ParseData(LeagueFormat leagueformat, IProgress<int> progress);
         public List<string> SteamIDs { get; set; }
         public string BaseApiUrl { get; set; }
@@ -78,7 +83,7 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                using (CustomWebClient wc = new CustomWebClient(8 * 1000))
                 {
                     wc.Encoding = Encoding.UTF8;
                     try
@@ -107,13 +112,21 @@ namespace TF2CompRosterChecker
                 {
                     break;
                 }
-                using (TimeoutWebClient wc = new TimeoutWebClient(8 * 1000))
+                using (CustomWebClient wc = new CustomWebClient(8 * 1000))
                 {
                     wc.Encoding = Encoding.UTF8;
                     try
                     {
+                        string dl;
                         //uglyyyyyy
-                        string dl = wc.DownloadString("https://api.etf2l.org/player/" + match.Groups[1].ToString() + ".json");
+                        if (fallback)
+                        {
+                            dl = wc.DownloadString("https://api.etf2l.org/player/" + match.Groups[1].ToString() + ".json");
+                        }
+                        else
+                        {
+                            dl = wc.DownloadString("https://api-v2.etf2l.org/player/" + match.Groups[1].ToString());
+                        }
                         dynamic doc = JObject.Parse(dl);
                         string steamid = (string)doc["player"]["steam"]["id64"];
 

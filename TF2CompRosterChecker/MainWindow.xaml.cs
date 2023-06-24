@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,7 +50,11 @@ namespace TF2CompRosterChecker
                 }
             }
             statusOutput.Options.EnableHyperlinks = false;
+            EnableContextMenu();
+        }
 
+        private void EnableContextMenu()
+        {
             //Enable Right-Click Menu
             ContextMenu cm = new ContextMenu();
             MenuItem undo = new MenuItem();
@@ -107,6 +109,7 @@ namespace TF2CompRosterChecker
 
             statusOutput.ContextMenu = cm;
         }
+
         private async void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             int counter = 0;
@@ -281,7 +284,7 @@ namespace TF2CompRosterChecker
                         {
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                             Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
-                            _ = grid1.Children.Add(TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, displayid, displayid3, marginleft, margintop, true));
+                            _ = grid1.Children.Add(Utility.TBGen(new Run(player.Name), new Run("[!]"), Brushes.Red, displayid, displayid3, marginleft, margintop, true));
                             displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                             displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                         }
@@ -295,7 +298,7 @@ namespace TF2CompRosterChecker
                             };
                             Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                             Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
-                            _ = grid1.Children.Add(TBGen(new Run(player.Name), popup, displayid, displayid3, marginleft, margintop, true));
+                            _ = grid1.Children.Add(Utility.TBGen(new Run(player.Name), popup, displayid, displayid3, marginleft, margintop, true));
                             //Route necessary info into the EventHandler. 
                             popup.Click += (senders, es) => OpenPopup(senders, es, player.Bans);
                             displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
@@ -307,7 +310,7 @@ namespace TF2CompRosterChecker
                     {
                         Hyperlink displayid = new Hyperlink(new Run("[i]")) { };
                         Hyperlink displayid3 = new Hyperlink(new Run("[3]")) { };
-                        _ = grid1.Children.Add(TBGen(new Run(player.Name), displayid, displayid3, marginleft, margintop, true));
+                        _ = grid1.Children.Add(Utility.TBGen(new Run(player.Name), displayid, displayid3, marginleft, margintop, true));
                         displayid.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid);
                         displayid3.Click += (senders, es) => TextToClipboard(senders, es, player.Steamid3);
                     }
@@ -319,13 +322,13 @@ namespace TF2CompRosterChecker
                             NavigateUri = new Uri(baseTeamUrl + player.Teamid),
                         };
                         teamlink.RequestNavigate += Hyperlink_RequestNavigate;
-                        _ = grid2.Children.Add(TBGen(new Run(player.Team), teamlink, marginleft, margintop, false));
+                        _ = grid2.Children.Add(Utility.TBGen(new Run(player.Team), teamlink, marginleft, margintop, false));
                     }
                     else
                     {
-                        _ = grid2.Children.Add(TBGen(player.Team, marginleft, margintop, false));
+                        _ = grid2.Children.Add(Utility.TBGen(player.Team, marginleft, margintop, false));
                     }
-                    _ = grid3.Children.Add(TBGen(player.Div, marginleft, margintop, false));
+                    _ = grid3.Children.Add(Utility.TBGen(player.Div, marginleft, margintop, false));
                     if (player.Leagueid != "")
                     {
                         Hyperlink leaguelink = new Hyperlink(new Run(league))
@@ -333,7 +336,7 @@ namespace TF2CompRosterChecker
                             NavigateUri = new Uri(baseUrl + player.Leagueid),
                         };
                         leaguelink.RequestNavigate += Hyperlink_RequestNavigate;
-                        _ = grid4.Children.Add(TBGen(leaguelink, marginleft, margintop, false));
+                        _ = grid4.Children.Add(Utility.TBGen(leaguelink, marginleft, margintop, false));
                     }
 
                     Hyperlink logslink = new Hyperlink(new Run("Logs"))
@@ -341,14 +344,14 @@ namespace TF2CompRosterChecker
                         NavigateUri = new Uri(SteamIDTools.baseLogsUrl + player.Profileid),
                     };
                     logslink.RequestNavigate += Hyperlink_RequestNavigate;
-                    _ = grid5.Children.Add(TBGen(logslink, marginleft, margintop, false));
+                    _ = grid5.Children.Add(Utility.TBGen(logslink, marginleft, margintop, false));
 
                     Hyperlink profilelink = new Hyperlink(new Run("Steam"))
                     {
                         NavigateUri = new Uri(SteamIDTools.baseUrl + player.Profileid),
                     };
                     profilelink.RequestNavigate += Hyperlink_RequestNavigate;
-                    _ = grid6.Children.Add(TBGen(profilelink, marginleft, margintop, false));
+                    _ = grid6.Children.Add(Utility.TBGen(profilelink, marginleft, margintop, false));
 
 
                     _ = outputGrid.Children.Add(grid1);
@@ -423,13 +426,13 @@ namespace TF2CompRosterChecker
                 //RGL uses UTS of 2147483647 and ETF2L 2145826800
                 if (ban.End.Equals("2147483647") || ban.End.Equals("2145826800"))
                 {
-                    banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                    banline.Text = Utility.UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
                     + "Permanent" + ", Reason: " + ban.Reason;
                 }
                 else
                 {
-                    banline.Text = UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
-                    + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                    banline.Text = Utility.UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                    + Utility.UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
                 }
             }
             codePopup.Child = sp;
@@ -447,15 +450,6 @@ namespace TF2CompRosterChecker
             sb.Begin(copiedNotice);
         }
 
-        //Thanks: https://stackoverflow.com/a/250400
-        public static DateTime UnixTimeStampToDateTime(string unixTimeStamp)
-        {
-            // Unix timestamp is seconds past epoch
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(Convert.ToDouble(unixTimeStamp)).ToLocalTime();
-            return dtDateTime;
-        }
-
         private void EnableUI()
         {
             submitButton.IsEnabled = true;
@@ -466,170 +460,6 @@ namespace TF2CompRosterChecker
         {
             submitButton.IsEnabled = false;
             statusOutput.IsEnabled = false;
-        }
-
-        public static TextBlock TBGen(string content, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock
-            {
-                Text = content,
-                FontSize = 14,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                TextWrapping = TextWrapping.NoWrap,
-                Height = 20
-            };
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
-        }
-
-        public static TextBlock TBGen(Run content, Run additional, Brush color, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock();
-            tb.Inlines.Clear();
-            tb.Inlines.Add(content);
-            additional.Foreground = color;
-            tb.Inlines.Add(new Run(" "));
-            tb.Inlines.Add(additional);
-            tb.FontSize = 14;
-            tb.Height = 20;
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            tb.HorizontalAlignment = HorizontalAlignment.Left;
-            tb.VerticalAlignment = VerticalAlignment.Top;
-            tb.TextWrapping = TextWrapping.NoWrap;
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
-        }
-
-        public static TextBlock TBGen(Run content, Run additional, Brush color, Hyperlink link1, Hyperlink link2, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock();
-            tb.Inlines.Clear();
-            tb.Inlines.Add(content);
-            additional.Foreground = color;
-            tb.Inlines.Add(new Run(" "));
-            tb.Inlines.Add(additional);
-            tb.Inlines.Add(link1);
-            tb.Inlines.Add(link2);
-            tb.FontSize = 14;
-            tb.Height = 20;
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            tb.HorizontalAlignment = HorizontalAlignment.Left;
-            tb.VerticalAlignment = VerticalAlignment.Top;
-            tb.TextWrapping = TextWrapping.NoWrap;
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
-        }
-
-        public static TextBlock TBGen(Hyperlink link, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock();
-            tb.Inlines.Clear();
-            tb.Inlines.Add(link);
-            tb.FontSize = 14;
-            tb.Height = 20;
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            tb.HorizontalAlignment = HorizontalAlignment.Left;
-            tb.VerticalAlignment = VerticalAlignment.Top;
-            tb.TextWrapping = TextWrapping.NoWrap;
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
-        }
-
-        public static TextBlock TBGen(Run text, Hyperlink link, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock();
-            tb.Inlines.Clear();
-            tb.Inlines.Add(text);
-            tb.Inlines.Add(new Run(" "));
-            tb.Inlines.Add(link);
-            tb.FontSize = 14;
-            tb.Height = 20;
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            tb.HorizontalAlignment = HorizontalAlignment.Left;
-            tb.VerticalAlignment = VerticalAlignment.Top;
-            tb.TextWrapping = TextWrapping.NoWrap;
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
-        }
-
-        public static TextBlock TBGen(Run text, Hyperlink link1, Hyperlink link2, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock();
-            tb.Inlines.Clear();
-            tb.Inlines.Add(text);
-            tb.Inlines.Add(new Run(" "));
-            tb.Inlines.Add(link1);
-            tb.Inlines.Add(link2);
-            tb.FontSize = 14;
-            tb.Height = 20;
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            tb.HorizontalAlignment = HorizontalAlignment.Left;
-            tb.VerticalAlignment = VerticalAlignment.Top;
-            tb.TextWrapping = TextWrapping.NoWrap;
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
-        }
-        public static TextBlock TBGen(Run text, Hyperlink link1, Hyperlink link2, Hyperlink link3, int marginleft, int margintop, bool bold)
-        {
-            TextBlock tb = new TextBlock();
-            tb.Inlines.Clear();
-            tb.Inlines.Add(text);
-            tb.Inlines.Add(new Run(" "));
-            tb.Inlines.Add(link1);
-            tb.Inlines.Add(link2);
-            tb.Inlines.Add(link3);
-            tb.FontSize = 14;
-            tb.Height = 20;
-            if (bold)
-            {
-                tb.FontWeight = FontWeights.Bold;
-            }
-            tb.HorizontalAlignment = HorizontalAlignment.Left;
-            tb.VerticalAlignment = VerticalAlignment.Top;
-            tb.TextWrapping = TextWrapping.NoWrap;
-            Thickness margin = tb.Margin;
-            margin.Left = marginleft;
-            margin.Top = margintop;
-            tb.Margin = margin;
-            return tb;
         }
 
         private void ResetTextBox(object sender, RoutedEventArgs e)
@@ -666,23 +496,14 @@ namespace TF2CompRosterChecker
         {
             _ = System.Diagnostics.Process.Start(e.Uri.ToString());
         }
-
-        public static int GetAllSteamIDs(string input)
-        {
-            string pattern = SteamIDTools.steamID3regex + "|" + SteamIDTools.profileUrlregex + "|"
-                + SteamIDTools.steamIDregex + "|" + SteamIDTools.profileCustomUrlregex + "|"
-                + SteamIDTools.etf2lProfileUrl + "|" + SteamIDTools.ugcProfileUrl + "|" 
-                + SteamIDTools.rglProfileUrl + "|" + SteamIDTools.tf2centerProfileUrl;
-            MatchCollection matches = Regex.Matches(input, pattern);
-            return matches.Count;
-        }
+   
         private async void statusOutput_TextChanged(object sender, EventArgs e)
         {
             if (!statusOutput.Text.Equals(""))
             {
                 string input = statusOutput.Text;
                 int counter = 0;
-                _ = await Task.Run(() => counter = GetAllSteamIDs(input));
+                _ = await Task.Run(() => counter = SteamIDTools.GetAllSteamIDs(input));
 
                 if (counter <= Checker.RATECTRL)
                 {
@@ -718,146 +539,7 @@ namespace TF2CompRosterChecker
             header.Text = "Paste Status Output here:";
             submitButton.Content = "Check Roster";
             progressBar.Value = 0;
-            string license = "Fody\n"
-            + "Copyright (c) Simon Cropp\n"
-            + "\n"
-            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
-            + "of this software and associated documentation files (the \"Software\"), to deal \n"
-            + "in the Software without restriction, including without limitation the rights \n"
-            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
-            + "copies of the Software, and to permit persons to whom the Software is \n"
-            + "furnished to do so, subject to the following conditions:\n"
-            + "\n"
-            + "The above copyright notice and this permission notice shall be included in \n"
-            + "all copies or substantial portions of the Software.\n"
-            + "\n"
-            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
-            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
-            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
-            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
-            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
-            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
-            + "IN THE SOFTWARE.\n"
-            + "\n"
-            + "-----------------------------------------------------------------------------\n"
-            + "\n"
-            + "Costura.Fody\n"
-            + "Copyright (c) Simon Cropp, Cameron MacFarland\n"
-            + "\n"
-            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
-            + "of this software and associated documentation files (the \"Software\"), to deal \n"
-            + "in the Software without restriction, including without limitation the rights \n"
-            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
-            + "copies of the Software, and to permit persons to whom the Software is \n"
-            + "furnished to do so, subject to the following conditions:\n"
-            + "\n"
-            + "The above copyright notice and this permission notice shall be included in \n"
-            + "all copies or substantial portions of the Software.\n"
-            + "\n"
-            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
-            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
-            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
-            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
-            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
-            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
-            + "IN THE SOFTWARE.\n"
-            + "\n"
-            + "-----------------------------------------------------------------------------\n"
-            + "\n"
-            + "Html Agility Pack (HAP)\n"
-            + "Copyright (c) ZZZ Projects, Simon Mourrier, Jeff Klawiter, Stephan Grell\n"
-            + "\n"
-            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
-            + "of this software and associated documentation files (the \"Software\"), to deal \n"
-            + "in the Software without restriction, including without limitation the rights \n"
-            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
-            + "copies of the Software, and to permit persons to whom the Software is \n"
-            + "furnished to do so, subject to the following conditions:\n"
-            + "\n"
-            + "The above copyright notice and this permission notice shall be included in \n"
-            + "all copies or substantial portions of the Software.\n"
-            + "\n"
-            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
-            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
-            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
-            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
-            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
-            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
-            + "IN THE SOFTWARE.\n"
-            + "\n"
-            + "-----------------------------------------------------------------------------\n"
-            + "\n"
-            + "Newtonsoft.Json\n"
-            + "Copyright (c) James Newton-King\n"
-            + "\n"
-            + "Permission is hereby granted, free of charge, to any person obtaining a copy \n"
-            + "of this software and associated documentation files (the \"Software\"), to deal \n"
-            + "in the Software without restriction, including without limitation the rights \n"
-            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
-            + "copies of the Software, and to permit persons to whom the Software is \n"
-            + "furnished to do so, subject to the following conditions:\n"
-            + "\n"
-            + "The above copyright notice and this permission notice shall be included in \n"
-            + "all copies or substantial portions of the Software.\n"
-            + "\n"
-            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
-            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
-            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
-            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
-            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING \n"
-            + "FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS \n"
-            + "IN THE SOFTWARE.\n"
-            + "\n"
-            + "-----------------------------------------------------------------------------\n"
-            + "\n"
-            + "AvalonEdit\n"
-            + "Copyright (c) AvalonEdit Contributors\n"
-            + "\n"
-            + "Permission is hereby granted, free of charge, to any person obtaining a copy\n"
-            + "of this software and associated documentation files (the \"Software\"), to deal\n"
-            + "in the Software without restriction, including without limitation the rights\n"
-            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n"
-            + "copies of the Software, and to permit persons to whom the Software is\n"
-            + "furnished to do so, subject to the following conditions:\n"
-            + "\n"
-            + "The above copyright notice and this permission notice shall be included in all\n"
-            + "copies or substantial portions of the Software.\n"
-            + "\n"
-            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
-            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
-            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n"
-            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
-            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
-            + "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
-            + "SOFTWARE.\n"
-            + "-----------------------------------------------------------------------------\n"
-            + "\n"
-            + "TF2CompRosterChecker\n"
-            + "https://github.com/alekny/TF2CompRosterChecker\n"
-            + "\n"
-            + "MIT License\n"
-            + "\n"
-            + "Copyright (c) alekny 2023\n"
-            + "\n"
-            + "Permission is hereby granted, free of charge, to any person obtaining a copy\n"
-            + "of this software and associated documentation files (the \"Software\"), to deal\n"
-            + "in the Software without restriction, including without limitation the rights\n"
-            + "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n"
-            + "copies of the Software, and to permit persons to whom the Software is\n"
-            + "furnished to do so, subject to the following conditions:\n"
-            + "\n"
-            + "The above copyright notice and this permission notice shall be included in all\n"
-            + "copies or substantial portions of the Software.\n"
-            + "\n"
-            + "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
-            + "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
-            + "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n"
-            + "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
-            + "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
-            + "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
-            + "SOFTWARE.\n";
-
-            statusOutput.Text = license;
+            statusOutput.Text = Utility.licenses;
             submitButton.Content = "Reset";
 
             //From this point on we cannot recheck anymore, since we are overwriting the
@@ -872,27 +554,6 @@ namespace TF2CompRosterChecker
 
             submitButton.Click -= SubmitButton_Click;
             submitButton.Click += ResetTextBox;
-        }
-
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Application.Current.Shutdown();
-        }
-
-        private void OpenGithub_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://github.com/alekny/TF2CompRosterChecker");
-        }
-
-        private static string Sha256Hash(string input)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
-                byte[] hashBytes = sha256.ComputeHash(inputBytes);
-                string hash = BitConverter.ToString(hashBytes).Replace("-", "");
-                return hash;
-            }
         }
 
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
@@ -965,13 +626,13 @@ namespace TF2CompRosterChecker
                             {
                                 if (ban.End.Equals("2147483647") || ban.End.Equals("2145826800"))
                                 {
-                                    bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                                    bantable += "* " + Utility.UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
                                     + "Permanent" + ", Reason: " + ban.Reason;
                                 }
                                 else
                                 {
-                                    bantable += "* " + UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
-                                    + UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
+                                    bantable += "* " + Utility.UnixTimeStampToDateTime(ban.Start).ToString("dd.MM.yyyy") + " - "
+                                    + Utility.UnixTimeStampToDateTime(ban.End).ToString("dd.MM.yyyy") + ", Reason: " + ban.Reason;
                                 }
                                 bantable += "\n";
                             }
@@ -985,13 +646,13 @@ namespace TF2CompRosterChecker
                     }
 
                     string copy = String.Copy(output);
-                    string hash = Sha256Hash(copy);
+                    string hash = Utility.Sha256Hash(copy);
 
                     //Now this is no pgp signature, just simple and designed to be tedious to do by hand ;>
                     while (copy.Length > 7)
                     {
                         copy = copy.Substring(7);
-                        hash = Sha256Hash(hash + copy);
+                        hash = Utility.Sha256Hash(hash + copy);
                     }
 
                     output += "\n\n" + hash;
@@ -1028,12 +689,12 @@ namespace TF2CompRosterChecker
                             string hash = input.Split('\n').Last();
                             string data = input.Substring(0, input.Length - 66);
 
-                            string newhash = Sha256Hash(data);
+                            string newhash = Utility.Sha256Hash(data);
 
                             while (data.Length > 7)
                             {
                                 data = data.Substring(7);
-                                newhash = Sha256Hash(newhash + data);
+                                newhash = Utility.Sha256Hash(newhash + data);
                             }
 
                             if (newhash.Equals(hash))
@@ -1068,6 +729,7 @@ namespace TF2CompRosterChecker
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
             saveFileDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
             saveFileDialog.Title = "Save json file";
+            saveFileDialog.FileName = "Export_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
 
             bool? dialogResult = saveFileDialog.ShowDialog();
             if (dialogResult == true)
@@ -1082,6 +744,16 @@ namespace TF2CompRosterChecker
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void OpenGithub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/alekny/TF2CompRosterChecker");
         }
     }
 }

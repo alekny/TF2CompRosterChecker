@@ -42,7 +42,7 @@ namespace TF2CompRosterChecker
                     string steamid = SteamIDTools.SteamID64ToSteamID(id);
                     string steamid3 = SteamIDTools.SteamID64ToSteamID3(id);
 
-                    using (TimeoutWebClient wc = new TimeoutWebClient(8000))
+                    using (CustomWebClient wc = new CustomWebClient(8000))
                     {
                         try
                         {

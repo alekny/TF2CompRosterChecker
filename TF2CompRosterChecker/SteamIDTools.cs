@@ -55,7 +55,7 @@ namespace TF2CompRosterChecker
 
         public static string GetSteamID64FromCustomUrl(string customUrl)
         {
-            using (TimeoutWebClient wc = new TimeoutWebClient(8000))
+            using (CustomWebClient wc = new CustomWebClient(8000))
             {
                 string dl = "";
                 try
@@ -94,6 +94,14 @@ namespace TF2CompRosterChecker
                 accid = (accid - 1) / 2;
             }
             return "STEAM_0:" + parity + ":" + accid;
+        }
+
+        public static int GetAllSteamIDs(string input)
+        {
+            string pattern = steamID3regex + "|" + profileUrlregex + "|" + steamIDregex + "|" + profileCustomUrlregex + "|"
+                + etf2lProfileUrl + "|" + ugcProfileUrl + "|" + rglProfileUrl + "|" + tf2centerProfileUrl;
+            MatchCollection matches = Regex.Matches(input, pattern);
+            return matches.Count;
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TF2CompRosterChecker"
         mc:Ignorable="d"
-        Title="TF2CompRosterChecker v2.1" Height="380" Width="790"
+        Title="TF2CompRosterChecker v2.2" Height="380" Width="790"
         ResizeMode="CanMinimize">
     <Window.Resources>
         <Storyboard x:Key="copiedNoticeAnimation">
@@ -39,7 +39,7 @@
             </Menu>
         </DockPanel>
         <ScrollViewer x:Name="outputFrame" HorizontalAlignment="Left" Height="257" Margin="17,42,0,0" VerticalAlignment="Top" Width="744" BorderBrush="#000000" Visibility="Hidden" Grid.ColumnSpan="2">
-            <Grid x:Name="outputGrid" Background="White" VerticalAlignment="Top" HorizontalAlignment="Stretch" ShowGridLines="False">
+            <Grid x:Name="outputGrid" Background="White" VerticalAlignment="Top" HorizontalAlignment="Stretch" ShowGridLines="False" FocusVisualStyle="{x:Null}">
                 <Grid.ColumnDefinitions >
                     <ColumnDefinition Width="230" />
                     <ColumnDefinition Width="254" />
@@ -72,6 +72,6 @@
         <TextBlock HorizontalAlignment="Left" Margin="619,314,0,0" TextWrapping="Wrap" Text="[+]" VerticalAlignment="Top" Foreground="#7fd0ff" FontSize="13"/>
         <TextBlock HorizontalAlignment="Left" Margin="636,301,0,0" TextWrapping="Wrap" Text="- has bans on record" VerticalAlignment="Top" Foreground="#d1d1d1" FontSize="13"/>
         <TextBlock HorizontalAlignment="Left" Margin="623,301,0,0" TextWrapping="Wrap" Text="[!]" VerticalAlignment="Top" Foreground="Red" FontSize="13"/>
-        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" Name="statusOutput" FontFamily="Consolas" FontSize="13" Margin="17,42,17,48" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Hidden" TextChanged="statusOutput_TextChanged" KeyDown="statusOutput_KeyDown"/>
+        <avalonEdit:TextEditor xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" Name="statusOutput" FontFamily="Consolas" FontSize="13" Margin="17,42,17,48" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Hidden" WordWrap="True" TextChanged="statusOutput_TextChanged" KeyDown="statusOutput_KeyDown"/>
     </Grid>
 </Window>
