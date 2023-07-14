@@ -127,7 +127,7 @@ namespace TF2CompRosterChecker
                             }
                             else if (leagueformat == LeagueFormat.Sixes)
                             {
-                                teamtype = "6on6";
+                                teamtype = "6v6";
                                 team = "![No ETF2L 6v6 Team]";
                             }
 

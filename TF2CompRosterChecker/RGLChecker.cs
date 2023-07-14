@@ -266,7 +266,7 @@ namespace TF2CompRosterChecker
                                                     team = temptd.InnerText.Trim();
                                                     //At first it might not make sense to split the id from the rest of
                                                     //the url, but this should prevent link injections.
-                                                    teamid = temptd.Attributes["href"].Value.Remove(0, BaseTeamUrl.Length);
+                                                    teamid = temptd.Attributes["href"].Value.Remove(0, "Team.aspx?t=".Length);
                                                     div = row.SelectSingleNode("(th|td)[2]").InnerText.Trim();
                                                     //Too long, remember when divs were all numbers?
                                                     if (div == "Admin Placement")
