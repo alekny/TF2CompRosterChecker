@@ -147,7 +147,7 @@ namespace TF2CompRosterChecker
                                             if (div.InnerHtml.Contains("Highlander"))
                                             {
                                                 string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
-                                                setDiv = helper[1].Substring(17, helper[1].Length - 17);
+                                                setDiv = helper[1].Substring(17, helper[1].Length - 17).Replace("New Teams", "NT");
                                             }
                                             else
                                             {
@@ -159,7 +159,7 @@ namespace TF2CompRosterChecker
                                             if (div.InnerHtml.Contains("6vs6"))
                                             {
                                                 string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
-                                                setDiv = helper[1].Substring(11, helper[1].Length - 11);
+                                                setDiv = helper[1].Substring(11, helper[1].Length - 11).Replace("New Teams", "NT");
                                             }
                                             else
                                             {
@@ -171,7 +171,7 @@ namespace TF2CompRosterChecker
                                             if (div.InnerHtml.Contains("4vs4"))
                                             {
                                                 string[] helper = div.InnerHtml.Split(new[] { "<br>" }, StringSplitOptions.None);
-                                                setDiv = helper[1].Substring(11, helper[1].Length - 11);
+                                                setDiv = helper[1].Substring(11, helper[1].Length - 11).Replace("New Teams", "NT");
                                             }
                                             else
                                             {
