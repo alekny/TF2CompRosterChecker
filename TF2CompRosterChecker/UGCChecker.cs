@@ -48,9 +48,11 @@ namespace TF2CompRosterChecker
                         try
                         {
                             wc.Encoding = Encoding.UTF8;
-                            webcontent = wc.DownloadString(string.Concat(BaseUrl, id)).Replace("\n", string.Empty);
-                            //Console.WriteLine(string.Concat(baseApiUrl, SteamIDTools.steamID3ToSteamID64(this.steamIDs[i])).Replace("\n", string.Empty));
-                            //Console.WriteLine(webcontent);
+                            //Why is this even necessary?
+                            webcontent = wc.DownloadString(string.Concat(BaseUrl, id))
+                                           .Replace("\n", string.Empty)
+                                           .Replace("\t", string.Empty)
+                                           .Replace("\r", string.Empty);
                         }
                         catch (WebException e)
                         {
